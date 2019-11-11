@@ -2,9 +2,27 @@
 
 #include "phone.hpp"
 
-phone::phone(string nom, nat num, nat cops) : m_name(nom),
-                                              m_num(num),
-                                              m_cops(cops)
+phone::phone(nat num, const string &name, nat compt) throw(error) :
+
+                                                                    m_nom(name),
+                                                                    m_num(num),
+                                                                    m_cops(compt)
+{
+    for (nat i = 0U; i < name.size(); ++i)
+    {
+        if (name[i] == DELETECHAR or name[i] == ENDCHAR or name[i] == ENDPREF)
+            throw(ErrNomIncorrecte);
+    }
+}
+
+phone::phone(const phone &T) throw(error)
+{
+    m_nom = T.m_nom;
+    m_num = T.m_num;
+    m_cops = T.m_cops;
+}
+
+phone::~phone() throw()
 {
 }
 
@@ -34,7 +52,7 @@ phone &phone::operator++() throw()
     //PRE: True
     //POST: Augmentem en 1 el numero de trucades rebudes
     ++m_cops;
-    return this;
+    return *this;
 }
 
 phone phone::operator++(int) throw()
@@ -116,7 +134,7 @@ bool phone::operator<=(const phone &T) const throw()
     }
 }
 
-bool phone::operator<(const phone &T) const throw()
+bool phone::operator>=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son majors o iguals a les fetes a T
