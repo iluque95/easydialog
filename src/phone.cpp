@@ -82,25 +82,17 @@ bool phone::operator!=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son diferents a les fetes a T
-    if (m_cops != T.m_cops)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return not (*this == T);
 }
 
 bool phone::operator<(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son menors a les fetes a T
-    if (m_cops < T.m_cops)
+    if ((m_cops < T.m_cops) or (m_cops == T.m_cops and m_nom < T.m_nom))
     {
         return true;
-    }
-    else
+    }else
     {
         return false;
     }
@@ -110,21 +102,14 @@ bool phone::operator>(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son majors a les fetes a T
-    if (m_cops < T.m_cops)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return not (*this < T);
 }
 
 bool phone::operator<=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son menors o iguals a les fetes a T
-    if (m_cops <= T.m_cops)
+    if ((*this < T) or (*this == T))
     {
         return true;
     }
@@ -138,7 +123,7 @@ bool phone::operator>=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son majors o iguals a les fetes a T
-    if (m_cops >= T.m_cops)
+    if ((*this > T) or (*this == T))
     {
         return true;
     }
