@@ -28,7 +28,6 @@ int main()
 
     cout << "Es 10 != " << p.frequencia() << " ? " << ((10 != p.frequencia()) ? "Si" : "NO!") << endl;
 
-    // TODO: Check why is not catching error generated in cpp.
     try
     {
         phone p2(11111, "<", 0);
@@ -36,6 +35,6 @@ int main()
     }
     catch (error e)
     {
-        cerr << "Error " << e.mensaje() << endl;
+        cerr << "Error en la classe " << e.modulo() << " amb codi " <<  e.codigo() << " => " << e.mensaje() << endl;
     }
 }
