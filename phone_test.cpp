@@ -6,6 +6,8 @@ using namespace std;
 
 int main()
 {
+    cout << "Testing phone..." << endl;
+
     phone p(75745455, "Messi", 0);
 
     cout << "Telèfon de " << p.nom() << " es " << p.numero() << endl;
@@ -37,4 +39,6 @@ int main()
     {
         cerr << "Error en la classe " << e.modulo() << " amb codi " <<  e.codigo() << " => " << e.mensaje() << endl;
     }
+
+    cout << "End of testing phone..." << endl;
 }

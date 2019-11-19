@@ -1,0 +1,79 @@
+// HASH TABLE amb tècnica open hashing.
+
+struct node_hash
+{
+    nat m_clau;
+    phone *m_valor;
+    node_hash *m_seg;
+};
+
+node_hash **m_taula;
+
+nat m_mida;
+nat m_quants;
+
+struct str_node_hash
+{
+    string m_clau;  // Nom
+    nat m_valor;    // telf
+    str_node_hash *m_seg;
+};
+
+// Calcula la posició en la taula per al número donat.
+nat hash(nat num) const;
+
+// Afegeix una nova entrada amb el número, nom i comptador donats.
+void afegeix_entrada(const nat &num, const string &nom, nat compt);
+
+// Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
+void redispersio();
+
+/* 
+ Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
+ i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
+*/
+bool obtenir_phone(const nat &num, node_hash *&p, node_hash *&pr);
+
+// Constants
+const float factor_carrega = 0.75;
+
+const string nom_mod = "call_registry";
+
+const string MsgErrNumeroInexistent = "Numero inexistent.";
+const string MsgErrNomRepetit = "Nom repetit.";
+
+// AVL
+
+/*
+struct node
+{
+    nat m_clau;
+    Phone *m_val;
+    node *m_fe;
+    node *m_fd;
+    nat m_alcada;
+};
+
+nat m_total;
+node *m_arrel;
+
+
+
+    A priori hem analitzat que el diccionari amb les propietats de BST i AVL són les més idonies 
+    a les necessitats requerides en els diversos punts que es mencionarán:
+
+    1. No requereix coneixer previament la quantitat d'elements.
+    2. Els costos són logaritmics en el cas mitjà.
+    3. Ens permet el parell clau-valor on clau és el num de telèfon i clau un punter al objecte phone.
+    4. Els costos del constructor per còpia i operador d'assignación són lineals.
+
+    Altres estructures:
+
+    +-----------------------------------------------------------------------+
+    | Estructura   |  Cost constructor  |  Cost consultar  |  Cost eliminar |
+    +-----------------------------------------------------------------------+
+    |  HASH        |       O(n)         |       O(1)        |     O(1)      |
+    |  AVL         |       O(1)         |       O(log n)    |     O(log n)  |
+    |  Linked list |
+    +-----------------------------------------------------------------------+
+*/

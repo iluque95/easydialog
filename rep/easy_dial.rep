@@ -1,0 +1,5 @@
+const string nom_mod = "easy_dial";
+
+const string MsgErrPrefixIndef = "Prefix en curs indefinit.";
+const string MsgErrNoExisteixTelefon = "No hi ha telefons amb el prefix en curs.";
+const string MsgErrNoHiHaAnterior = "No es pot eliminar caracter en el prefix en curs.";

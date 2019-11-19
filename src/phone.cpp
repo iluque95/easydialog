@@ -11,7 +11,7 @@ phone::phone(nat num, const string &name, nat compt) throw(error) :
     for (nat i = 0U; i < name.size(); ++i)
     {
         if (name[i] == DELETECHAR or name[i] == ENDCHAR or name[i] == ENDPREF)
-            throw error(ErrNomIncorrecte, "Phone", "Nom incorrecte.");
+            throw error(ErrNomIncorrecte, nom_mod, MsgErrNomIncorrecte);
     }
 }
 
