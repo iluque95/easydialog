@@ -23,14 +23,14 @@ call_registry::call_registry(const call_registry &R) throw(error) : m_mida(R.m_m
     for (nat i = 0; i < m_mida; ++i)
     {
         m_taula[i] = new node_hash<nat, phone>;
-        node_hash<nat, phone> n = m_taula[i];
+        node_hash<nat, phone> *n = m_taula[i];
 
         m_taula[i]->m_clau = R.m_taula[i]->m_clau;
         m_taula[i]->m_valor = new phone(*R.m_taula[i]->m_valor);
 
         while (n->m_seg != NULL)
         {
-            node_hash<nat, phone> aux = new node_hash<nat, phone>;
+            node_hash<nat, phone> *aux = new node_hash<nat, phone>;
 
             aux->m_clau = n->m_seg->m_clau;
             aux->m_valor = new phone(*n->m_seg->m_valor);
@@ -302,8 +302,8 @@ void call_registry::redispersio()
     {
         if (m_taula[i] != NULL)
         {
-            int new_pos = hash(n->m_clau);
             node_hash<nat, phone> *n = m_taula[i];
+            int new_pos = hash(n->m_clau);
             t[new_pos] = m_taula[i];
             t[new_pos]->m_seg = NULL;
 
@@ -313,7 +313,7 @@ void call_registry::redispersio()
                 node_hash<nat, phone> *aux = new node_hash<nat, phone>;
 
                 aux->m_clau = n->m_seg->m_clau;
-                aux->m_valor = n->m_seg->m_valor
+                aux->m_valor = n->m_seg->m_valor;
                 aux->m_seg = t[new_pos];
                 t[new_pos] = aux;
                 n = n->m_seg;
