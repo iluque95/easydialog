@@ -71,7 +71,7 @@ public:
   static const int  ErrNomRepetit       = 22;
 
 // FIXME: DELETE!!
-void statistic();
+void statistics();
 
 private:
   #include "../rep/call_registry.rep"

@@ -1,7 +1,8 @@
 #include "../incl/call_registry.hpp"
 
 // FIXME: DELETEEEEEEE!!!!!!!!
-void call_registry::statistic()
+template <typename Clau>
+void call_registry::diccionari<Clau>::statistic()
 {
     cout << endl;
     cout << "Statistics..." << endl;
@@ -13,14 +14,20 @@ void call_registry::statistic()
     cout << "-------------" << endl;
 }
 
-// θ(n)
-call_registry::call_registry() throw(error) : m_mida(2),
-                                              m_quants(0),
-                                              colisions(0),
-                                              redispersions(0)
-
+void call_registry::statistics()
 {
-    m_taula = new node_hash<nat> *[m_mida];
+    d_nums.statistic();
+}
+
+// θ(n)
+template <typename Clau>
+call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(2),
+                                                             m_quants(0),
+                                                             colisions(0),
+                                                             redispersions(0)
+{
+
+    m_taula = new node_hash *[m_mida];
 
     for (nat i = 0; i < m_mida; ++i)
     {
@@ -29,23 +36,24 @@ call_registry::call_registry() throw(error) : m_mida(2),
 }
 
 // θ(n)
-// TODO: Add next node_hash.
-call_registry::call_registry(const call_registry &R) throw(error) : m_mida(R.m_mida),
-                                                                    m_quants(R.m_quants)
+template <typename Clau>
+call_registry::diccionari<Clau>::diccionari(const diccionari &d) throw(error) : m_mida(d.m_mida),
+                                                                                m_quants(d.m_quants)
 {
-    m_taula = new node_hash<nat> *[m_mida];
+
+    m_taula = new node_hash *[m_mida];
 
     for (nat i = 0; i < m_mida; ++i)
     {
-        m_taula[i] = new node_hash<nat>;
-        node_hash<nat> *n = m_taula[i];
+        m_taula[i] = new node_hash;
+        node_hash *n = m_taula[i];
 
-        m_taula[i]->m_clau = R.m_taula[i]->m_clau;
-        m_taula[i]->m_valor = new phone(*R.m_taula[i]->m_valor);
+        m_taula[i]->m_clau = d.m_taula[i]->m_clau;
+        m_taula[i]->m_valor = new phone(*d.m_taula[i]->m_valor);
 
         while (n->m_seg != NULL)
         {
-            node_hash<nat> *aux = new node_hash<nat>;
+            node_hash *aux = new node_hash;
 
             aux->m_clau = n->m_seg->m_clau;
             aux->m_valor = new phone(*n->m_seg->m_valor);
@@ -56,56 +64,42 @@ call_registry::call_registry(const call_registry &R) throw(error) : m_mida(R.m_m
 }
 
 // θ(n)
-call_registry &call_registry::operator=(const call_registry &R) throw(error)
+template <typename Clau>
+call_registry::diccionari<Clau> &call_registry::diccionari<Clau>::operator=(const diccionari &d) throw(error)
 {
-    if (this != &R)
+
+    if (this != &d)
     {
-        call_registry cr(R);
+        diccionari<Clau> dicc(d);
 
-        // Copia la taula amb els telèfons com a clau.
+        node_hash **tmp = m_taula;
 
-        node_hash<nat> **tmp = m_taula;
-
-        m_taula = cr.m_taula;
-        cr.m_taula = tmp;
+        m_taula = dicc.m_taula;
+        dicc.m_taula = tmp;
 
         nat val = m_mida;
 
-        m_mida = cr.m_mida;
-        cr.m_mida = val;
+        m_mida = dicc.m_mida;
+        dicc.m_mida = val;
 
         val = m_quants;
 
-        m_quants = cr.m_quants;
-        cr.m_quants = val;
-
-        // Copia la taula amb els noms com a clau.
-        node_hash<string> **tmpStr = m_taula_noms;
-
-        m_taula_noms = cr.m_taula_noms;
-        cr.m_taula_noms = tmpStr;
-
-        val = m_mida_noms;
-
-        m_mida_noms = cr.m_mida_noms;
-        cr.m_mida_noms = val;
-
-        val = m_quants;
-
-        m_quants = cr.m_quants;
-        cr.m_quants = val;
+        m_quants = dicc.m_quants;
+        dicc.m_quants = val;
     }
 
     return *this;
 }
 
 // θ(n)
-call_registry::~call_registry() throw()
+template <typename Clau>
+call_registry::diccionari<Clau>::~diccionari() throw()
 {
+
     for (nat i = 0; i < m_mida; ++i)
     {
-        node_hash<nat> *prev = NULL;
-        node_hash<nat> *act = m_taula[i];
+        node_hash *prev = NULL;
+        node_hash *act = m_taula[i];
 
         while (act != NULL)
         {
@@ -119,199 +113,116 @@ call_registry::~call_registry() throw()
 }
 
 // θ(1)
-void call_registry::registra_trucada(nat num) throw(error)
+template <typename Clau>
+void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 {
-    node_hash<nat> *p = NULL, *pr = NULL;
-
-    if (obtenir_phone(num, p, pr) and p != NULL)
-    {
-        try
-        {
-            ++*p->m_valor;
-        }
-        catch (error e)
-        {
-            throw error(e);
-        }
-    }
-    else
-    {
-        afegeix_entrada(num, "", 1);
-    }
+    afegeix_entrada(c, p);
 }
 
 // θ(1)
-void call_registry::assigna_nom(nat num, const string &name) throw(error)
+template <typename Clau>
+bool call_registry::diccionari<Clau>::cerca(const Clau &c, phone *&p) const
 {
-    node_hash<nat> *p = NULL, *pr = NULL;
+    nat i = hash(c);
 
-    if (obtenir_phone(num, p, pr) and p != NULL)
-    {
-        phone *ant = p->m_valor;
-        try
-        {
-            p->m_valor = new phone(num, name, ant->frequencia());
-            delete ant;
-        }
-        catch (error e)
-        {
-            throw error(e);
-            delete p->m_valor;
-        }
-    }
-    else
-    {
-        afegeix_entrada(num, name, 0);
-    }
-}
-
-// θ(1)
-void call_registry::elimina(nat num) throw(error)
-{
-    node_hash<nat> *p = NULL, *pr = NULL;
-
-    if (obtenir_phone(num, p, pr) and p != NULL)
-    {
-        if (pr != p)
-        {
-            pr->m_seg = p->m_seg;
-        }
-
-        delete p;
-    }
-    else
-    {
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
-    }
-}
-
-// θ(1)
-bool call_registry::conte(nat num) const throw()
-{
-    nat i = hash(num);
-
-    node_hash<nat> *p = m_taula[i];
+    node_hash *n = m_taula[i];
     bool hi_es = false;
 
-    while (p != NULL and not hi_es)
+    while (n != NULL and not hi_es)
     {
-        if (p->m_clau == num)
+        if (n->m_clau == c)
         {
             hi_es = true;
+            p = n->m_valor;
         }
         else
         {
-            p = p->m_seg;
+            n = n->m_seg;
         }
     }
     return hi_es;
 }
 
 // θ(1)
-string call_registry::nom(nat num) const throw(error)
+template <typename Clau>
+bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 {
-    nat i = hash(num);
+    node_hash *n = NULL, *nr = NULL;
 
-    node_hash<nat> *p = m_taula[i];
-    bool hi_es = false;
-
-    while (p != NULL and not hi_es)
+    if (obtenir_phone(c, n, nr) and n != NULL)
     {
-        if (p->m_clau == num)
+        if (nr != n)
         {
-            hi_es = true;
+            nr->m_seg = n->m_seg;
         }
-        else
-        {
-            p = p->m_seg;
-        }
+
+        delete n;
+
+        return true;
     }
 
-    if (hi_es and p != NULL)
+    return false;
+}
+
+// θ(1)
+template <typename Clau>
+void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
+{
+    node_hash *n = NULL, *nr = NULL;
+
+    if (obtenir_phone(c, n, nr) and n != NULL)
     {
-        return p->m_valor->nom();
-    }
-    else
-    {
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
-        return "";
+        try
+        {
+            phone *ant = n->m_valor;
+
+            n->m_valor = p;
+            delete ant;
+        }
+        catch (error e)
+        {
+            throw error(e);
+        }
     }
 }
 
 // θ(1)
-nat call_registry::num_trucades(nat num) const throw(error)
-{
-    nat i = hash(num);
-
-    node_hash<nat> *p = m_taula[i];
-    bool hi_es = false;
-
-    while (p != NULL and not hi_es)
-    {
-        if (p->m_clau == num)
-        {
-            hi_es = true;
-        }
-        else
-        {
-            p = p->m_seg;
-        }
-    }
-
-    if (hi_es and p != NULL)
-    {
-        return p->m_valor->frequencia();
-    }
-    else
-    {
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
-        return 0;
-    }
-}
-
-// θ(1)
-bool call_registry::es_buit() const throw()
-{
-    return m_quants == 0;
-}
-
-// θ(1)
-nat call_registry::num_entrades() const throw()
+template <typename Clau>
+nat call_registry::diccionari<Clau>::elements() const
 {
     return m_quants;
 }
 
-// θ(n)
-void call_registry::dump(vector<phone> &V) const throw(error)
+// θ(1)
+template <typename Clau>
+nat call_registry::diccionari<Clau>::hash(Clau c) const
 {
+    /*c = ((c >> 16) ^ c) * 0x45d9f3b;
+    c = ((c >> 16) ^ c) * 0x45d9f3b;
+    c = (c >> 16) ^ c;
+
+    c = c % m_mida;
+    */
+
+
+    return 0;
 }
 
 // θ(1)
-nat call_registry::hash(nat num) const
+template <typename Clau>
+void call_registry::diccionari<Clau>::afegeix_entrada(const Clau &c, phone *&p)
 {
-    num = ((num >> 16) ^ num) * 0x45d9f3b;
-    num = ((num >> 16) ^ num) * 0x45d9f3b;
-    num = (num >> 16) ^ num;
-
-    num %= m_mida;
-
-    return num;
-}
-
-// θ(1)
-void call_registry::afegeix_entrada(const nat &num, const string &nom, nat compt)
-{
-    nat i = hash(num);
+    nat i = hash(c);
 
     if (m_taula[i] == NULL)
         ++m_quants;
     else
         ++colisions;
 
-    node_hash<nat> *n = new node_hash<nat>;
+    node_hash *n = new node_hash;
 
-    n->m_clau = num;
-    n->m_valor = new phone(num, nom, compt);
+    n->m_clau = c;
+    n->m_valor = p;
     n->m_seg = m_taula[i];
 
     m_taula[i] = n;
@@ -322,17 +233,41 @@ void call_registry::afegeix_entrada(const nat &num, const string &nom, nat compt
     }
 }
 
-// θ(n)
-void call_registry::redispersio()
+// θ(1)
+template <typename Clau>
+bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr)
+{
+    nat i = hash(c);
+
+    n = m_taula[i];
+    bool hi_es = false;
+
+    while (n != NULL and not hi_es)
+    {
+        if (n->m_clau == c)
+        {
+            hi_es = true;
+        }
+        else
+        {
+            nr = n;
+            n = n->m_seg;
+        }
+    }
+    return hi_es;
+}
+
+template <typename Clau>
+void call_registry::diccionari<Clau>::redispersio()
 {
 
-    node_hash<nat> **t = new node_hash<nat> *[m_mida * 2];
+    node_hash **t = new node_hash *[m_mida * 2];
 
     for (nat i = 0; i < m_mida; ++i)
     {
         if (m_taula[i] != NULL)
         {
-            node_hash<nat> *n = m_taula[i];
+            node_hash *n = m_taula[i];
             int new_pos = hash(n->m_clau);
             t[new_pos] = m_taula[i];
             t[new_pos]->m_seg = NULL;
@@ -340,7 +275,7 @@ void call_registry::redispersio()
             while (n->m_seg != NULL)
             {
                 int new_pos = hash(n->m_seg->m_clau);
-                node_hash<nat> *aux = new node_hash<nat>;
+                node_hash *aux = new node_hash;
 
                 aux->m_clau = n->m_seg->m_clau;
                 aux->m_valor = n->m_seg->m_valor;
@@ -360,7 +295,7 @@ void call_registry::redispersio()
 
     m_mida *= 2;
 
-    node_hash<nat> **tmp = m_taula;
+    node_hash **tmp = m_taula;
 
     m_taula = t;
     t = tmp;
@@ -368,25 +303,147 @@ void call_registry::redispersio()
     ++redispersions;
 }
 
-// θ(1)
-bool call_registry::obtenir_phone(const nat &num, node_hash<nat> *&p, node_hash<nat> *&pr)
+// ######################################################################################### //
+
+// θ(n)
+call_registry::call_registry() throw(error)
 {
-    nat i = hash(num);
+    diccionari<nat> d_nums;
+    diccionari<string> d_noms;
+}
 
-    p = m_taula[i];
-    bool hi_es = false;
+// θ(n)
+call_registry::call_registry(const call_registry &R) throw(error)
+{
+    // FIXME: THINK
 
-    while (p != NULL and not hi_es)
+    /*
+    d_nums(R.d_nums);
+    d_noms(R.d_noms);
+    */
+}
+
+// θ(n)
+call_registry &call_registry::operator=(const call_registry &R) throw(error)
+{
+    if (this != &R)
     {
-        if (p->m_clau == num)
-        {
-            hi_es = true;
-        }
-        else
-        {
-            pr = p;
-            p = p->m_seg;
-        }
+        // FIXME: THINK
+
+        //*this(R);
     }
-    return hi_es;
+
+    return *this;
+}
+
+// θ(2n)
+call_registry::~call_registry() throw()
+{
+}
+
+// θ(1)
+void call_registry::registra_trucada(nat num) throw(error)
+{
+    phone *p = NULL;
+
+    if (d_nums.cerca(num, p) and p != NULL)
+    {
+        ++*p;
+    }
+    else
+    {
+        p = new phone(num, "", 1);
+        d_nums.insereix(num, p);
+    }
+}
+
+// θ(1)
+void call_registry::assigna_nom(nat num, const string &name) throw(error)
+{
+    phone *p = NULL, *p2 = NULL;
+
+    if (d_nums.cerca(num, p) and p != NULL)
+    {
+        p2 = new phone(p->numero(), name, p->frequencia());
+        d_nums.modifica(num, p2);
+    }
+    else
+    {
+        p2 = new phone(num, name, 0);
+        d_nums.insereix(num, p2);
+    }
+}
+
+// θ(1)
+void call_registry::elimina(nat num) throw(error)
+{
+
+    phone *p = NULL;
+
+    d_nums.cerca(num, p);
+
+    d_noms.elimina(p->nom());
+
+    if (!d_nums.elimina(num))
+        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+}
+
+// θ(1)
+bool call_registry::conte(nat num) const throw()
+{
+    phone *p = NULL;
+    return d_nums.cerca(num, p);
+}
+
+// θ(1)
+string call_registry::nom(nat num) const throw(error)
+{
+    phone *p = NULL;
+
+    d_nums.cerca(num, p);
+
+    if (p != NULL)
+    {
+        return p->nom();
+    }
+    else
+    {
+        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+        return "";
+    }
+}
+
+// θ(1)
+nat call_registry::num_trucades(nat num) const throw(error)
+{
+    phone *p = NULL;
+
+    d_nums.cerca(num, p);
+
+    if (p != NULL)
+    {
+        return p->frequencia();
+    }
+    else
+    {
+        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+        return 0;
+    }
+}
+
+// θ(1)
+bool call_registry::es_buit() const throw()
+{
+    return d_nums.elements() == 0;
+}
+
+// θ(1)
+nat call_registry::num_entrades() const throw()
+{
+    return d_nums.elements();
+}
+
+// θ(n)
+void call_registry::dump(vector<phone> &V) const throw(error)
+{
 }

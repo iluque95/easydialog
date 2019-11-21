@@ -12,22 +12,18 @@ public:
     diccionari &operator=(const diccionari &d) throw(error);
     ~diccionari() throw();
 
-    void insereix(const Clau &c, const phone &p);
-    bool cerca(const Clau &c, phone &p);
-    void elimina(const Clau &c);
-    void modifica(const Clau &c, );
+    void insereix(const Clau &c, phone *&p);
+    bool cerca(const Clau &c, phone *&p) const;
+    bool elimina(const Clau &c);
+    void modifica(const Clau &c, phone *&p);
 
     /* Quantitat d'elements que conté el diccionari */
-    void elements();
-
-    /* Quantitat d'elements que conté el diccionari */
-    void trucades(const Clau &c) throw(error);
+    nat elements() const;
 
     // FIXME: DELETEEEEE!!!
     void statistic();
 
 private:
-    template <typename Clau>
     struct node_hash
     {
         Clau m_clau;
@@ -35,36 +31,37 @@ private:
         node_hash *m_seg;
     };
 
-    node_hash<Clau> **m_taula;
+    node_hash **m_taula;
 
     nat m_mida;
     nat m_quants;
 
     // Calcula la posició en la taula per al número donat.
-    nat hash(nat num) const;
+    nat hash(Clau c) const;
 
     // Afegeix una nova entrada amb el número, nom i comptador donats.
-    void afegeix_entrada(const nat &num, const string &nom, nat compt);
-
-    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
-    void redispersio();
-
+    void afegeix_entrada(const Clau &c, phone *&p);
     /* 
     Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
     i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
     */
-    bool obtenir_phone(const Clau &c, phone *&p);
+    bool obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr);
+
+    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
+    void redispersio();
 
     // Estadístiques
     nat colisions;
     nat redispersions;
+
+    // Constants
+    const float factor_carrega = 0.75;
 };
 
 diccionari<nat> d_nums;
 diccionari<string> d_noms;
 
 // Constants
-const float factor_carrega = 0.75;
 
 const string nom_mod = "call_registry";
 
