@@ -5,7 +5,7 @@ call_registry::call_registry() throw(error) : m_mida(2),
                                               m_quants(0)
 
 {
-    m_taula = new node_hash<nat, phone> *[m_mida];
+    m_taula = new node_hash<nat> *[m_mida];
 
     for (nat i = 0; i < m_mida; ++i)
     {
@@ -18,19 +18,19 @@ call_registry::call_registry() throw(error) : m_mida(2),
 call_registry::call_registry(const call_registry &R) throw(error) : m_mida(R.m_mida),
                                                                     m_quants(R.m_quants)
 {
-    m_taula = new node_hash<nat, phone> *[m_mida];
+    m_taula = new node_hash<nat> *[m_mida];
 
     for (nat i = 0; i < m_mida; ++i)
     {
-        m_taula[i] = new node_hash<nat, phone>;
-        node_hash<nat, phone> *n = m_taula[i];
+        m_taula[i] = new node_hash<nat>;
+        node_hash<nat> *n = m_taula[i];
 
         m_taula[i]->m_clau = R.m_taula[i]->m_clau;
         m_taula[i]->m_valor = new phone(*R.m_taula[i]->m_valor);
 
         while (n->m_seg != NULL)
         {
-            node_hash<nat, phone> *aux = new node_hash<nat, phone>;
+            node_hash<nat> *aux = new node_hash<nat>;
 
             aux->m_clau = n->m_seg->m_clau;
             aux->m_valor = new phone(*n->m_seg->m_valor);
@@ -47,7 +47,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
     {
         call_registry cr(R);
 
-        node_hash<nat, phone> **tmp = m_taula;
+        node_hash<nat> **tmp = m_taula;
 
         m_taula = cr.m_taula;
         cr.m_taula = tmp;
@@ -71,8 +71,8 @@ call_registry::~call_registry() throw()
 {
     for (nat i = 0; i < m_mida; ++i)
     {
-        node_hash<nat, phone> *prev = NULL;
-        node_hash<nat, phone> *act = m_taula[i];
+        node_hash<nat> *prev = NULL;
+        node_hash<nat> *act = m_taula[i];
 
         while (act != NULL)
         {
@@ -88,7 +88,7 @@ call_registry::~call_registry() throw()
 // θ(1)
 void call_registry::registra_trucada(nat num) throw(error)
 {
-    node_hash<nat, phone> *p = NULL, *pr = NULL;
+    node_hash<nat> *p = NULL, *pr = NULL;
 
     if (obtenir_phone(num, p, pr) and p != NULL)
     {
@@ -110,7 +110,7 @@ void call_registry::registra_trucada(nat num) throw(error)
 // θ(1)
 void call_registry::assigna_nom(nat num, const string &name) throw(error)
 {
-    node_hash<nat, phone> *p = NULL, *pr = NULL;
+    node_hash<nat> *p = NULL, *pr = NULL;
 
     if (obtenir_phone(num, p, pr) and p != NULL)
     {
@@ -136,7 +136,7 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
 // θ(1)
 void call_registry::elimina(nat num) throw(error)
 {
-    node_hash<nat, phone> *p = NULL, *pr = NULL;
+    node_hash<nat> *p = NULL, *pr = NULL;
 
     if (obtenir_phone(num, p, pr) and p != NULL)
     {
@@ -158,7 +158,7 @@ bool call_registry::conte(nat num) const throw()
 {
     nat i = hash(num);
 
-    node_hash<nat, phone> *p = m_taula[i];
+    node_hash<nat> *p = m_taula[i];
     bool hi_es = false;
 
     while (p != NULL and not hi_es)
@@ -180,7 +180,7 @@ string call_registry::nom(nat num) const throw(error)
 {
     nat i = hash(num);
 
-    node_hash<nat, phone> *p = m_taula[i];
+    node_hash<nat> *p = m_taula[i];
     bool hi_es = false;
 
     while (p != NULL and not hi_es)
@@ -211,7 +211,7 @@ nat call_registry::num_trucades(nat num) const throw(error)
 {
     nat i = hash(num);
 
-    node_hash<nat, phone> *p = m_taula[i];
+    node_hash<nat> *p = m_taula[i];
     bool hi_es = false;
 
     while (p != NULL and not hi_es)
@@ -276,7 +276,7 @@ void call_registry::afegeix_entrada(const nat &num, const string &nom, nat compt
     else
         ++colisions;
 
-    node_hash<nat, phone> *n = new node_hash<nat, phone>;
+    node_hash<nat> *n = new node_hash<nat>;
 
     n->m_clau = num;
     n->m_valor = new phone(num, nom, compt);
@@ -296,13 +296,13 @@ void call_registry::redispersio()
 
     m_mida *= 2;
 
-    node_hash<nat, phone> **t = new node_hash<nat, phone> *[m_mida];
+    node_hash<nat> **t = new node_hash<nat> *[m_mida];
 
     for (nat i = 0; i < m_mida; ++i)
     {
         if (m_taula[i] != NULL)
         {
-            node_hash<nat, phone> *n = m_taula[i];
+            node_hash<nat> *n = m_taula[i];
             int new_pos = hash(n->m_clau);
             t[new_pos] = m_taula[i];
             t[new_pos]->m_seg = NULL;
@@ -310,7 +310,7 @@ void call_registry::redispersio()
             while (n->m_seg != NULL)
             {
                 int new_pos = hash(n->m_seg->m_clau);
-                node_hash<nat, phone> *aux = new node_hash<nat, phone>;
+                node_hash<nat> *aux = new node_hash<nat>;
 
                 aux->m_clau = n->m_seg->m_clau;
                 aux->m_valor = n->m_seg->m_valor;
@@ -323,7 +323,7 @@ void call_registry::redispersio()
         }
     }
 
-    node_hash<nat, phone> **tmp = m_taula;
+    node_hash<nat> **tmp = m_taula;
 
     m_taula = t;
     t = tmp;
@@ -332,7 +332,7 @@ void call_registry::redispersio()
 }
 
 // θ(1)
-bool call_registry::obtenir_phone(const nat &num, node_hash<nat, phone> *&p, node_hash<nat, phone> *&pr)
+bool call_registry::obtenir_phone(const nat &num, node_hash<nat> *&p, node_hash<nat> *&pr)
 {
     nat i = hash(num);
 

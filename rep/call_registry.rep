@@ -1,96 +1,20 @@
 // HASH TABLE amb tècnica open hashing.
 
-/*
-template <typename T>
-class HashFunct
-{
-public:
-    int operator()(const T &x) const throw();
-};
-
-
-// Especialització del template Hash per T = string:
-//Suma no ponderada dels caràcters.
-
-template <>
-class HashFunct<string>
-{
-public:
-    int operator()(const string &x) const throw()
-    {
-        nat n = 0;
-        for (nat i = 0; i < x.length(); ++i)
-        {
-            n = n + x[i] * i; // a n sumen el codi ascii
-        }
-        return n;
-    }
-};
-
-
-// Especialització del template Hash per T = int:
-// Bits centrals del quadrat del número multiplicat per PI.
-
-template <>
-class HashFunct<int>
-{
-    static long const MULT = 31415926;
-
-public:
-    int operator()(const int &x) const throw()
-    {
-        long y = ((x * x * MULT) << 20) >> 4;
-        return y;
-    }
-};
-
-
-template <typename Clau>
-static int hash(const Clau &k) throw()
-{
-    HashFunct<Clau> h;
-    return h(k) % _M;
-}
-*/
-
-/*
-template <typename T>
-class Hash
-{
-public:
-    int operator()(const T &x) const throw();
-};
-
-template <>
-class Hash<int>
-{
-    static long const MULT = 31415926;
-
-public:
-    int operator()(const int &x) const throw()
-    {
-        long y = ((x * x * MULT) << 20) >> 4;
-        return y;
-    }
-};
-*/
-
-// TODO: Stills reimaining add constructor of the struct.
-template <typename Clau, typename Valor> //, typename HashFunct = Hash
+// TODO: Delete template value
+template <typename Clau> //, typename HashFunct = Hash
 struct node_hash
 {
     Clau m_clau;
-    Valor *m_valor;
+    phone *m_valor;
     node_hash *m_seg;
-    //HashFunct hash(const Clau &k);
 };
 
-node_hash<nat, phone> **m_taula;
+node_hash<nat> **m_taula;
 
 nat m_mida;
 nat m_quants;
 
-node_hash<string, phone> **m_taula_noms;
+node_hash<string> **m_taula_noms;
 nat m_mida_noms;
 nat m_quants_noms;
 
@@ -107,7 +31,7 @@ void redispersio();
  Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
  i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
 */
-bool obtenir_phone(const nat &num, node_hash<nat, phone> *&p, node_hash<nat, phone> *&pr);
+bool obtenir_phone(const nat &num, node_hash<nat> *&p, node_hash<nat> *&pr);
 
 // Constants
 const float factor_carrega = 0.75;
