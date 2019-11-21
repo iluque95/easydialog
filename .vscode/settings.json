@@ -4,6 +4,10 @@
         "ostream": "cpp",
         "string": "cpp",
         "*.rep": "cpp",
-        "util": "cpp"
+        "util": "cpp",
+        "*.tcc": "cpp",
+        "functional": "cpp",
+        "random": "cpp",
+        "new": "cpp"
     }
 }

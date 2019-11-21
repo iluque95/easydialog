@@ -27,14 +27,24 @@ int main()
 
     cout << "Registring random calls..." << endl;
 
+    nat number = 0;
+
     for (nat i = 0; i < 20; ++i)
     {
-        util::Random R;
-        cr.registra_trucada(R(100000000,999999999));
-        cout << "El número actual d'entrades és: " << cr.num_entrades() << endl;
+        util::Random R2;
+
+        number = R2(314159);//(100000000,999999999);
+
+        cr.registra_trucada(number);
+        cout << "Entrades: " << cr.num_entrades() << endl;
+        cout << "Conté " << number << " ? " << (cr.conte(number) ? "Sí" : "No") << endl;
     }
 
     cr.statistic();
+
+    cr.assigna_nom(number, "Marcos");
+
+    cout << "Number " << number << " with name " << cr.nom(number) << endl;
 
     cout << "End of testing call_registry..." << endl;
 }

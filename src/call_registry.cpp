@@ -150,9 +150,8 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
         phone *ant = p->m_valor;
         try
         {
-
             p->m_valor = new phone(num, name, ant->frequencia());
-            delete ant;
+            //delete ant;
         }
         catch (error e)
         {
