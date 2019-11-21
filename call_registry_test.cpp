@@ -40,8 +40,6 @@ int main()
         cout << "Conté " << number << " ? " << (cr.conte(number) ? "Sí" : "No") << endl;
     }
 
-    cr.statistics();
-
     cr.assigna_nom(number, "Marcos");
 
     cout << "Number " << number << " with name " << cr.nom(number) << endl;

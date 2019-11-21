@@ -70,8 +70,6 @@ public:
   static const int  ErrNumeroInexistent = 21;
   static const int  ErrNomRepetit       = 22;
 
-// FIXME: DELETE!!
-void statistics();
 
 private:
   #include "../rep/call_registry.rep"

@@ -24,6 +24,7 @@ public:
     void statistic();
 
 private:
+    static long const MULT = 31415926;
     struct node_hash
     {
         Clau m_clau;
@@ -39,8 +40,6 @@ private:
     // Calcula la posició en la taula per al número donat.
     nat hash(Clau c) const;
 
-    // Afegeix una nova entrada amb el número, nom i comptador donats.
-    void afegeix_entrada(const Clau &c, phone *&p);
     /* 
     Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
     i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).

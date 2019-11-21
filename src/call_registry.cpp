@@ -1,24 +1,5 @@
 #include "../incl/call_registry.hpp"
 
-// FIXME: DELETEEEEEEE!!!!!!!!
-template <typename Clau>
-void call_registry::diccionari<Clau>::statistic()
-{
-    cout << endl;
-    cout << "Statistics..." << endl;
-    cout << "-------------" << endl;
-    cout << "Collitions: " << colisions << endl;
-    cout << "Rehashes: " << redispersions << endl;
-    cout << "Size: " << m_mida << endl;
-    cout << "Elements: " << m_quants << endl;
-    cout << "-------------" << endl;
-}
-
-void call_registry::statistics()
-{
-    d_nums.statistic();
-}
-
 // θ(n)
 template <typename Clau>
 call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(2),
@@ -116,7 +97,25 @@ call_registry::diccionari<Clau>::~diccionari() throw()
 template <typename Clau>
 void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 {
-    afegeix_entrada(c, p);
+    nat i = hash(c);
+
+    if (m_taula[i] == NULL)
+        ++m_quants;
+    else
+        ++colisions;
+
+    node_hash *n = new node_hash;
+
+    n->m_clau = c;
+    n->m_valor = p;
+    n->m_seg = m_taula[i];
+
+    m_taula[i] = n;
+
+    if ((m_quants / m_mida) >= factor_carrega)
+    {
+        redispersio();
+    }
 }
 
 // θ(1)
@@ -195,46 +194,6 @@ nat call_registry::diccionari<Clau>::elements() const
 
 // θ(1)
 template <typename Clau>
-nat call_registry::diccionari<Clau>::hash(Clau c) const
-{
-    /*c = ((c >> 16) ^ c) * 0x45d9f3b;
-    c = ((c >> 16) ^ c) * 0x45d9f3b;
-    c = (c >> 16) ^ c;
-
-    c = c % m_mida;
-    */
-
-
-    return 0;
-}
-
-// θ(1)
-template <typename Clau>
-void call_registry::diccionari<Clau>::afegeix_entrada(const Clau &c, phone *&p)
-{
-    nat i = hash(c);
-
-    if (m_taula[i] == NULL)
-        ++m_quants;
-    else
-        ++colisions;
-
-    node_hash *n = new node_hash;
-
-    n->m_clau = c;
-    n->m_valor = p;
-    n->m_seg = m_taula[i];
-
-    m_taula[i] = n;
-
-    if ((m_quants / m_mida) >= factor_carrega)
-    {
-        redispersio();
-    }
-}
-
-// θ(1)
-template <typename Clau>
 bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr)
 {
     nat i = hash(c);
@@ -257,6 +216,7 @@ bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n
     return hi_es;
 }
 
+// θ(n)
 template <typename Clau>
 void call_registry::diccionari<Clau>::redispersio()
 {
@@ -303,6 +263,43 @@ void call_registry::diccionari<Clau>::redispersio()
     ++redispersions;
 }
 
+// θ(1)
+template <>
+nat call_registry::diccionari<nat>::hash(nat c) const
+{
+
+    long y = ((c * c * MULT) << 20) >> 4;
+
+    y %= m_mida;
+
+    return y;
+}
+
+// θ(c.length)
+template <>
+nat call_registry::diccionari<string>::hash(string c) const
+{
+    nat n = 0;
+    for (nat i = 0; i < c.length(); ++i)
+    {
+        n = n + c[i] * i;
+    }
+    return n;
+}
+
+template <typename Clau>
+void call_registry::diccionari<Clau>::statistic()
+{
+    cout << endl;
+    cout << "Statistics..." << endl;
+    cout << "-------------" << endl;
+    cout << "Collitions: " << colisions << endl;
+    cout << "Rehashes: " << redispersions << endl;
+    cout << "Size: " << m_mida << endl;
+    cout << "Elements: " << m_quants << endl;
+    cout << "-------------" << endl;
+}
+
 // ######################################################################################### //
 
 // θ(n)
@@ -313,25 +310,16 @@ call_registry::call_registry() throw(error)
 }
 
 // θ(n)
-call_registry::call_registry(const call_registry &R) throw(error)
+call_registry::call_registry(const call_registry &R) throw(error) : d_nums(R.d_nums),
+                                                                    d_noms(R.d_noms)
 {
-    // FIXME: THINK
-
-    /*
-    d_nums(R.d_nums);
-    d_noms(R.d_noms);
-    */
 }
 
 // θ(n)
 call_registry &call_registry::operator=(const call_registry &R) throw(error)
 {
-    if (this != &R)
-    {
-        // FIXME: THINK
-
-        //*this(R);
-    }
+    d_nums = R.d_nums;
+    d_noms = R.d_noms;
 
     return *this;
 }
@@ -339,6 +327,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 // θ(2n)
 call_registry::~call_registry() throw()
 {
+    d_nums.statistic();
 }
 
 // θ(1)
