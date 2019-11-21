@@ -1,5 +1,18 @@
 #include "../incl/call_registry.hpp"
 
+// FIXME: DELETEEEEEEE!!!!!!!!
+void call_registry::statistic()
+{
+    cout << endl;
+    cout << "Statistics..." << endl;
+    cout << "-------------" << endl;
+    cout << "Collitions: " << colisions << endl;
+    cout << "Rehashes: " << redispersions << endl;
+    cout << "Size: " << m_mida << endl;
+    cout << "Elements: " << m_quants << endl;
+    cout << "-------------" << endl;
+}
+
 // θ(n)
 call_registry::call_registry() throw(error) : m_mida(2),
                                               m_quants(0),

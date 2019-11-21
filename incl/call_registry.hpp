@@ -71,9 +71,7 @@ public:
   static const int  ErrNomRepetit       = 22;
 
 // FIXME: DELETE!!
-// Estadístiques
-nat colisions; 
-nat redispersions;
+void statistic();
 
 private:
   #include "../rep/call_registry.rep"

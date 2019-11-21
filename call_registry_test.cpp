@@ -34,5 +34,7 @@ int main()
         cout << "El número actual d'entrades és: " << cr.num_entrades() << endl;
     }
 
+    cr.statistic();
+
     cout << "End of testing call_registry..." << endl;
 }

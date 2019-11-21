@@ -40,6 +40,10 @@ const string nom_mod = "call_registry";
 const string MsgErrNumeroInexistent = "Numero inexistent.";
 const string MsgErrNomRepetit = "Nom repetit.";
 
+// Estadístiques
+nat colisions; 
+nat redispersions;
+
 // AVL
 
 /*
