@@ -127,7 +127,7 @@ void call_registry::registra_trucada(nat num) throw(error)
     {
         try
         {
-            ++p->m_valor;
+            ++*p->m_valor;
         }
         catch (error e)
         {
@@ -151,7 +151,7 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
         try
         {
             p->m_valor = new phone(num, name, ant->frequencia());
-            //delete ant;
+            delete ant;
         }
         catch (error e)
         {
