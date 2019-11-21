@@ -18,8 +18,6 @@ int main()
 
     cout << "Registring random calls..." << endl;
 
-   
-
     for (nat i = 0; i < 20; ++i)
     {
         util::Random R;

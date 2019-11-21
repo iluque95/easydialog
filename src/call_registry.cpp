@@ -2,7 +2,9 @@
 
 // θ(n)
 call_registry::call_registry() throw(error) : m_mida(2),
-                                              m_quants(0)
+                                              m_quants(0),
+                                              colisions(0),
+                                              redispersions(0)
 
 {
     m_taula = new node_hash<nat> *[m_mida];
@@ -47,6 +49,8 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
     {
         call_registry cr(R);
 
+        // Copia la taula amb els telèfons com a clau.
+
         node_hash<nat> **tmp = m_taula;
 
         m_taula = cr.m_taula;
@@ -56,6 +60,22 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 
         m_mida = cr.m_mida;
         cr.m_mida = val;
+
+        val = m_quants;
+
+        m_quants = cr.m_quants;
+        cr.m_quants = val;
+
+        // Copia la taula amb els noms com a clau.
+        node_hash<string> **tmpStr = m_taula_noms;
+
+        m_taula_noms = cr.m_taula_noms;
+        cr.m_taula_noms = tmpStr;
+
+        val = m_mida_noms;
+
+        m_mida_noms = cr.m_mida_noms;
+        cr.m_mida_noms = val;
 
         val = m_quants;
 
@@ -294,9 +314,7 @@ void call_registry::afegeix_entrada(const nat &num, const string &nom, nat compt
 void call_registry::redispersio()
 {
 
-    m_mida *= 2;
-
-    node_hash<nat> **t = new node_hash<nat> *[m_mida];
+    node_hash<nat> **t = new node_hash<nat> *[m_mida * 2];
 
     for (nat i = 0; i < m_mida; ++i)
     {
@@ -318,10 +336,17 @@ void call_registry::redispersio()
                 t[new_pos] = aux;
                 n = n->m_seg;
             }
-            
+
             m_taula[i] = NULL;
         }
     }
+
+    for (nat i = m_mida; i < (m_mida * 2); ++i)
+    {
+        t[i] = NULL;
+    }
+
+    m_mida *= 2;
 
     node_hash<nat> **tmp = m_taula;
 

@@ -1,7 +1,6 @@
 // HASH TABLE amb tècnica open hashing.
 
-// TODO: Delete template value
-template <typename Clau> //, typename HashFunct = Hash
+template <typename Clau>
 struct node_hash
 {
     Clau m_clau;
@@ -41,26 +40,9 @@ const string nom_mod = "call_registry";
 const string MsgErrNumeroInexistent = "Numero inexistent.";
 const string MsgErrNomRepetit = "Nom repetit.";
 
-// Estadístiques
-nat colisions = 0, redispersions = 0;
-
 // AVL
 
 /*
-struct node
-{
-    nat m_clau;
-    Phone *m_val;
-    node *m_fe;
-    node *m_fd;
-    nat m_alcada;
-};
-
-nat m_total;
-node *m_arrel;
-
-
-
     A priori hem analitzat que el diccionari amb les propietats de BST i AVL són les més idonies 
     a les necessitats requerides en els diversos punts que es mencionarán:
 

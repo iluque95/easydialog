@@ -70,6 +70,11 @@ public:
   static const int  ErrNumeroInexistent = 21;
   static const int  ErrNomRepetit       = 22;
 
+// FIXME: DELETE!!
+// Estadístiques
+nat colisions; 
+nat redispersions;
+
 private:
   #include "../rep/call_registry.rep"
 };
