@@ -33,7 +33,7 @@ int main()
     {
         util::Random R2;
 
-        number = R2(314159);//(100000000,999999999);
+        number = R2(314159 + i*i);//(100000000,999999999);
 
         cr.registra_trucada(number);
         cout << "Entrades: " << cr.num_entrades() << endl;
