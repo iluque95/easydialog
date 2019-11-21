@@ -8,6 +8,7 @@
         "*.tcc": "cpp",
         "functional": "cpp",
         "random": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "vector": "cpp"
     }
 }

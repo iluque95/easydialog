@@ -187,6 +187,27 @@ void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
 
 // θ(1)
 template <typename Clau>
+bool call_registry::diccionari<Clau>::guarda(vector<phone> &v) const
+{
+    bool repetits = false;
+    nat i = 0;
+
+    while (i < m_mida && !repetits)
+    {
+        if (m_taula[i]->m_seg != NULL)
+            repetits = true;
+
+        v.push_back(*m_taula[i]->m_valor);
+    }
+
+    if (repetits)
+        v.clear();
+
+    return repetits;
+}
+
+// θ(1)
+template <typename Clau>
 nat call_registry::diccionari<Clau>::elements() const
 {
     return m_quants;
@@ -288,7 +309,7 @@ nat call_registry::diccionari<string>::hash(string c) const
 }
 
 template <typename Clau>
-void call_registry::diccionari<Clau>::statistic()
+void call_registry::diccionari<Clau>::estadistiques()
 {
     cout << endl;
     cout << "Statistics..." << endl;
@@ -327,7 +348,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 // θ(2n)
 call_registry::~call_registry() throw()
 {
-    d_nums.statistic();
+    d_nums.estadistiques();
 }
 
 // θ(1)
@@ -435,4 +456,6 @@ nat call_registry::num_entrades() const throw()
 // θ(n)
 void call_registry::dump(vector<phone> &V) const throw(error)
 {
+    if (!d_noms.guarda(V))
+        throw error(ErrNomRepetit, nom_mod, MsgErrNomRepetit);
 }

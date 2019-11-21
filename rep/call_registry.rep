@@ -16,12 +16,13 @@ public:
     bool cerca(const Clau &c, phone *&p) const;
     bool elimina(const Clau &c);
     void modifica(const Clau &c, phone *&p);
+    bool guarda(vector<phone> &v) const;
 
     /* Quantitat d'elements que conté el diccionari */
     nat elements() const;
 
-    // FIXME: DELETEEEEE!!!
-    void statistic();
+    /* Mostra pel canal de sortida informació sobre la hash table */
+    void estadistiques();
 
 private:
     static long const MULT = 31415926;
