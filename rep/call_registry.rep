@@ -1,36 +1,67 @@
 // HASH TABLE amb tècnica open hashing.
 
 template <typename Clau>
-struct node_hash
+class diccionari
 {
-    Clau m_clau;
-    phone *m_valor;
-    node_hash *m_seg;
+public:
+    /* Construeix un diccionari buit. */
+    diccionari() throw(error);
+
+    /* Constructor per còpia, operador d'assignació i destructor. */
+    diccionari(const diccionari &d) throw(error);
+    diccionari &operator=(const diccionari &d) throw(error);
+    ~diccionari() throw();
+
+    void insereix(const Clau &c, const phone &p);
+    bool cerca(const Clau &c, phone &p);
+    void elimina(const Clau &c);
+    void modifica(const Clau &c, );
+
+    /* Quantitat d'elements que conté el diccionari */
+    void elements();
+
+    /* Quantitat d'elements que conté el diccionari */
+    void trucades(const Clau &c) throw(error);
+
+    // FIXME: DELETEEEEE!!!
+    void statistic();
+
+private:
+    template <typename Clau>
+    struct node_hash
+    {
+        Clau m_clau;
+        phone *m_valor;
+        node_hash *m_seg;
+    };
+
+    node_hash<Clau> **m_taula;
+
+    nat m_mida;
+    nat m_quants;
+
+    // Calcula la posició en la taula per al número donat.
+    nat hash(nat num) const;
+
+    // Afegeix una nova entrada amb el número, nom i comptador donats.
+    void afegeix_entrada(const nat &num, const string &nom, nat compt);
+
+    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
+    void redispersio();
+
+    /* 
+    Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
+    i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
+    */
+    bool obtenir_phone(const Clau &c, phone *&p);
+
+    // Estadístiques
+    nat colisions;
+    nat redispersions;
 };
 
-node_hash<nat> **m_taula;
-
-nat m_mida;
-nat m_quants;
-
-node_hash<string> **m_taula_noms;
-nat m_mida_noms;
-nat m_quants_noms;
-
-// Calcula la posició en la taula per al número donat.
-nat hash(nat num) const;
-
-// Afegeix una nova entrada amb el número, nom i comptador donats.
-void afegeix_entrada(const nat &num, const string &nom, nat compt);
-
-// Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
-void redispersio();
-
-/* 
- Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
- i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
-*/
-bool obtenir_phone(const nat &num, node_hash<nat> *&p, node_hash<nat> *&pr);
+diccionari<nat> d_nums;
+diccionari<string> d_noms;
 
 // Constants
 const float factor_carrega = 0.75;
@@ -39,10 +70,6 @@ const string nom_mod = "call_registry";
 
 const string MsgErrNumeroInexistent = "Numero inexistent.";
 const string MsgErrNomRepetit = "Nom repetit.";
-
-// Estadístiques
-nat colisions; 
-nat redispersions;
 
 // AVL
 
