@@ -194,14 +194,15 @@ bool call_registry::diccionari<Clau>::guarda(vector<phone> &v) const
 
     while (i < m_mida && !repetits)
     {
-        if(m_taula[i] != NULL){
-            if (m_taula[i]->m_seg != NULL){
-                repetits = true;               
+        if (m_taula[i] != NULL)
+        {
+            if (m_taula[i]->m_seg != NULL)
+            {
+                repetits = true;
             }
             v.push_back(*m_taula[i]->m_valor);
         }
         ++i;
-
     }
     if (repetits)
         v.clear();
@@ -294,11 +295,11 @@ nat call_registry::diccionari<nat>::hash(nat c) const
 
     nat key = c;
     key ^= (key << 13);
-    key ^= (key >> 17); 
+    key ^= (key >> 17);
     key ^= (key << 5);
     key %= m_mida;
     return key;
-    
+
     /*long y = ((c * c * MULT) << 20) >> 4;
 
     y %= m_mida;
@@ -315,7 +316,7 @@ nat call_registry::diccionari<string>::hash(string c) const
     {
         n = n + c[i] * i;
     }
-    return n%m_mida;
+    return n % m_mida;
 }
 
 template <typename Clau>
@@ -386,22 +387,23 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
     if (d_nums.cerca(num, p) and p != NULL)
     {
         p2 = new phone(p->numero(), name, p->frequencia());
+
         phone *p3 = NULL;
-        if(d_noms.cerca(p->nom(), p3) ){
+
+        if (d_noms.cerca(p->nom(), p3))
             d_noms.elimina(p->nom());
-        }
-        if (name.size() > 0 ){
+
+        if (name.size() > 0)
             d_noms.insereix(name, p2);
-        }
+
         d_nums.modifica(num, p2);
     }
     else
     {
         p2 = new phone(num, name, 0);
-        
+
         d_nums.insereix(num, p2);
         d_noms.insereix(name, p2);
-
     }
 }
 
