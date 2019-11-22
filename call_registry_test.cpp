@@ -39,6 +39,17 @@ int main()
         cout << "Entrades: " << cr.num_entrades() << endl;
         cout << "Conté " << number << " ? " << (cr.conte(number) ? "Sí" : "No") << endl;
     }
+    vector<phone> V;
+    try{
+        cr.dump(V);
+    }
+    catch (error e) {
+        cout << "Error: " << e.mensaje() << endl;
+    }
+    cout << "La mida del vector és: " << V.size() << endl;
+    for(unsigned int i = 0; i < V.size(); ++i){
+        cout << "El valor en la posició " << i << " és igual a: " << V[i].nom() << endl;
+    }
 
     cr.assigna_nom(number, "Marcos");
 

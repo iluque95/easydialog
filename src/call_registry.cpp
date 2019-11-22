@@ -2,7 +2,7 @@
 
 // θ(n)
 template <typename Clau>
-call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(2),
+call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(100),
                                                              m_quants(0),
                                                              colisions(0),
                                                              redispersions(0)
@@ -194,12 +194,15 @@ bool call_registry::diccionari<Clau>::guarda(vector<phone> &v) const
 
     while (i < m_mida && !repetits)
     {
-        if (m_taula[i]->m_seg != NULL)
-            repetits = true;
+        if(m_taula[i] != NULL){
+            if (m_taula[i]->m_seg != NULL){
+                repetits = true;               
+            }
+            v.push_back(*m_taula[i]->m_valor);
+        }
+        ++i;
 
-        v.push_back(*m_taula[i]->m_valor);
     }
-
     if (repetits)
         v.clear();
 
@@ -289,11 +292,18 @@ template <>
 nat call_registry::diccionari<nat>::hash(nat c) const
 {
 
-    long y = ((c * c * MULT) << 20) >> 4;
+    nat key = c;
+    key ^= (key << 13);
+    key ^= (key >> 17); 
+    key ^= (key << 5);
+    key %= m_mida;
+    return key;
+    
+    /*long y = ((c * c * MULT) << 20) >> 4;
 
     y %= m_mida;
 
-    return y;
+    return y;*/
 }
 
 // θ(c.length)
@@ -305,7 +315,7 @@ nat call_registry::diccionari<string>::hash(string c) const
     {
         n = n + c[i] * i;
     }
-    return n;
+    return n%m_mida;
 }
 
 template <typename Clau>
@@ -349,6 +359,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 call_registry::~call_registry() throw()
 {
     d_nums.estadistiques();
+    d_noms.estadistiques();
 }
 
 // θ(1)
@@ -375,12 +386,22 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
     if (d_nums.cerca(num, p) and p != NULL)
     {
         p2 = new phone(p->numero(), name, p->frequencia());
+        phone *p3 = NULL;
+        if(d_noms.cerca(p->nom(), p3) ){
+            d_noms.elimina(p->nom());
+        }
+        if (name.size() > 0 ){
+            d_noms.insereix(name, p2);
+        }
         d_nums.modifica(num, p2);
     }
     else
     {
         p2 = new phone(num, name, 0);
+        
         d_nums.insereix(num, p2);
+        d_noms.insereix(name, p2);
+
     }
 }
 
@@ -456,6 +477,6 @@ nat call_registry::num_entrades() const throw()
 // θ(n)
 void call_registry::dump(vector<phone> &V) const throw(error)
 {
-    if (!d_noms.guarda(V))
+    if (d_noms.guarda(V))
         throw error(ErrNomRepetit, nom_mod, MsgErrNomRepetit);
 }
