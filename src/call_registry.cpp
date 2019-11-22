@@ -143,6 +143,7 @@ bool call_registry::diccionari<Clau>::cerca(const Clau &c, phone *&p) const
 }
 
 // θ(1)
+// FIXME: ERROR IN nr->m_seg = n->m_seg;
 template <typename Clau>
 bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 {
@@ -292,19 +293,12 @@ void call_registry::diccionari<Clau>::redispersio()
 template <>
 nat call_registry::diccionari<nat>::hash(nat c) const
 {
+    c ^= (c << 13);
+    c ^= (c >> 17);
+    c ^= (c << 5);
+    c %= m_mida;
 
-    nat key = c;
-    key ^= (key << 13);
-    key ^= (key >> 17);
-    key ^= (key << 5);
-    key %= m_mida;
-    return key;
-
-    /*long y = ((c * c * MULT) << 20) >> 4;
-
-    y %= m_mida;
-
-    return y;*/
+    return c;
 }
 
 // θ(c.length)
@@ -316,6 +310,7 @@ nat call_registry::diccionari<string>::hash(string c) const
     {
         n = n + c[i] * i;
     }
+    
     return n % m_mida;
 }
 
