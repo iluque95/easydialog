@@ -1,8 +1,9 @@
+#include <iostream>
 #include "../incl/call_registry.hpp"
 
 // θ(n)
 template <typename Clau>
-call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(100),
+call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
                                                              m_quants(0),
                                                              colisions(0),
                                                              redispersions(0)
@@ -154,9 +155,14 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
         if (nr != n)
         {
             nr->m_seg = n->m_seg;
+            delete n;
+            
+        } else {
+            delete n;
+            n = NULL;
         }
 
-        delete n;
+        //delete n;
 
         return true;
     }
@@ -308,8 +314,16 @@ nat call_registry::diccionari<string>::hash(string c) const
     nat n = 0;
     for (nat i = 0; i < c.length(); ++i)
     {
-        n = n + c[i] * i;
+        cout << "Value from c.length = " << c.length() << endl;
+        cout << "Value from c[i] = " << int(c[i]) << endl;
+
+        //n = n + int(c[i]) * i + c.length();
+        n = n + int(c[i]) * c.length();
+
+        cout << "Value from n = " << n << endl;
+
     }
+    cout << "El valor hash per " << c << " és: " << n%m_mida << endl;
     
     return n % m_mida;
 }
@@ -412,6 +426,7 @@ void call_registry::elimina(nat num) throw(error)
 
     d_noms.elimina(p->nom());
 
+    //Modificacion
     if (!d_nums.elimina(num))
         throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
 }

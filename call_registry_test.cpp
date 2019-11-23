@@ -8,6 +8,7 @@
 #include <bits/stdc++.h> 
 
 
+
 using namespace std;
 
 void random_str(string &s, const nat len)
@@ -124,6 +125,53 @@ int main()
     cout << "Assigning name to last call..." << endl;
     cr.assigna_nom(661635963, "Itiel");
 
+    cr.registra_trucada(1);
+    cr.assigna_nom(1, "A");
+
+    cr.registra_trucada(2);
+    cr.assigna_nom(2, "B");
+
+    cr.registra_trucada(3);
+    cr.assigna_nom(3, "C");
+
+    cr.registra_trucada(4);
+    cr.assigna_nom(4, "D");
+
+    cr.registra_trucada(5);
+    cr.assigna_nom(5, "E");
+
+    cr.registra_trucada(6);
+    cr.assigna_nom(6, "F");
+
+    cr.registra_trucada(7);
+    cr.assigna_nom(7, "G");
+
+    cr.registra_trucada(8);
+    cr.assigna_nom(8, "H");
+
+    cr.registra_trucada(9);
+    cr.assigna_nom(9, "I");
+
+    cr.registra_trucada(10);
+    cr.assigna_nom(10, "J");
+
+    cr.registra_trucada(11);
+    cr.assigna_nom(11, "K");
+
+    cr.registra_trucada(12);
+    cr.assigna_nom(12, "L");
+
+    cr.registra_trucada(13);
+    cr.assigna_nom(13, "M");
+
+    cr.registra_trucada(14);
+    cr.assigna_nom(14, "N");
+
+    cr.registra_trucada(15);
+    cr.assigna_nom(15, "O");
+
+
+
     cout << "El nom del telefon 661635963 és: " << cr.nom(661635963) << endl;
 
     cout << "Registring random calls..." << endl;
@@ -132,20 +180,20 @@ int main()
     {
         cr.registra_trucada(randomNoGenerator(100000000));
     }
-
-    for (nat i = 0; i < 12; ++i)
+/*
+    for (nat i = 0; i < 30; ++i)
     {
         string name;
         name.reserve(5 + i);
         random_str(name, 5 + i);
+        cout << "El nom en la posició " << i << " és igual a: " << name << endl;
 
         nat num = randomNoGenerator(100000000);
 
         cr.registra_trucada(num);
         cr.assigna_nom(num, name);
     }
-
-    dump(cr);
+*/
     dump(cr);
 
     cout << "End of testing call_registry..." << endl;
