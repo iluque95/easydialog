@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h> 
 #include "../incl/call_registry.hpp"
 
 // θ(n)
@@ -144,7 +144,6 @@ bool call_registry::diccionari<Clau>::cerca(const Clau &c, phone *&p) const
 }
 
 // θ(1)
-// FIXME: ERROR IN nr->m_seg = n->m_seg;
 template <typename Clau>
 bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 {
@@ -302,9 +301,8 @@ nat call_registry::diccionari<nat>::hash(nat c) const
     c ^= (c << 13);
     c ^= (c >> 17);
     c ^= (c << 5);
-    c %= m_mida;
 
-    return c;
+    return c % m_mida;
 }
 
 // θ(c.length)
@@ -312,20 +310,13 @@ template <>
 nat call_registry::diccionari<string>::hash(string c) const
 {
     nat n = 0;
+
     for (nat i = 0; i < c.length(); ++i)
     {
-        cout << "Value from c.length = " << c.length() << endl;
-        cout << "Value from c[i] = " << int(c[i]) << endl;
-
-        //n = n + int(c[i]) * i + c.length();
-        n = n + int(c[i]) * c.length();
-
-        cout << "Value from n = " << n << endl;
-
+        n += c[i] * pow(2,i);
     }
-    cout << "El valor hash per " << c << " és: " << n%m_mida << endl;
-    
-    return n % m_mida;
+
+    return n % m_mida;;
 }
 
 template <typename Clau>

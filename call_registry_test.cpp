@@ -1,13 +1,11 @@
 #include <iostream>
-#include <iostream>
 #include "incl/call_registry.hpp"
 
-#include <ctime>    // For time()
-#include <cstdlib>  // For srand() and rand()
+#include <ctime>   // For time()
+#include <cstdlib> // For srand() and rand()
 
-#include <bits/stdc++.h> 
-
-
+#include <bits/stdc++.h>
+#include <fstream>
 
 using namespace std;
 
@@ -28,27 +26,34 @@ void random_str(string &s, const nat len)
 
 nat random_nat(nat &i)
 {
-    srand(time(0));  // Initialize random number generator.
+    srand(time(0)); // Initialize random number generator.
 
-    return rand();//(rand() % 999999999) + 100000000;;
+    return rand(); //(rand() % 999999999) + 100000000;;
 }
 
-int randomNoGenerator(int limit) 
-{ 
-    // uniformly-distributed integer random number 
-    // generator that produces non-deterministic 
-    // random numbers. 
-    random_device rd; 
-  
-    // A Mersenne Twister pseudo-random generator 
-    // of 32-bit numbers with a state size of 
-    // 19937 bits. 
-    mt19937 gen(rd()); 
-  
-    // Uniform distribution 
-    uniform_int_distribution<> dis(1, limit); 
-    return dis(gen); 
-} 
+int randomNoGenerator(int limit)
+{
+    // uniformly-distributed integer random number
+    // generator that produces non-deterministic
+    // random numbers.
+    random_device rd;
+
+    // A Mersenne Twister pseudo-random generator
+    // of 32-bit numbers with a state size of
+    // 19937 bits.
+    mt19937 gen(rd());
+
+    // Uniform distribution
+    uniform_int_distribution<> dis(1, limit);
+    return dis(gen);
+}
+
+void log(const string &str)
+{
+    ofstream outfile("dump.log", ofstream::app);
+    outfile << str << endl;
+    outfile.close();
+}
 
 void dump(call_registry &cr)
 {
@@ -170,8 +175,6 @@ int main()
     cr.registra_trucada(15);
     cr.assigna_nom(15, "O");
 
-
-
     cout << "El nom del telefon 661635963 és: " << cr.nom(661635963) << endl;
 
     cout << "Registring random calls..." << endl;
@@ -180,20 +183,23 @@ int main()
     {
         cr.registra_trucada(randomNoGenerator(100000000));
     }
-/*
-    for (nat i = 0; i < 30; ++i)
+
+    remove( "dump.log");
+
+    for (nat i = 0; i < 1000; ++i)
     {
         string name;
-        name.reserve(5 + i);
-        random_str(name, 5 + i);
-        cout << "El nom en la posició " << i << " és igual a: " << name << endl;
+        name.reserve(i%5 + 25);
+        random_str(name, i%5 + 25);
+        //cout << "El nom en la posició " << i << " és igual a: " << name << endl;
+        log(name);
 
         nat num = randomNoGenerator(100000000);
 
         cr.registra_trucada(num);
         cr.assigna_nom(num, name);
     }
-*/
+
     dump(cr);
 
     cout << "End of testing call_registry..." << endl;
