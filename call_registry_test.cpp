@@ -128,7 +128,7 @@ int main()
 
     cout << "Registring random calls..." << endl;
 
-    for (nat i = 0; i < 20; ++i)
+    for (nat i = 0; i < 500; ++i)
     {
         cr.registra_trucada(randomNoGenerator(100000000));
     }

@@ -310,7 +310,7 @@ nat call_registry::diccionari<string>::hash(string c) const
     {
         n = n + c[i] * i;
     }
-    
+
     return n % m_mida;
 }
 
@@ -320,10 +320,12 @@ void call_registry::diccionari<Clau>::estadistiques()
     cout << endl;
     cout << "Statistics..." << endl;
     cout << "-------------" << endl;
-    cout << "Collitions: " << colisions << endl;
-    cout << "Rehashes: " << redispersions << endl;
     cout << "Size: " << m_mida << endl;
+    cout << "Rehashes: " << redispersions << endl;
     cout << "Elements: " << m_quants << endl;
+    cout << "Collitions: " << colisions << endl;
+    cout << "Ratio: " << (m_quants+colisions) / m_mida << endl;
+    
     cout << "-------------" << endl;
 }
 
