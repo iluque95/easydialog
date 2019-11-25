@@ -3,3 +3,19 @@ const string nom_mod = "easy_dial";
 const string MsgErrPrefixIndef = "Prefix en curs indefinit.";
 const string MsgErrNoExisteixTelefon = "No hi ha telefons amb el prefix en curs.";
 const string MsgErrNoHiHaAnterior = "No es pot eliminar caracter en el prefix en curs.";
+
+
+//Notació a_ prové de f=Fill
+
+struct node_tst {
+    phone *telf;
+    node_tst *f_esq;
+    node_tst *f_dret;
+    node_tst *f_cen;
+}
+
+node_tst *a_arrel;
+
+//Notació a_ prové d' a=Arbre
+nat a_alcada;
+nat a_quants;
