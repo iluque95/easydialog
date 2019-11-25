@@ -1,8 +1,5 @@
 //Notació a_ prové de f=Fill
 
-struct node_tst {
-    phone *telf;
-    node_tst *f_esq;
     node_tst *f_dret;
     node_tst *f_cen;
 };
