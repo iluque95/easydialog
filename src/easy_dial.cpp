@@ -30,6 +30,7 @@ string easy_dial::anterior() throw(error){
 
 //0(1)
 nat easy_dial::num_telf() const throw(error){
+    
     if (a_arrel != NULL) {
         node_tst *n = a_arrel;
         phone p = a_arrel->telf;
