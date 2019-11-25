@@ -11,7 +11,7 @@ phone::phone(nat num, const string &name, nat compt) throw(error) :
     for (nat i = 0U; i < name.size(); ++i)
     {
         if (name[i] == DELETECHAR or name[i] == ENDCHAR or name[i] == ENDPREF)
-            throw error(ErrNomIncorrecte, nom_mod, MsgErrNomIncorrecte);
+            throw error(ErrNomIncorrecte, "phone", "Nom incorrecte.");
     }
 }
 
@@ -20,6 +20,18 @@ phone::phone(const phone &T) throw(error)
     m_nom = T.m_nom;
     m_num = T.m_num;
     m_cops = T.m_cops;
+}
+
+phone &phone::operator=(const phone &T) throw(error)
+{
+    if (this != &T)
+    {
+        m_nom = T.m_nom;
+        m_num = T.m_num;
+        m_cops = T.m_cops;
+    }
+
+    return *this;
 }
 
 phone::~phone() throw()
@@ -82,7 +94,7 @@ bool phone::operator!=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son diferents a les fetes a T
-    return not (*this == T);
+    return not(*this == T);
 }
 
 bool phone::operator<(const phone &T) const throw()
@@ -92,7 +104,8 @@ bool phone::operator<(const phone &T) const throw()
     if ((m_cops < T.m_cops) or (m_cops == T.m_cops and m_nom < T.m_nom))
     {
         return true;
-    }else
+    }
+    else
     {
         return false;
     }
@@ -102,7 +115,7 @@ bool phone::operator>(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
     //POST: Retornem si les trucades fetes al p.i son majors a les fetes a T
-    return not (*this < T);
+    return not(*this < T);
 }
 
 bool phone::operator<=(const phone &T) const throw()
