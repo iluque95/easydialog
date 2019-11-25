@@ -1,7 +1,3 @@
 string m_nom;
 nat m_num;
 nat m_cops;
-
-const string nom_mod = "phone";
-
-const string MsgErrNomIncorrecte = "Nom incorrecte.";

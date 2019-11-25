@@ -1,9 +1,6 @@
 #include <iostream>
 #include "incl/call_registry.hpp"
 
-#include <ctime>   // For time()
-#include <cstdlib> // For srand() and rand()
-
 #include <bits/stdc++.h>
 #include <fstream>
 
@@ -26,9 +23,11 @@ void random_str(string &s, const nat len)
 
 nat random_nat(nat &i)
 {
+    
     srand(time(0)); // Initialize random number generator.
 
-    return rand(); //(rand() % 999999999) + 100000000;;
+    return rand(); //(rand() % 999999999) + 100000000;
+    
 }
 
 int randomNoGenerator(int limit)
@@ -36,16 +35,18 @@ int randomNoGenerator(int limit)
     // uniformly-distributed integer random number
     // generator that produces non-deterministic
     // random numbers.
-    random_device rd;
+    //random_device rd;
 
     // A Mersenne Twister pseudo-random generator
     // of 32-bit numbers with a state size of
     // 19937 bits.
-    mt19937 gen(rd());
+    //mt19937 gen(rd());
 
     // Uniform distribution
-    uniform_int_distribution<> dis(1, limit);
-    return dis(gen);
+    //uniform_int_distribution<> dis(1, limit);
+    //return dis(gen);
+
+    return 1;
 }
 
 void log(const string &str)

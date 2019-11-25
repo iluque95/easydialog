@@ -4,7 +4,7 @@ RM=rm -f
 #LDFLAGS=-g $(shell root-config --ldflags)
 #LDLIBS=$(shell root-config --libs)A
 
-CPPFLAGS=-Wall -ansi -lesin -std=c++11 -g
+CPPFLAGS=-Wall -ansi -lesin -g
 
 PROGRAM=main
 

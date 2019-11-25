@@ -55,18 +55,11 @@ private:
     nat redispersions;
 
     // Constants
-    const float factor_carrega = 0.75;
+    static float const factor_carrega = 0.75;
 };
 
 diccionari<nat> d_nums;
 diccionari<string> d_noms;
-
-// Constants
-
-const string nom_mod = "call_registry";
-
-const string MsgErrNumeroInexistent = "Numero inexistent.";
-const string MsgErrNomRepetit = "Nom repetit.";
 
 // AVL
 

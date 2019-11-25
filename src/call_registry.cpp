@@ -1,5 +1,5 @@
-#include <bits/stdc++.h> 
 #include "../incl/call_registry.hpp"
+#include <bits/stdc++.h> 
 
 // θ(n)
 template <typename Clau>
@@ -421,7 +421,7 @@ void call_registry::elimina(nat num) throw(error)
 
     //Modificacion
     if (!d_nums.elimina(num))
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
 }
 
 // θ(1)
@@ -444,7 +444,7 @@ string call_registry::nom(nat num) const throw(error)
     }
     else
     {
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
         return "";
     }
 }
@@ -462,7 +462,7 @@ nat call_registry::num_trucades(nat num) const throw(error)
     }
     else
     {
-        throw error(ErrNumeroInexistent, nom_mod, MsgErrNumeroInexistent);
+        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
         return 0;
     }
 }
@@ -483,5 +483,5 @@ nat call_registry::num_entrades() const throw()
 void call_registry::dump(vector<phone> &V) const throw(error)
 {
     if (d_noms.guarda(V))
-        throw error(ErrNomRepetit, nom_mod, MsgErrNomRepetit);
+        throw error(ErrNomRepetit, "call_registry", "Nom repetit.");
 }
