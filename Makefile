@@ -15,7 +15,16 @@ DIRS=build
 
 $(shell mkdir -p $(DIRS))
 
-all: $(PROGRAM).e phone call_registry clean
+all:
+	@echo Compiling $@ ...
+	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c src/dialog.cpp -o build/dialog.o $(CPPFLAGS)
+	$(CXX) -c driver_easydial.cpp -o build/driver_easydial.o $(CPPFLAGS)
+	$(CXX) -o build/driver.e build/driver_easydial.o build/dialog.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
+	$(RM) build/*.o
+	@echo OK!
 	
 $(PROGRAM).e: $(OBJS)
 	$(CXX) -o build/$(PROGRAM).e build/$(OBJS) $(CPPFLAGS)
@@ -40,8 +49,29 @@ call_registry:
 	$(RM) build/*.o
 	@echo OK!
 
+easy_dial:
+	@echo Compiling $@ ...
+	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c easy_dial_test.cpp -o build/easy_dial_main.o $(CPPFLAGS)
+	$(CXX) -o build/easy_dial.e build/easy_dial_main.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
+	$(RM) build/*.o
+	@echo OK!
+
+dialog:
+	@echo Compiling $@ ...
+	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c src/dialog.cpp -o build/dialog.o $(CPPFLAGS)
+	$(CXX) -c dialog_test.cpp -o build/dialog_main.o $(CPPFLAGS)
+	$(CXX) -o build/dialog.e build/dialog_main.o build/dialog.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
+	$(RM) build/*.o
+	@echo OK!
+
 clean:
 	$(RM) build/*.o
 
 distclean: clean
-	$(RM) build/$(PROGRAM).e
+	$(RM) build/*.e
