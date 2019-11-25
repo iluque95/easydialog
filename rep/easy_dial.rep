@@ -1,7 +1,12 @@
 //Notació a_ prové de f=Fill
 
-    node_tst *f_dret;
-    node_tst *f_cen;
+struct node_tst
+{
+    char m_c;
+    phone *m_telf;
+    node_tst *m_fesq;
+    node_tst *m_fdret;
+    node_tst *m_fcen;
 };
 
 node_tst *m_arrel;
@@ -18,3 +23,14 @@ struct node
 };
 
 node *m_primer;
+node *m_pi; // Punt d'interès.
+
+string m_pref;
+
+bool m_indef;
+
+void consulta(const string &k, bool &hi_es, phone *&v) const throw();
+void insereix(const string &k, const phone &v) throw(error);
+
+node_tst *rconsulta(node_tst *n, nat i, const string &k) const throw();
+node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
