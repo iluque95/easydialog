@@ -1,4 +1,3 @@
-//Notació a_ prové de f=Fill
 
 struct node_tst
 {
@@ -11,7 +10,6 @@ struct node_tst
 
 node_tst *m_arrel;
 
-//Notació a_ prové d' a=Arbre
 nat m_alcada;
 nat m_quants;
 

@@ -9,10 +9,24 @@ easy_dial::easy_dial(const call_registry &R) throw(error)
     {
         insereix(v[i].nom(), v[i]);
     }
+
+    //Constructor del arbol
 }
 
 easy_dial::easy_dial(const easy_dial &D) throw(error)
 {
+    m_arrel = D.m_arell;
+
+    m_alcada = D.m_alcada;
+    m_quants = D.m_quants;
+    
+    *m_primer = D.m_primer;
+    *m_pi = D.m_pi;
+
+    m_pref = D.m_pref;
+
+    m_indef = D.m_indef;
+
 }
 
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
@@ -104,6 +118,7 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
 
 double easy_dial::longitud_mitjana() const throw()
 {
+    //Aquí sería obtener la frecuencia del primer elemento, y luego recorrer todo el arbol sumando frecuencias
     return 0;
 }
 
