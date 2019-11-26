@@ -54,6 +54,7 @@ private:
     // Estadístiques
     nat colisions;
     nat redispersions;
+    nat total;
 
     // Constants
     static float const factor_carrega = 0.75;

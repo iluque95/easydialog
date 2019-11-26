@@ -80,7 +80,7 @@ void dump(call_registry &cr)
     }
     catch (error e)
     {
-        cout << "Error: " << e.mensaje() << endl;
+         cout << "\033[1;31mERROR: \033[0m" << e.mensaje() << endl;
     }
     cout << "#####################################################################################" << endl
          << endl;
@@ -137,17 +137,18 @@ int main()
 
     remove("dump.log");
 
-    for (nat i = 0; i < 20; ++i)
+    for (nat i = 0; i < 1000; ++i)
     {
         string name;
-        name.reserve(i % 5 + 25);
-        random_str(name, i % 5 + 25);
-        //cout << "El nom en la posició " << i << " és igual a: " << name << endl;
-        log(name);
+        nat offset = (rand() % 10) + 1;
+        name.reserve(i % 5 + 25 + offset);
+        random_str(name, i % 5 + 25 + offset);
 
         nat num = random_nat();
 
         cr.registra_trucada(num);
+
+        log(name);
 
         try
         {

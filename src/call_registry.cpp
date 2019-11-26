@@ -6,7 +6,8 @@ template <typename Clau>
 call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
                                                              m_quants(0),
                                                              colisions(0),
-                                                             redispersions(0)
+                                                             redispersions(0),
+                                                             total(0)
 {
 
     m_taula = new node_hash *[m_mida];
@@ -20,7 +21,8 @@ call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
 // θ(n)
 template <typename Clau>
 call_registry::diccionari<Clau>::diccionari(const diccionari &d) throw(error) : m_mida(d.m_mida),
-                                                                                m_quants(d.m_quants)
+                                                                                m_quants(d.m_quants),
+                                                                                total(d.total)
 {
 
     m_taula = new node_hash *[m_mida];
@@ -95,7 +97,6 @@ call_registry::diccionari<Clau>::~diccionari() throw()
             prev = act;
             act = act->m_seg;
 
-            delete prev->m_valor;
             delete prev;
         }
     }
@@ -111,6 +112,8 @@ void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
         ++m_quants;
     else
         ++colisions;
+
+    ++total;
 
     node_hash *n = new node_hash;
 
@@ -151,8 +154,8 @@ bool call_registry::diccionari<Clau>::cerca(const Clau &c, phone *&p) const
 }
 
 // θ(1)
-template <>
-bool call_registry::diccionari<string>::elimina(const string &c)
+template <typename Clau>
+bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 {
     node_hash *n = NULL, *nr = NULL;
 
@@ -169,33 +172,6 @@ bool call_registry::diccionari<string>::elimina(const string &c)
             nr->m_seg = n->m_seg;
         }
 
-        delete tmp;
-
-        return true;
-    }
-
-    return false;
-}
-
-template <>
-bool call_registry::diccionari<nat>::elimina(const nat &c)
-{
-    node_hash *n = NULL, *nr = NULL;
-
-    if (obtenir_phone(c, n, nr) and n != NULL)
-    {
-        node_hash *tmp = n;
-
-        if (nr == n)
-        {
-            nr = n->m_seg;
-        }
-        else
-        {
-            nr->m_seg = n->m_seg;
-        }
-
-        delete tmp->m_valor;
         delete tmp;
 
         return true;
@@ -214,10 +190,9 @@ void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
     {
         try
         {
-            phone *ant = n->m_valor;
+            //delete n->m_valor;
 
             n->m_valor = p;
-            delete ant;
         }
         catch (error e)
         {
@@ -282,44 +257,79 @@ bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n
     return hi_es;
 }
 
-// θ(n)
+// θ(2n)
 template <typename Clau>
 void call_registry::diccionari<Clau>::redispersio()
 {
 
-    node_hash **t = new node_hash *[m_mida * 2];
+    nat mida_ant = m_mida;
 
-    for (nat i = 0; i < m_mida; ++i)
+    m_mida *= 2;
+
+    node_hash **t = new node_hash *[m_mida];
+
+    colisions = 0;
+    m_quants = 0;
+    total = 0;
+
+    for (nat i=0; i < m_mida; ++i)
     {
+        t[i] = NULL;
+    }
+
+    for (nat i = 0; i < mida_ant; ++i)
+    {
+
         if (m_taula[i] != NULL)
         {
-            node_hash *n = m_taula[i];
-            int new_pos = hash(n->m_clau);
-            t[new_pos] = m_taula[i];
-            t[new_pos]->m_seg = NULL;
+            nat new_pos = hash(m_taula[i]->m_clau);
 
-            while (n->m_seg != NULL)
+            if (t[new_pos] == NULL)
+                ++m_quants;
+            else
+                ++colisions;
+
+            ++total;
+
+            node_hash *tmp = new node_hash;
+
+            tmp->m_clau = m_taula[i]->m_clau;
+            tmp->m_valor = new phone(*m_taula[i]->m_valor);
+            tmp->m_seg = t[new_pos];
+            t[new_pos] = tmp;
+
+            node_hash *n = m_taula[i]->m_seg;
+
+            delete m_taula[i];
+
+            while (n != NULL)
             {
-                int new_pos = hash(n->m_seg->m_clau);
-                node_hash *aux = new node_hash;
+                node_hash *ant = n;
 
-                aux->m_clau = n->m_seg->m_clau;
-                aux->m_valor = n->m_seg->m_valor;
-                aux->m_seg = t[new_pos];
-                t[new_pos] = aux;
+                if (t[new_pos] == NULL)
+                    ++m_quants;
+                else
+                    ++colisions;
+
+                ++total;
+
+                node_hash *tmp = new node_hash;
+
+                new_pos = hash(tmp->m_clau);
+
+                tmp->m_clau = n->m_clau;
+                tmp->m_valor = new phone(*n->m_valor);
+                tmp->m_seg = t[new_pos];
+                t[new_pos] = tmp;
+
                 n = n->m_seg;
+                
+                delete ant;
             }
 
             m_taula[i] = NULL;
         }
     }
-
-    for (nat i = m_mida; i < (m_mida * 2); ++i)
-    {
-        t[i] = NULL;
-    }
-
-    m_mida *= 2;
 
     node_hash **tmp = m_taula;
 
@@ -365,8 +375,8 @@ void call_registry::diccionari<Clau>::estadistiques()
     cout << "Rehashes: " << redispersions << endl;
     cout << "Elements: " << m_quants << endl;
     cout << "Collitions: " << colisions << endl;
+    cout << "Total elements: " << total << endl;
     cout << "Ratio: " << (m_quants + colisions) / m_mida << endl;
-
     cout << "-------------" << endl;
 }
 
@@ -380,7 +390,9 @@ bool call_registry::diccionari<Clau>::save(vector<phone> &v) const
 
         while (n != NULL)
         {
-            v.push_back(*n->m_valor);
+            if (n->m_valor->nom().length() > 0)
+                v.push_back(*n->m_valor);
+
             n = n->m_seg;
         }
     }
@@ -417,8 +429,8 @@ call_registry::call_registry() throw(error)
 }
 
 // θ(n)
-call_registry::call_registry(const call_registry &R) throw(error) : d_nums(R.d_nums)//,
-                                                                    //d_noms(R.d_noms)
+call_registry::call_registry(const call_registry &R) throw(error) : d_nums(R.d_nums) //,
+                                                                                     //d_noms(R.d_noms)
 {
 }
 
@@ -465,10 +477,10 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
         {
             p2 = new phone(p->numero(), name, p->frequencia());
 
-           // phone *p3 = NULL;
+            // phone *p3 = NULL;
 
-           // if (d_noms.cerca(p->nom(), p3))
-           //     d_noms.elimina(p->nom());
+            // if (d_noms.cerca(p->nom(), p3))
+            //     d_noms.elimina(p->nom());
 
             //if (name.size() > 0)
             //    d_noms.insereix(name, p2);
@@ -489,10 +501,10 @@ void call_registry::assigna_nom(nat num, const string &name) throw(error)
 
             d_nums.insereix(num, p2);
             //if (name.size() > 0)
-                //d_noms.insereix(name, p2);
+            //d_noms.insereix(name, p2);
         }
         catch (error e)
-        {   
+        {
             delete p2;
             throw error(e);
         }

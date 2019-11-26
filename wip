@@ -5,3 +5,11 @@
 
 3. Inversa de la redispersión.
 4. Mejorar coste DUMP
+
+
+
+
+VALGRIND
+--------
+
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-call_registry.out build/call_registry.e
