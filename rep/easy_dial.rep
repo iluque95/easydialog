@@ -31,5 +31,5 @@ void insereix(const string &k, const phone &v) throw(error);
 node_tst *rconsulta(node_tst *n, nat i, const string &k) const throw();
 node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
 
-void borra_arbre (node_tst n);
-void crea_arbre (node_tst n);
+void borra_arbre(node_tst *n);
+node_tst *crea_arbre (node_tst *n);

@@ -5,11 +5,10 @@ easy_dial::easy_dial(const call_registry &R) throw(error)
     vector<phone> v;
     R.dump(v);
 
-    for (nat i=0; i<v.size(); ++i)
+    for (nat i = 0; i < v.size(); ++i)
     {
         insereix(v[i].nom(), v[i]);
     }
-
 
     //Constructor del arbol
 }
@@ -17,11 +16,15 @@ easy_dial::easy_dial(const call_registry &R) throw(error)
 easy_dial::easy_dial(const easy_dial &D) throw(error)
 {
     //Bucle para el arbol
-    crea_arbre(m_arrel);
+    m_arrel = crea_arbre(D.m_arrel);
 
+    // FIXME: CREAR NODO ANTES DE ASIGNAR.
     //Bucle para la linked list
+
+    /*
     node n = D.m_pi;
-    while (n->m_seg != NULL){
+    while (n->m_seg != NULL)
+    {
         node_tst *m_val = n->m_val;
         node *m_ant = n->m_ant;
         node *m_seg = n->m_seg;
@@ -32,7 +35,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error)
     m_pi = D.m_pi;
     m_pref = D.m_pref;
     m_indef = D.m_indef;
-
+    */
 }
 
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
@@ -71,7 +74,6 @@ string easy_dial::seguent(char c) throw(error)
         m_pi->m_seg->m_seg = NULL;
 
         m_pref.push_back(c);
-        
     }
     else
     {
@@ -217,9 +219,13 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
     return n;
 }
 
-node_tst easy_dial::crea_arbre (node_tst n) {
-    node_tst *aux = n;
-    if (aux != NULL){
+easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
+{
+    node_tst *aux = NULL;
+    if (n != NULL)
+    {
+        aux = new node_tst;
+
         aux->m_fesq = crea_arbre(n->m_fesq);
         aux->m_fdret = crea_arbre(n->m_fdret);
         aux->m_fcen = crea_arbre(n->m_fcen);
@@ -227,21 +233,20 @@ node_tst easy_dial::crea_arbre (node_tst n) {
         aux->m_valor = n->m_valor;
 
         return aux;
-    } 
-    else
-    {
-        return NULL;    
     }
     
+    return aux;
 }
 
-void easy_dial::borra_arbre (node_tst n) {
-    node_tst *aux = n;
-    if (aux != NULL){
-        aux->m_fesq = borra_arbre(n->m_fesq);
-        aux->m_fdret = borra_arbre(n->m_fdret);
-        aux->m_fcen = borra_arbre(n->m_fcen);
-        delete aux;
-    } 
-    
+void easy_dial::borra_arbre(node_tst *n)
+{
+
+    if (n != NULL)
+    {
+        borra_arbre(n->m_fesq);
+        borra_arbre(n->m_fdret);
+        borra_arbre(n->m_fcen);
+
+        delete n;
+    }
 }
