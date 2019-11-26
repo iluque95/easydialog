@@ -36,6 +36,7 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 
 easy_dial::~easy_dial() throw()
 {
+    //Recorrer el arbol asignando NULL
 }
 
 string easy_dial::inici() throw()
