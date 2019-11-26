@@ -10,21 +10,27 @@ easy_dial::easy_dial(const call_registry &R) throw(error)
         insereix(v[i].nom(), v[i]);
     }
 
+
     //Constructor del arbol
 }
 
 easy_dial::easy_dial(const easy_dial &D) throw(error)
 {
-    m_arrel = D.m_arell;
+    //Bucle para el arbol
+    crea_arbre(m_arrel);
 
-    m_alcada = D.m_alcada;
-    m_quants = D.m_quants;
-    
-    *m_primer = D.m_primer;
-    *m_pi = D.m_pi;
+    //Bucle para la linked list
+    node n = D.m_pi;
+    while (n->m_seg != NULL){
+        node_tst *m_val = n->m_val;
+        node *m_ant = n->m_ant;
+        node *m_seg = n->m_seg;
+        n = n->m_seg;
+    }
 
+    m_primer = D.m_primer;
+    m_pi = D.m_pi;
     m_pref = D.m_pref;
-
     m_indef = D.m_indef;
 
 }
@@ -36,7 +42,7 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 
 easy_dial::~easy_dial() throw()
 {
-    //Recorrer el arbol asignando NULL
+    borra_arbre(m_arrel);
 }
 
 string easy_dial::inici() throw()
@@ -58,12 +64,14 @@ string easy_dial::seguent(char c) throw(error)
 
     if (m_pi->m_val != NULL)
     {
+        //Avanzar un paso en el recorrido del
         m_pi->m_seg = new node;
         m_pi->m_seg->m_val = m_arrel;
         m_pi->m_seg->m_ant = m_pi;
         m_pi->m_seg->m_seg = NULL;
 
         m_pref.push_back(c);
+        
     }
     else
     {
@@ -104,7 +112,7 @@ nat easy_dial::num_telf() const throw(error)
 
     if (m_arrel != NULL)
     {
-        return m_pi->m_val->m_telf->numero();
+        return m_pi->m_val->m_valor.numero();
     }
     else
     {
@@ -123,7 +131,7 @@ double easy_dial::longitud_mitjana() const throw()
     return 0;
 }
 
-void easy_dial::consulta(const string &k, bool &hi_es, phone *&v) const throw()
+void easy_dial::consulta(const string &k, bool &hi_es, phone &v) const throw()
 {
     node_tst *n = rconsulta(m_arrel, 0, k);
     if (n == NULL)
@@ -132,7 +140,7 @@ void easy_dial::consulta(const string &k, bool &hi_es, phone *&v) const throw()
     }
     else
     {
-        v = n->m_telf;
+        v = n->m_valor;
         hi_es = true;
     }
 }
@@ -182,7 +190,7 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
             }
             else
             { // i == k.length()-1; k[i] == Simbol()
-                n->m_telf = new phone(v);
+                n->m_valor = v;
             }
         }
         catch (error)
@@ -207,4 +215,33 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
         }
     }
     return n;
+}
+
+node_tst easy_dial::crea_arbre (node_tst n) {
+    node_tst *aux = n;
+    if (aux != NULL){
+        aux->m_fesq = crea_arbre(n->m_fesq);
+        aux->m_fdret = crea_arbre(n->m_fdret);
+        aux->m_fcen = crea_arbre(n->m_fcen);
+        aux->m_c = n->m_c;
+        aux->m_valor = n->m_valor;
+
+        return aux;
+    } 
+    else
+    {
+        return NULL;    
+    }
+    
+}
+
+void easy_dial::borra_arbre (node_tst n) {
+    node_tst *aux = n;
+    if (aux != NULL){
+        aux->m_fesq = borra_arbre(n->m_fesq);
+        aux->m_fdret = borra_arbre(n->m_fdret);
+        aux->m_fcen = borra_arbre(n->m_fcen);
+        delete aux;
+    } 
+    
 }
