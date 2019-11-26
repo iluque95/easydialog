@@ -21,32 +21,9 @@ void random_str(string &s, const nat len)
     s[len] = 0;
 }
 
-nat random_nat(nat &i)
+nat random_nat()
 {
-    
-    srand(time(0)); // Initialize random number generator.
-
-    return rand(); //(rand() % 999999999) + 100000000;
-    
-}
-
-int randomNoGenerator(int limit)
-{
-    // uniformly-distributed integer random number
-    // generator that produces non-deterministic
-    // random numbers.
-    //random_device rd;
-
-    // A Mersenne Twister pseudo-random generator
-    // of 32-bit numbers with a state size of
-    // 19937 bits.
-    //mt19937 gen(rd());
-
-    // Uniform distribution
-    //uniform_int_distribution<> dis(1, limit);
-    //return dis(gen);
-
-    return 1;
+    return (rand() % 999999999) + 100000000;
 }
 
 void log(const string &str)
@@ -131,74 +108,55 @@ int main()
     cout << "Assigning name to last call..." << endl;
     cr.assigna_nom(661635963, "Itiel");
 
-    cr.registra_trucada(1);
-    cr.assigna_nom(1, "A");
+    for (nat i = 1; i <= 24; ++i)
+    {
+        char c = 64 + i;
+        std::string s(1, c);
+        cr.registra_trucada(i);
 
-    cr.registra_trucada(2);
-    cr.assigna_nom(2, "B");
-
-    cr.registra_trucada(3);
-    cr.assigna_nom(3, "C");
-
-    cr.registra_trucada(4);
-    cr.assigna_nom(4, "D");
-
-    cr.registra_trucada(5);
-    cr.assigna_nom(5, "E");
-
-    cr.registra_trucada(6);
-    cr.assigna_nom(6, "F");
-
-    cr.registra_trucada(7);
-    cr.assigna_nom(7, "G");
-
-    cr.registra_trucada(8);
-    cr.assigna_nom(8, "H");
-
-    cr.registra_trucada(9);
-    cr.assigna_nom(9, "I");
-
-    cr.registra_trucada(10);
-    cr.assigna_nom(10, "J");
-
-    cr.registra_trucada(11);
-    cr.assigna_nom(11, "K");
-
-    cr.registra_trucada(12);
-    cr.assigna_nom(12, "L");
-
-    cr.registra_trucada(13);
-    cr.assigna_nom(13, "M");
-
-    cr.registra_trucada(14);
-    cr.assigna_nom(14, "N");
-
-    cr.registra_trucada(15);
-    cr.assigna_nom(15, "O");
+        try
+        {
+            cr.assigna_nom(i, s);
+        }
+        catch (error e)
+        {
+            cout << "\033[1;31mERROR: \033[0m" << e.mensaje() << ". Inserting -> " << s << endl;
+        }
+    }
 
     cout << "El nom del telefon 661635963 és: " << cr.nom(661635963) << endl;
 
     cout << "Registring random calls..." << endl;
 
-    for (nat i = 0; i < 500; ++i)
+    srand(time(0)); // Initialize random number generator.
+
+    for (nat i = 0; i < 50; ++i)
     {
-        cr.registra_trucada(randomNoGenerator(100000000));
+        cr.registra_trucada(random_nat());
     }
 
-    remove( "dump.log");
+    remove("dump.log");
 
-    for (nat i = 0; i < 1000; ++i)
+    for (nat i = 0; i < 20; ++i)
     {
         string name;
-        name.reserve(i%5 + 25);
-        random_str(name, i%5 + 25);
+        name.reserve(i % 5 + 25);
+        random_str(name, i % 5 + 25);
         //cout << "El nom en la posició " << i << " és igual a: " << name << endl;
         log(name);
 
-        nat num = randomNoGenerator(100000000);
+        nat num = random_nat();
 
         cr.registra_trucada(num);
-        cr.assigna_nom(num, name);
+
+        try
+        {
+            cr.assigna_nom(num, name);
+        }
+        catch (error e)
+        {
+            cout << "\033[1;31mERROR: \033[0m" << e.mensaje() << ". Inserting -> " << name << endl;
+        }
     }
 
     dump(cr);
