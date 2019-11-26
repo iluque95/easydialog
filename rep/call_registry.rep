@@ -17,6 +17,7 @@ public:
     bool elimina(const Clau &c);
     void modifica(const Clau &c, phone *&p);
     bool guarda(vector<phone> &v) const;
+    bool save(vector<phone> &v) const;
 
     /* Quantitat d'elements que conté el diccionari */
     nat elements() const;
