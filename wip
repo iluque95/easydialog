@@ -13,3 +13,11 @@ VALGRIND
 --------
 
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-call_registry.out build/call_registry.e
+
+
+DRIVER
+------
+
+1. make
+2. build/driver.e < games/jp_public_phone.in > games/phones.out
+3. diff games/jp_public_phone.out games/phones.out

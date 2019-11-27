@@ -266,54 +266,62 @@ void tracta_dialog(gen_driver& dr) {
 /* --------------------------------< MAIN >--------------------------------- */
 
 int main() {
-  gen_driver d("../EasyDial.err", false);
+  try
+  {
+    gen_driver d("EasyDial.err", false);
+    d.add_call("numero", tracta_numero, "phone");
+    d.add_call("num", tracta_numero, "phone");
+    d.add_call("nom", tracta_nom, "phone");
+    d.add_call("frequencia", tracta_frequencia, "phone");
+    d.add_call("frec", tracta_frequencia, "phone");
+    d.add_call("++", tracta_incr_frequencia, "phone");
+    d.add_call("pre_incr", tracta_incr_frequencia, "phone");
+    d.add_call("post_incr", tracta_post_incr_frequencia, "phone");
+    d.add_call(">", tracta_major, "phone", "phone");
+    d.add_call("<", tracta_menor, "phone", "phone");
+    d.add_call("==", tracta_iguals, "phone", "phone");
+    d.add_call("!=", tracta_diferents, "phone", "phone");
+    d.add_call(">=", tracta_major_igual, "phone", "phone");
+    d.add_call("<=", tracta_menor_igual, "phone", "phone");
 
-  d.add_call("numero", tracta_numero, "phone");
-  d.add_call("num", tracta_numero, "phone");
-  d.add_call("nom", tracta_nom, "phone");
-  d.add_call("frequencia", tracta_frequencia, "phone");
-  d.add_call("frec", tracta_frequencia, "phone");
-  d.add_call("++", tracta_incr_frequencia, "phone");
-  d.add_call("pre_incr", tracta_incr_frequencia, "phone");
-  d.add_call("post_incr", tracta_post_incr_frequencia, "phone");
-  d.add_call(">", tracta_major, "phone", "phone");
-  d.add_call("<", tracta_menor, "phone", "phone");
-  d.add_call("==", tracta_iguals, "phone", "phone");
-  d.add_call("!=", tracta_diferents, "phone", "phone");
-  d.add_call(">=", tracta_major_igual, "phone", "phone");
-  d.add_call("<=", tracta_menor_igual, "phone", "phone");
+    d.add_call("registra", tracta_registra_trucada, "call_registry", "nat");
+    d.add_call("r", tracta_registra_trucada, "call_registry", "nat");
+    d.add_call("assigna_nom", tracta_assigna_nom, "call_registry", "nat string");
+    d.add_call("as", tracta_assigna_nom, "call_registry", "nat string");
+    d.add_call("elimina", tracta_elimina, "call_registry", "nat");
+    d.add_call("e", tracta_elimina, "call_registry", "nat");
+    d.add_call("conte", tracta_conte, "call_registry", "nat");
+    d.add_call("c", tracta_conte, "call_registry", "nat");
+    d.add_call("nom_cr", tracta_nom_cr, "call_registry", "nat");
+    d.add_call("num_trucades", tracta_num_trucades, "call_registry", "nat");
+    d.add_call("es_buit", tracta_es_buit, "call_registry");
+    d.add_call("num_entrades", tracta_num_entrades, "call_registry");
+    d.add_call("dump", tracta_dump, "call_registry");
 
-  d.add_call("registra", tracta_registra_trucada, "call_registry", "nat");
-  d.add_call("r", tracta_registra_trucada, "call_registry", "nat");
-  d.add_call("assigna_nom", tracta_assigna_nom, "call_registry", "nat string");
-  d.add_call("as", tracta_assigna_nom, "call_registry", "nat string");
-  d.add_call("elimina", tracta_elimina, "call_registry", "nat");
-  d.add_call("e", tracta_elimina, "call_registry", "nat");
-  d.add_call("conte", tracta_conte, "call_registry", "nat");
-  d.add_call("c", tracta_conte, "call_registry", "nat");
-  d.add_call("nom_cr", tracta_nom_cr, "call_registry", "nat");
-  d.add_call("num_trucades", tracta_num_trucades, "call_registry", "nat");
-  d.add_call("es_buit", tracta_es_buit, "call_registry");
-  d.add_call("num_entrades", tracta_num_entrades, "call_registry");
-  d.add_call("dump", tracta_dump, "call_registry");
+    d.add_call("inici", tracta_inici, "easy_dial");
+    d.add_call("ini", tracta_inici, "easy_dial");
+    d.add_call("seguent", tracta_seguent, "easy_dial", "string");
+    d.add_call("s", tracta_seguent, "easy_dial", "string");
+    d.add_call("anterior", tracta_anterior, "easy_dial");
+    d.add_call("an", tracta_anterior, "easy_dial");
+    d.add_call("num_telf", tracta_num_telf, "easy_dial");
+    d.add_call("comencen", tracta_comencen, "easy_dial", "string");
+    d.add_call("longitud_mitj", tracta_longitud_mitjana, "easy_dial"); 
+  
+    d.add_call("dialog", tracta_dialog, "*", "string");
 
-  d.add_call("inici", tracta_inici, "easy_dial");
-  d.add_call("ini", tracta_inici, "easy_dial");
-  d.add_call("seguent", tracta_seguent, "easy_dial", "string");
-  d.add_call("s", tracta_seguent, "easy_dial", "string");
-  d.add_call("anterior", tracta_anterior, "easy_dial");
-  d.add_call("an", tracta_anterior, "easy_dial");
-  d.add_call("num_telf", tracta_num_telf, "easy_dial");
-  d.add_call("comencen", tracta_comencen, "easy_dial", "string");
-  d.add_call("longitud_mitj", tracta_longitud_mitjana, "easy_dial"); 
- 
-  d.add_call("dialog", tracta_dialog, "*", "string");
+    // instal·lacio de tipus
+    d.install_type<phone>();
+    d.install_type<call_registry>();
+    d.install_type<easy_dial>();
 
-  // instal·lacio de tipus
-  d.install_type<phone>();
-  d.install_type<call_registry>();
-  d.install_type<easy_dial>();
+    d.go();
+  }
+  catch(error e)
+  {
+    e.print(cout);
+    cout << endl;
+  }
 
-  d.go();
 }
 

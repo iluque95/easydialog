@@ -32,6 +32,7 @@ private:
         Clau m_clau;
         phone *m_valor;
         node_hash *m_seg;
+
     };
 
     node_hash **m_taula;

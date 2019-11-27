@@ -29,27 +29,31 @@ call_registry::diccionari<Clau>::diccionari(const diccionari &d) throw(error) : 
 
     for (nat i = 0; i < m_mida; ++i)
     {
-        m_taula[i] = new node_hash;
+        m_taula[i] = NULL;
 
-        m_taula[i]->m_clau = d.m_taula[i]->m_clau;
-        m_taula[i]->m_valor = new phone(*d.m_taula[i]->m_valor);
-        m_taula[i]->m_seg = NULL;
-
-        node_hash *n = d.m_taula[i]->m_seg;
-        node_hash *act = m_taula[i];
-
-        while (n != NULL)
+        if (d.m_taula[i] != NULL)
         {
-            node_hash *aux = new node_hash;
+            m_taula[i] = new node_hash;
+            m_taula[i]->m_clau = d.m_taula[i]->m_clau;
+            m_taula[i]->m_valor = new phone(*d.m_taula[i]->m_valor);
+            m_taula[i]->m_seg = NULL;
 
-            aux->m_clau = n->m_clau;
-            aux->m_valor = new phone(*n->m_valor);
-            aux->m_seg = NULL;
+            node_hash *n = d.m_taula[i]->m_seg;
+            node_hash *act = m_taula[i];
 
-            act->m_seg = aux;
+            while (n != NULL)
+            {
+                node_hash *aux = new node_hash;
 
-            n = n->m_seg;
-            act = act->m_seg;
+                aux->m_clau = n->m_clau;
+                aux->m_valor = new phone(*n->m_valor);
+                aux->m_seg = NULL;
+
+                act->m_seg = aux;
+
+                n = n->m_seg;
+                act = act->m_seg;
+            }
         }
     }
 }
@@ -157,27 +161,40 @@ bool call_registry::diccionari<Clau>::cerca(const Clau &c, phone *&p) const
 template <typename Clau>
 bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 {
-    node_hash *n = NULL, *nr = NULL;
 
-    if (obtenir_phone(c, n, nr) and n != NULL)
+    nat i = hash(c);
+
+    node_hash *nr = m_taula[i], *n = m_taula[i];
+    bool hi_es = false;
+
+    while (n != NULL and not hi_es)
     {
-        node_hash *tmp = n;
-
-        if (nr == n)
+        if (n->m_clau == c)
         {
-            nr = n->m_seg;
+            if (nr == n)
+            {
+                m_taula[i] = n->m_seg;
+            }
+            else
+            {
+                nr->m_seg = n->m_seg;
+            }
+
+            delete n->m_valor;
+            delete n;
+
+            n = NULL;
+
+            hi_es = true;
         }
         else
         {
-            nr->m_seg = n->m_seg;
+            nr = n;
+            n = n->m_seg;
         }
-
-        delete tmp;
-
-        return true;
     }
 
-    return false;
+    return hi_es;
 }
 
 // θ(1)
@@ -272,7 +289,7 @@ void call_registry::diccionari<Clau>::redispersio()
     m_quants = 0;
     total = 0;
 
-    for (nat i=0; i < m_mida; ++i)
+    for (nat i = 0; i < m_mida; ++i)
     {
         t[i] = NULL;
     }
@@ -323,7 +340,7 @@ void call_registry::diccionari<Clau>::redispersio()
                 t[new_pos] = tmp;
 
                 n = n->m_seg;
-                
+
                 delete ant;
             }
 
@@ -446,7 +463,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 // θ(2n)
 call_registry::~call_registry() throw()
 {
-    d_nums.estadistiques();
+    //d_nums.estadistiques();
     //d_noms.estadistiques();
 }
 
@@ -523,7 +540,7 @@ void call_registry::elimina(nat num) throw(error)
 
     //Modificacion
     if (!d_nums.elimina(num))
-        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
+        throw error(ErrNumeroInexistent);
 }
 
 // θ(1)
@@ -546,7 +563,7 @@ string call_registry::nom(nat num) const throw(error)
     }
     else
     {
-        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
+        throw error(ErrNumeroInexistent);
         return "";
     }
 }
@@ -564,7 +581,7 @@ nat call_registry::num_trucades(nat num) const throw(error)
     }
     else
     {
-        throw error(ErrNumeroInexistent, "call_registry", "Numero inexistent.");
+        throw error(ErrNumeroInexistent);
         return 0;
     }
 }
@@ -586,5 +603,5 @@ void call_registry::dump(vector<phone> &V) const throw(error)
 {
     //if (d_noms.guarda(V))
     if (!d_nums.save(V))
-        throw error(ErrNomRepetit, "call_registry", "Nom repetit.");
+        throw error(ErrNomRepetit);
 }
