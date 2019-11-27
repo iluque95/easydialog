@@ -81,6 +81,11 @@ call_registry::diccionari<Clau> &call_registry::diccionari<Clau>::operator=(cons
 
         m_quants = dicc.m_quants;
         dicc.m_quants = val;
+
+        val = total;
+
+        total = dicc.total;
+        dicc.total = val;
     }
 
     return *this;
@@ -127,7 +132,7 @@ void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 
     m_taula[i] = n;
 
-    if ((m_quants / m_mida) >= factor_carrega)
+    if ((total / m_mida) >= factor_carrega)
     {
         redispersio();
     }
@@ -180,6 +185,11 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
                 nr->m_seg = n->m_seg;
             }
 
+            if (m_taula[i] == NULL)
+                --m_quants;
+
+            --total;
+
             delete n->m_valor;
             delete n;
 
@@ -201,21 +211,37 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 template <typename Clau>
 void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
 {
-    node_hash *n = NULL, *nr = NULL;
 
-    if (obtenir_phone(c, n, nr) and n != NULL)
+    nat i = hash(c);
+
+    node_hash *n = m_taula[i];
+    bool hi_es = false;
+
+    while (n != NULL and not hi_es)
     {
-        try
+        if (n->m_clau == c)
         {
-            //delete n->m_valor;
+            if (n == m_taula[i])
+            {
+                delete m_taula[i]->m_valor;
 
-            n->m_valor = p;
+                m_taula[i]->m_valor = p;
+            }
+            else
+            {
+                delete n->m_valor;
+
+                n->m_valor = p;
+            }
+
+            hi_es = true;
         }
-        catch (error e)
+        else
         {
-            throw error(e);
+            n = n->m_seg;
         }
     }
+
 }
 
 // θ(1)
@@ -247,7 +273,7 @@ bool call_registry::diccionari<Clau>::guarda(vector<phone> &v) const
 template <typename Clau>
 nat call_registry::diccionari<Clau>::elements() const
 {
-    return m_quants;
+    return total;
 }
 
 // θ(1)
