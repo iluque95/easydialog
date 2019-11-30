@@ -4,10 +4,12 @@ easy_dial::easy_dial(const call_registry &R) throw(error)
 {
     vector<phone> v;
     R.dump(v);
+    m_freq = 0;
 
     for (nat i = 0; i < v.size(); ++i)
     {
         insereix(v[i].nom(), v[i]);
+        m_freq += v[i].frequencia();
     }
 
     //Constructor del arbol
@@ -21,8 +23,10 @@ easy_dial::easy_dial(const easy_dial &D) throw(error)
     // FIXME: CREAR NODO ANTES DE ASIGNAR.
     //Bucle para la linked list
 
-    /*
-    node n = D.m_pi;
+    
+    node *n = new node;
+    n = D.m_pi;
+
     while (n->m_seg != NULL)
     {
         node_tst *m_val = n->m_val;
@@ -35,7 +39,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error)
     m_pi = D.m_pi;
     m_pref = D.m_pref;
     m_indef = D.m_indef;
-    */
+    
 }
 
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
@@ -123,13 +127,84 @@ nat easy_dial::num_telf() const throw(error)
     }
 }
 
+
+
+void easy_dial::comencen_aux(const string &pref, vector<string> &result, node_tst nt) const throw(error)
+{
+ //Formar el vector
+ 
+    if (pref == m_string){
+        string aux = pref;
+        node_tst *n = new node_tst;
+        n = nt;
+        if (n != NULL){
+            if (n->m_c = '|'){
+                result.pushback(aux);
+            } 
+            else
+            {
+                aux += n->m_val->m_c;
+
+                node_tst *n_esq = new node_tst:
+                n_esq = nt->m_fesq;
+                comencen_aux(aux, &result, n_esq)
+
+                node_tst *n_dret = new node_tst:
+                n_dret = nt->m_dret;
+                comencen_aux(aux, &result, n_dret)
+
+
+                node_tst *n_cen = new node_tst:
+                n_cen = nt->m_cen;
+                comencen_aux(aux, &result, n_cen)
+
+            }
+           
+        }
+    } 
+    else
+    {
+        string aux = pref;
+        node_tst *n = new node_tst;
+        n = nt;
+        if (n != NULL){
+            if (n->m_c = '|'){
+                result.pushback(aux);
+            } 
+            else
+            {
+                aux += n->m_val->m_c;
+
+                node_tst *n_esq = new node_tst:
+                n_esq = nt->m_fesq;
+                comencen_aux(aux, &result, n_esq)
+
+                node_tst *n_dret = new node_tst:
+                n_dret = nt->m_dret;
+                comencen_aux(aux, &result, n_dret)
+
+
+                node_tst *n_cen = new node_tst:
+                n_cen = nt->m_cen;
+                comencen_aux(aux, &result, n_cen)
+
+            }
+           
+        }
+
+    }
+}
+
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
 {
+    comencen_aux(pref, &result, m_pi);
 }
+
 
 double easy_dial::longitud_mitjana() const throw()
 {
-    //Aquí sería obtener la frecuencia del primer elemento, y luego recorrer todo el arbol sumando frecuencias
+    node_tst *n = m_arrel;
+    double freq = n->m_valor.frequencia() / m_freq;
     return 0;
 }
 

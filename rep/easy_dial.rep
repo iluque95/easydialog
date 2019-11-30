@@ -25,6 +25,8 @@ string m_pref;
 
 bool m_indef;
 
+double m_freq;
+
 void consulta(const string &k, bool &hi_es, phone &v) const throw();
 void insereix(const string &k, const phone &v) throw(error);
 
@@ -33,3 +35,6 @@ node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(e
 
 void borra_arbre(node_tst *n);
 node_tst *crea_arbre (node_tst *n);
+
+void comencen(const string& pref, vector<string>& result, node_tst n) const throw(error);
+
