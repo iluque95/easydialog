@@ -99,16 +99,27 @@ call_registry::diccionari<Clau>::~diccionari() throw()
     for (nat i = 0; i < m_mida; ++i)
     {
         node_hash *prev = NULL;
-        node_hash *act = m_taula[i];
+        node_hash *act = NULL;
+
+        if (m_taula[i] != NULL)
+        {
+            act = m_taula[i]->m_seg;
+
+            delete m_taula[i]->m_valor;
+            delete m_taula[i];
+        }
 
         while (act != NULL)
         {
             prev = act;
             act = act->m_seg;
 
+            delete prev->m_valor;
             delete prev;
         }
     }
+
+    delete[] m_taula;
 }
 
 // θ(1)
@@ -241,7 +252,6 @@ void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
             n = n->m_seg;
         }
     }
-
 }
 
 // θ(1)

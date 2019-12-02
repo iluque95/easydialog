@@ -1,0 +1,82 @@
+###!-----------------------------------------
+###!
+###! MODUL CALL_REGISTRY
+###!
+###!-----------------------------------------
+###1 call_registry: buit
+###!-----------------------------------------
+###!
+#init c1 call_registry
+#c 101
+false
+##false
+#nom_cr 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#num_trucades 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#e 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#num_entrades
+0
+##0
+#es_buit
+true
+##true
+#dump
+
+##
+#destroy
+###!
+###!
+###!
+###!-----------------------------------------
+###2 call_registry: una entrada
+###!-----------------------------------------
+###!
+###!-----------------------------------------
+###2.1 insercio assignant
+###!-----------------------------------------
+#init c21 call_registry
+#as 102 "I-102"
+###!
+#c 101
+false
+##false
+#nom_cr 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#num_trucades 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#c 102
+true
+##true
+#nom_cr 102
+I-102
+##I-102
+#num_trucades 102
+0
+##0
+#num_entrades
+1
+##1
+#es_buit
+false
+##false
+#dump
+102 I-102 0 
+##102 I-102 0 
+#e 101
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#e 102
+#c 102
+false
+##false
+#nom_cr 102
+Error::call_registry:21:Numero inexistent.
+##Error::call_registry:21:Numero inexistent.
+#num_trucades 102
