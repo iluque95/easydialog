@@ -1,49 +1,88 @@
 #include "../incl/easy_dial.hpp"
 
-easy_dial::easy_dial(const call_registry &R) throw(error)
+easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
+                                                            m_primer(NULL),
+                                                            m_pi(NULL),
+                                                            m_pref(""),
+                                                            m_indef(true),
+                                                            m_freq(0)
 {
     vector<phone> v;
     R.dump(v);
-    m_freq = 0;
 
     for (nat i = 0; i < v.size(); ++i)
     {
         insereix(v[i].nom(), v[i]);
         m_freq += v[i].frequencia();
     }
-
-    //Constructor del arbol
 }
 
-easy_dial::easy_dial(const easy_dial &D) throw(error)
+easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
+                                                        m_indef(D.m_indef),
+                                                        m_freq(D.m_freq)
 {
     //Bucle para el arbol
     m_arrel = crea_arbre(D.m_arrel);
 
-    // FIXME: CREAR NODO ANTES DE ASIGNAR.
-    //Bucle para la linked list
+    node *tmp = D.m_primer, *ant_tmp = NULL, *ant_aux = NULL;
 
-    
-    node *n = new node;
-    n = D.m_pi;
-
-    while (n->m_seg != NULL)
+    while (tmp != NULL)
     {
-        node_tst *m_val = n->m_val;
-        node *m_ant = n->m_ant;
-        node *m_seg = n->m_seg;
-        n = n->m_seg;
-    }
+        ant_tmp = tmp;
 
-    m_primer = D.m_primer;
-    m_pi = D.m_pi;
-    m_pref = D.m_pref;
-    m_indef = D.m_indef;
-    
+        node *n = new node;
+
+        n->m_val = tmp->m_val;
+        n->m_ant = ant_tmp;
+        n->m_seg = ant_aux;
+
+        ant_aux = n;
+
+        if (tmp == D.m_pi)
+            m_pi = n;
+
+        tmp = tmp->m_seg;
+    }
 }
 
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 {
+
+    if (this != &D)
+    {
+        easy_dial ed(D);
+
+        node_tst *tst_tmp = m_arrel;
+
+        m_arrel = ed.m_arrel;
+        ed.m_arrel = tst_tmp;
+
+        node *aux_tmp = m_primer;
+
+        m_primer = ed.m_primer;
+        ed.m_primer = aux_tmp;
+
+        aux_tmp = m_pi;
+
+        m_pi = ed.m_pi;
+        ed.m_pi = aux_tmp;
+
+        string str_tmp = m_pref;
+
+        m_pref = ed.m_pref;
+        ed.m_pref = str_tmp;
+
+        bool b_tmp = m_indef;
+
+        m_indef = ed.m_indef;
+        ed.m_indef = b_tmp;
+
+        double d_tmp = m_freq;
+
+        m_freq = ed.m_freq;
+        ed.m_freq = d_tmp;
+    }
+
     return *this;
 }
 
@@ -56,30 +95,65 @@ string easy_dial::inici() throw()
 {
     m_primer = new node;
 
-    m_primer->m_val = NULL;
+    m_primer->m_val = m_arrel;
     m_primer->m_ant = m_primer->m_seg = NULL;
 
     m_pi = m_primer;
 
-    m_pref = "";
+    string tmp;
 
-    return m_pref;
+    tmp.reserve(m_pref.size());
+
+    if (tmp.size() > 0)
+        tmp.append(m_pref);
+
+    m_pref = "";
+    m_indef = true;
+
+    return tmp;
 }
 
 string easy_dial::seguent(char c) throw(error)
 {
 
-    if (m_pi->m_val != NULL)
-    {
-        //Avanzar un paso en el recorrido del
-        m_pi->m_seg = new node;
-        m_pi->m_seg->m_val = m_arrel;
-        m_pi->m_seg->m_ant = m_pi;
-        m_pi->m_seg->m_seg = NULL;
+    node_tst *act = NULL;
+    bool trobat = false;
 
-        m_pref.push_back(c);
+    if (m_pi != NULL)
+    {
+        act = m_pi->m_val;
+
+        if (act != NULL)
+        {
+            if (act->m_fesq != NULL and act->m_fesq->m_c == c)
+            {
+                trobat = true;
+                act = act->m_fesq;
+            }
+            else if (act->m_fcen != NULL and act->m_fcen->m_c == c)
+            {
+                trobat = true;
+                act = act->m_fcen;
+            }
+            else if (act->m_fdret != NULL and act->m_fdret->m_c == c)
+            {
+                trobat = true;
+                act = act->m_fdret;
+            }
+
+            if (trobat)
+            {
+                m_pi->m_seg = new node;
+                m_pi->m_seg->m_val = act;
+                m_pi->m_seg->m_ant = m_pi;
+                m_pi->m_seg->m_seg = NULL;
+                m_pref.push_back(c);
+                m_indef = false;
+            }
+        }
     }
-    else
+
+    if (m_pi == NULL or act == NULL or not trobat)
     {
         m_indef = true;
         m_pref = "";
@@ -127,84 +201,39 @@ nat easy_dial::num_telf() const throw(error)
     }
 }
 
-
-
-void easy_dial::comencen_aux(const string &pref, vector<string> &result, node_tst nt) const throw(error)
+void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error)
 {
- //Formar el vector
- 
-    if (pref == m_string){
-        string aux = pref;
-        node_tst *n = new node_tst;
-        n = nt;
-        if (n != NULL){
-            if (n->m_c = '|'){
-                result.pushback(aux);
-            } 
-            else
-            {
-                aux += n->m_val->m_c;
 
-                node_tst *n_esq = new node_tst:
-                n_esq = nt->m_fesq;
-                comencen_aux(aux, &result, n_esq)
-
-                node_tst *n_dret = new node_tst:
-                n_dret = nt->m_dret;
-                comencen_aux(aux, &result, n_dret)
-
-
-                node_tst *n_cen = new node_tst:
-                n_cen = nt->m_cen;
-                comencen_aux(aux, &result, n_cen)
-
-            }
-           
-        }
-    } 
-    else
+    if (nt != NULL)
     {
-        string aux = pref;
-        node_tst *n = new node_tst;
-        n = nt;
-        if (n != NULL){
-            if (n->m_c = '|'){
-                result.pushback(aux);
-            } 
-            else
-            {
-                aux += n->m_val->m_c;
-
-                node_tst *n_esq = new node_tst:
-                n_esq = nt->m_fesq;
-                comencen_aux(aux, &result, n_esq)
-
-                node_tst *n_dret = new node_tst:
-                n_dret = nt->m_dret;
-                comencen_aux(aux, &result, n_dret)
-
-
-                node_tst *n_cen = new node_tst:
-                n_cen = nt->m_cen;
-                comencen_aux(aux, &result, n_cen)
-
-            }
-           
+        if (nt->m_c == phone::ENDPREF)
+        {
+            result.push_back(str);
         }
-
+        else
+        {
+            comencen_aux(result, str + nt->m_c, nt->m_fesq);
+            comencen_aux(result, str + nt->m_c, nt->m_fcen);
+            comencen_aux(result, str + nt->m_c, nt->m_fdret);
+        }
     }
 }
 
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
 {
-    comencen_aux(pref, &result, m_pi);
+    if (m_pi != NULL)
+    {
+        comencen_aux(result, pref, m_pi->m_val->m_fesq);
+        comencen_aux(result, pref, m_pi->m_val->m_fcen);
+        comencen_aux(result, pref, m_pi->m_val->m_fdret);
+    }
 }
-
 
 double easy_dial::longitud_mitjana() const throw()
 {
-    node_tst *n = m_arrel;
-    double freq = n->m_valor.frequencia() / m_freq;
+    //node_tst *n = m_arrel;
+    //double freq = n->m_valor.frequencia() / m_freq;
+
     return 0;
 }
 
@@ -302,14 +331,14 @@ easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
         aux = new node_tst;
 
         aux->m_fesq = crea_arbre(n->m_fesq);
-        aux->m_fdret = crea_arbre(n->m_fdret);
         aux->m_fcen = crea_arbre(n->m_fcen);
+        aux->m_fdret = crea_arbre(n->m_fdret);
         aux->m_c = n->m_c;
         aux->m_valor = n->m_valor;
 
         return aux;
     }
-    
+
     return aux;
 }
 
