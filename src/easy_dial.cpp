@@ -108,7 +108,6 @@ string easy_dial::inici() throw()
         tmp.append(m_pref);
 
     m_pref = "";
-    m_indef = true;
 
     return tmp;
 }
@@ -253,6 +252,10 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
         {
             comencen_aux(result, pref, n);
         }
+    }
+    else
+    {
+        comencen_aux(result, "", m_arrel);
     }
 }
 
