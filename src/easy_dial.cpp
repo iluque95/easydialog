@@ -10,6 +10,9 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     vector<phone> v;
     R.dump(v);
 
+    if (v.size() > 0)
+        m_p = v[0];
+
     for (nat i = 0; i < v.size(); ++i)
     {
         insereix(v[i].nom() + phone::ENDPREF, v[i]);
@@ -100,17 +103,10 @@ string easy_dial::inici() throw()
 
     m_pi = m_primer;
 
-    string tmp;
-
-    tmp.reserve(m_pref.size());
-
-    if (tmp.size() > 0)
-        tmp.append(m_pref);
-
     m_pref = "";
     m_indef = false;
 
-    return tmp;
+    return m_p.nom();
 }
 
 string easy_dial::seguent(char c) throw(error)
@@ -191,7 +187,7 @@ string easy_dial::anterior() throw(error)
 
     m_pref.erase(m_pref.size() - 1);
 
-    return m_pref;
+    return m_p.nom();
 }
 
 //0(1)
@@ -210,6 +206,8 @@ nat easy_dial::num_telf() const throw(error)
         throw error(ErrNoExisteixTelefon);
         return 0;
     }
+
+    return m_p.numero();
 }
 
 void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error)
@@ -221,12 +219,9 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
         {
             result.push_back(str);
         }
-        else
-        {
-            comencen_aux(result, str, nt->m_fesq);
-            comencen_aux(result, str + nt->m_c, nt->m_fcen);
-            comencen_aux(result, str, nt->m_fdret);
-        }
+        comencen_aux(result, str, nt->m_fesq);
+        comencen_aux(result, str + nt->m_c, nt->m_fcen);
+        comencen_aux(result, str, nt->m_fdret);
     }
 }
 
