@@ -12,7 +12,7 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
 
     for (nat i = 0; i < v.size(); ++i)
     {
-        insereix(v[i].nom(), v[i]);
+        insereix(v[i].nom() + phone::ENDPREF, v[i]);
         m_freq += v[i].frequencia();
     }
 }
@@ -165,10 +165,9 @@ string easy_dial::seguent(char c) throw(error)
 
 string easy_dial::anterior() throw(error)
 {
-    if (m_indef)
+    if (m_pi == m_primer)
         throw error(ErrPrefixIndef);
-
-    else if (m_pi == m_primer)
+    else if (m_indef)
         throw error(ErrNoHiHaAnterior);
 
     node *tmp = m_pi;
@@ -190,7 +189,7 @@ nat easy_dial::num_telf() const throw(error)
     if (m_indef)
         throw error(ErrPrefixIndef);
 
-    if (m_arrel != NULL)
+    if (m_arrel != NULL and m_pref.size() > 0)
     {
         return m_pi->m_val->m_valor.numero();
     }
@@ -212,20 +211,48 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
         }
         else
         {
-            comencen_aux(result, str + nt->m_c, nt->m_fesq);
+            comencen_aux(result, str, nt->m_fesq);
             comencen_aux(result, str + nt->m_c, nt->m_fcen);
-            comencen_aux(result, str + nt->m_c, nt->m_fdret);
+            comencen_aux(result, str, nt->m_fdret);
         }
     }
 }
 
+typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const string &k) const throw()
+{
+    node_tst *res = NULL;
+    if (n != NULL)
+    {
+        if (i == k.length())
+        {
+            res = n;
+        }
+        else if (n->m_c > k[i])
+        {
+            res = trobar_pref(n->m_fesq, i, k);
+        }
+        else if (n->m_c < k[i])
+        {
+            res = trobar_pref(n->m_fdret, i, k);
+        }
+        else if (n->m_c == k[i])
+        {
+            res = trobar_pref(n->m_fcen, i + 1, k);
+        }
+    }
+    return res;
+}
+
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
 {
-    if (m_pi != NULL)
+    if (pref.size() > 0)
     {
-        comencen_aux(result, pref, m_pi->m_val->m_fesq);
-        comencen_aux(result, pref, m_pi->m_val->m_fcen);
-        comencen_aux(result, pref, m_pi->m_val->m_fdret);
+        node_tst *n = trobar_pref(m_arrel, 0, pref);
+
+        if (n != NULL)
+        {
+            comencen_aux(result, pref, n);
+        }
     }
 }
 
