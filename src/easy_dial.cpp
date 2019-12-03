@@ -108,6 +108,7 @@ string easy_dial::inici() throw()
         tmp.append(m_pref);
 
     m_pref = "";
+    m_indef = false;
 
     return tmp;
 }
@@ -142,12 +143,21 @@ string easy_dial::seguent(char c) throw(error)
 
             if (trobat)
             {
+                string tmp;
+
+                tmp.reserve(m_pref.size());
+
+                if (tmp.size() > 0)
+                    tmp.append(m_pref);
+
                 m_pi->m_seg = new node;
                 m_pi->m_seg->m_val = act;
                 m_pi->m_seg->m_ant = m_pi;
                 m_pi->m_seg->m_seg = NULL;
                 m_pref.push_back(c);
                 m_indef = false;
+
+                return tmp;
             }
         }
     }
@@ -164,10 +174,13 @@ string easy_dial::seguent(char c) throw(error)
 
 string easy_dial::anterior() throw(error)
 {
-    if (m_pi == m_primer)
+    if (m_indef)
         throw error(ErrPrefixIndef);
-    else if (m_indef)
+    else if (m_pi == m_primer)
+    {
+        m_indef = true;
         throw error(ErrNoHiHaAnterior);
+    }
 
     node *tmp = m_pi;
 
