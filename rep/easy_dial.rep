@@ -27,7 +27,12 @@ bool m_indef;
 
 double m_freq;
 
-phone m_p;
+phone m_inici;
+phone m_p_act;
+phone m_p_ant;
+
+node_tst *m_actual;
+node_tst *m_anterior;
 
 void consulta(const string &k, bool &hi_es, phone &v) const throw();
 void insereix(const string &k, const phone &v) throw(error);

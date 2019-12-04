@@ -14,7 +14,7 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     if (v.size() > 0)
     {
         mergeSort(v, 0, v.size() - 1);
-        m_p = v[0];
+        m_inici = m_p_act = v[0];
         m_indef = false;
     }
 
@@ -23,6 +23,8 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
         insereix(v[i].nom() + phone::ENDPREF, v[i]);
         m_freq += v[i].frequencia();
     }
+
+    m_actual = m_arrel;
 }
 
 //0(n)
@@ -115,67 +117,86 @@ string easy_dial::inici() throw()
     m_pref = "";
     m_indef = false;
 
-    return m_p.nom();
+    m_p_act = m_inici;
+
+    m_actual = m_arrel;
+
+    return m_p_act.nom();
 }
 
 //0(1)
 string easy_dial::seguent(char c) throw(error)
 {
 
-    node_tst *act = NULL;
     bool trobat = false;
 
-    if (m_pi != NULL)
+    node_tst *tmp = m_actual;
+
+    if (tmp != NULL)
     {
-        act = m_pi->m_val;
 
-        if (act != NULL)
+        m_anterior = m_actual;
+        m_p_ant = m_p_act;
+
+        // Baixar tants cops com lletres tingui el prefix
+        if (c != phone::ENDPREF)
+            for (nat i = 0; i < m_pref.size(); ++i)
+            {
+                tmp = tmp->m_fcen;
+            }
+
+        if (c > tmp->m_c and tmp->m_fdret != NULL)
         {
-            if (act->m_fesq != NULL and act->m_fesq->m_c == c)
+            if (tmp->m_fesq == NULL)
+                m_actual = tmp = tmp->m_fdret;
+            else
             {
+                m_actual = tmp;
+                tmp = tmp->m_fdret;
+            }
+
+            if (tmp->m_c == c)
                 trobat = true;
-                act = act->m_fesq;
-            }
-            else if (act->m_fcen != NULL and act->m_fcen->m_c == c)
+        }
+        else if (c < tmp->m_c and tmp->m_fesq != NULL)
+        {
+            if (tmp->m_fdret == NULL)
+                m_actual = tmp = tmp->m_fesq;
+            else
             {
+                m_actual = tmp;
+                tmp = tmp->m_fesq;
+            }
+
+            if (tmp->m_c == c)
                 trobat = true;
-                act = act->m_fcen;
-            }
-            else if (act->m_fdret != NULL and act->m_fdret->m_c == c)
-            {
+        }
+        else if (c == tmp->m_c and tmp->m_fcen != NULL)
+        {
+            m_actual = tmp = tmp->m_fcen;
+
+            if (tmp->m_c == c)
                 trobat = true;
-                act = act->m_fdret;
-            }
-
-            if (trobat)
-            {
-                string tmp;
-
-                tmp.reserve(m_pref.size());
-
-                if (tmp.size() > 0)
-                    tmp.append(m_pref);
-
-                m_pi->m_seg = new node;
-                m_pi->m_seg->m_val = act;
-                m_pi->m_seg->m_ant = m_pi;
-                m_pi->m_seg->m_seg = NULL;
-                m_pref.push_back(c);
-                m_indef = false;
-
-                return tmp;
-            }
         }
     }
 
-    if (m_pi == NULL or act == NULL or not trobat)
+    if (trobat)
+    {
+        while (tmp->m_c != phone::ENDPREF)
+            tmp = tmp->m_fcen;
+
+        m_p_act = tmp->m_valor;
+
+        m_pref.push_back(c);
+    }
+    else
     {
         m_indef = true;
         m_pref = "";
         throw error(ErrPrefixIndef);
     }
 
-    return m_pref;
+    return m_p_act.nom();
 }
 
 //0(1)
@@ -183,22 +204,18 @@ string easy_dial::anterior() throw(error)
 {
     if (m_indef)
         throw error(ErrPrefixIndef);
-    else if (m_pi == m_primer)
+    else if (m_p_act == m_inici)
     {
         m_indef = true;
         throw error(ErrNoHiHaAnterior);
     }
 
-    node *tmp = m_pi;
-
-    m_pi = m_pi->m_ant;
-    m_pi->m_seg = NULL;
-
-    delete tmp;
+    m_actual = m_anterior;
+    m_p_act = m_p_ant;
 
     m_pref.erase(m_pref.size() - 1);
 
-    return m_p.nom();
+    return m_p_act.nom();
 }
 
 //0(1)
@@ -210,7 +227,7 @@ nat easy_dial::num_telf() const throw(error)
 
     if (m_arrel != NULL)
     {
-        return m_p.numero();
+        return m_p_act.numero();
     }
     else
     {
@@ -218,7 +235,7 @@ nat easy_dial::num_telf() const throw(error)
         return 0;
     }
 
-    return m_p.numero();
+    return m_p_act.numero();
 }
 
 void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error)
