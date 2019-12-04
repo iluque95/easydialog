@@ -27,6 +27,8 @@ bool m_indef;
 
 double m_freq;
 
+phone m_p;
+
 void consulta(const string &k, bool &hi_es, phone &v) const throw();
 void insereix(const string &k, const phone &v) throw(error);
 
@@ -39,3 +41,9 @@ node_tst *crea_arbre (node_tst *n);
 node_tst *trobar_pref(node_tst *n, nat i, const string &k) const throw();
 
 void comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error);
+
+void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
+
+void mergeSort(std::vector<phone> &arr, nat start, nat end);
+
+void test(const vector<phone> &v);

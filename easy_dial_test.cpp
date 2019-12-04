@@ -49,7 +49,9 @@ int main()
 
     search(ed, "I");
 
-    search(ed,"D");
+    search(ed, "D");
+
+    search(ed, "");
 
     cout << "End of testing easy_dial..." << endl;
 }

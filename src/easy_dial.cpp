@@ -1,5 +1,6 @@
 #include "../incl/easy_dial.hpp"
 
+//0(n * log(n))
 easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
                                                             m_primer(NULL),
                                                             m_pi(NULL),
@@ -11,7 +12,11 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     R.dump(v);
 
     if (v.size() > 0)
+    {
+        mergeSort(v, 0, v.size() - 1);
         m_p = v[0];
+        m_indef = false;
+    }
 
     for (nat i = 0; i < v.size(); ++i)
     {
@@ -20,6 +25,7 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     }
 }
 
+//0(n)
 easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
                                                         m_indef(D.m_indef),
                                                         m_freq(D.m_freq)
@@ -48,6 +54,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
     }
 }
 
+//0(n)
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 {
 
@@ -89,11 +96,13 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
     return *this;
 }
 
+//0(n)
 easy_dial::~easy_dial() throw()
 {
     borra_arbre(m_arrel);
 }
 
+//0(1)
 string easy_dial::inici() throw()
 {
     m_primer = new node;
@@ -109,6 +118,7 @@ string easy_dial::inici() throw()
     return m_p.nom();
 }
 
+//0(1)
 string easy_dial::seguent(char c) throw(error)
 {
 
@@ -168,6 +178,7 @@ string easy_dial::seguent(char c) throw(error)
     return m_pref;
 }
 
+//0(1)
 string easy_dial::anterior() throw(error)
 {
     if (m_indef)
@@ -197,9 +208,9 @@ nat easy_dial::num_telf() const throw(error)
     if (m_indef)
         throw error(ErrPrefixIndef);
 
-    if (m_arrel != NULL and m_pref.size() > 0)
+    if (m_arrel != NULL)
     {
-        return m_pi->m_val->m_valor.numero();
+        return m_p.numero();
     }
     else
     {
@@ -391,4 +402,78 @@ void easy_dial::borra_arbre(node_tst *n)
 
         delete n;
     }
+}
+
+// merges two subarrays of array[].
+void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
+{
+
+    std::vector<phone> leftArray(middle - start + 1);
+    std::vector<phone> rightArray(end - middle);
+
+    // fill in left array
+    for (nat i = 0; i < leftArray.size(); ++i)
+        leftArray[i] = arr[start + i];
+
+    // fill in right array
+    for (nat i = 0; i < rightArray.size(); ++i)
+        rightArray[i] = arr[middle + 1 + i];
+
+    /* Merge the temp arrays */
+
+    // initial indexes of first and second subarrays
+    nat leftIndex = 0, rightIndex = 0;
+
+    // the index we will start at when adding the subarrays back into the main array
+    nat currentIndex = start;
+
+    // compare each index of the subarrays adding the lowest value to the currentIndex
+    while (leftIndex < leftArray.size() && rightIndex < rightArray.size())
+    {
+        if (leftArray[leftIndex] >= rightArray[rightIndex])
+        {
+            arr[currentIndex] = leftArray[leftIndex];
+            leftIndex++;
+        }
+        else
+        {
+            arr[currentIndex] = rightArray[rightIndex];
+            rightIndex++;
+        }
+        currentIndex++;
+    }
+
+    // copy remaining elements of leftArray[] if any
+    while (leftIndex < leftArray.size())
+        arr[currentIndex++] = leftArray[leftIndex++];
+
+    // copy remaining elements of rightArray[] if any
+    while (rightIndex < rightArray.size())
+        arr[currentIndex++] = rightArray[rightIndex++];
+}
+
+// main function that sorts array[start..end] using merge()
+void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
+{
+    // base case
+    if (start < end)
+    {
+        // find the middle point
+        nat middle = (start + end) / 2;
+
+        mergeSort(arr, start, middle);   // sort first half
+        mergeSort(arr, middle + 1, end); // sort second half
+
+        // merge the sorted halves
+        merge(arr, start, middle, end);
+    }
+}
+
+void easy_dial::test(const vector<phone> &v)
+{
+    cout << "{";
+    for (nat i = 0; i < v.size(); ++i)
+        cout << " \033[0;33m[" << i << "]\033[0m => \"\033[0;34m" << v[i].nom() << " (" << v[i].frequencia() << ")\033[0m\"";
+
+    cout << " }" << endl;
 }
