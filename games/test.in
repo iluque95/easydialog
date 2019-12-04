@@ -21,8 +21,14 @@ registra 1005
 registra 1005
 init d easy_dial rc
 inici
+seguent ""
+seguent Z
+anterior
 seguent M
-seguent E
-#seguent A
-#seguent R
-#seguent ""
+seguent A
+anterior
+anterior
+seguent M
+seguent A
+seguent R
+seguent ""
