@@ -115,7 +115,21 @@ string easy_dial::inici() throw()
     m_indef = false;
 
     if (m_primer != NULL)
+    {
+        node *ant = m_primer, *tmp = m_primer->m_seg;
+
+        while (tmp != NULL)
+        {
+            ant->m_seg = NULL;
+            ant = tmp;
+
+            tmp = tmp->m_seg;
+
+            delete ant; 
+        }
+        m_pi = m_primer;
         return m_primer->m_p.nom();
+    }
     else
         return "";
 }
