@@ -17,7 +17,7 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     {
         mergeSort(v, 0, v.size() - 1);
         m_primer->m_p = v[0];
-        m_indef = false;
+        //m_indef = false; QUITAR ???
     }
 
     for (nat i = 0; i < v.size(); ++i)
@@ -48,6 +48,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
         node *n = new node;
 
         n->m_val = tmp->m_val;
+        n->m_p = tmp->m_p;
         n->m_ant = ant_tmp;
         n->m_seg = ant_aux;
 
@@ -116,7 +117,8 @@ string easy_dial::inici() throw()
 
     if (m_primer != NULL)
     {
-        node *ant = m_primer, *tmp = m_primer->m_seg;
+        /*
+        node *ant = m_pi, *tmp = m_pi->m_seg;
 
         while (tmp != NULL)
         {
@@ -127,6 +129,7 @@ string easy_dial::inici() throw()
 
             delete ant; 
         }
+        */
         m_pi = m_primer;
         return m_primer->m_p.nom();
     }
@@ -145,6 +148,12 @@ string easy_dial::seguent(char c) throw(error)
     bool tornar = false;
     node_tst *n_tornar = NULL;
 
+    if (m_indef)
+    {
+        throw error(ErrPrefixIndef);
+        return "";
+    }
+
     if (tmp != NULL)
     {
 
@@ -153,7 +162,8 @@ string easy_dial::seguent(char c) throw(error)
 
         if (m_pi->m_val == m_arrel)
         {
-            if (c == phone::ENDPREF) // Básicament el més freqüent de tota l'estructura.
+            // FIXME: Cuando se le pasa "" debería agregar un nodo a la linked list
+            /*if (c == phone::ENDPREF) // Básicament el més freqüent de tota l'estructura.
             {
                 trobat = true;
             }
@@ -164,6 +174,47 @@ string easy_dial::seguent(char c) throw(error)
                 if (tmp != NULL)
                 {
 
+                    trobat = true;
+                    crea_node(tmp);
+                }
+            }*/
+
+            if (tmp->m_c == c)
+            {
+                if (tmp->m_fdret == NULL and tmp->m_fesq == NULL)
+                    tmp = tmp->m_fcen;
+
+                if (tmp->m_fdret != NULL)
+                {
+                    tmp = tmp->m_fdret;
+                    crea_node(tmp);
+                    trobat = true;
+                }
+                else if (tmp->m_fesq != NULL)
+                {
+                    tmp = tmp->m_fesq;
+                    crea_node(tmp);
+                    trobat = true;
+                }
+                else
+                {
+                    tornar = true;
+                }
+
+                if (tornar or tmp->m_c == phone::ENDPREF)
+                {
+                    n_tornar = m_arrel;
+                    tornar = true;
+                }
+
+                
+            }
+            else
+            {
+                tmp = buscar_pref(m_arrel, c);
+
+                if (tmp != NULL)
+                {
                     trobat = true;
                     crea_node(tmp);
                 }
@@ -188,7 +239,7 @@ string easy_dial::seguent(char c) throw(error)
             if (tmp->m_c == c)
             {
                 n_tornar = tmp;
-                tmp = tmp->m_fcen;
+                tmp = buscar_pref(tmp, c);
 
                 if (tmp->m_fesq != NULL)
                     tornar = true;
@@ -314,11 +365,7 @@ nat easy_dial::num_telf() const throw(error)
     if (m_indef)
         throw error(ErrPrefixIndef);
 
-    if (m_arrel != NULL)
-    {
-        return m_pi->m_p.numero();
-    }
-    else
+    if (m_pi->m_val == NULL)
     {
         throw error(ErrNoExisteixTelefon);
         return 0;
@@ -613,11 +660,14 @@ void easy_dial::crea_node(node_tst *a)
 {
     node *n = m_pi;
 
-    m_pi->m_seg = new node;
+    if (m_pi->m_seg == NULL)
+        m_pi->m_seg = new node;
 
     m_pi = m_pi->m_seg;
 
     m_pi->m_ant = n;
 
     m_pi->m_val = a;
+
+    m_pi->m_seg = NULL;
 }
