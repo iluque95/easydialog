@@ -128,109 +128,114 @@ string easy_dial::seguent(char c) throw(error)
 
     node_tst *tmp = m_pi->m_val;
 
+    bool tornar = false;
+    node_tst *n_tornar = NULL;
+
     if (tmp != NULL)
     {
 
-        // Baixar tants cops com lletres tingui el prefix - 1
-        if (c != phone::ENDPREF)
-            if (m_pref.size() > 0)
-                for (nat i = 0; i < m_pref.size() - 1; ++i)
+        // Si som a l'arrel i el pref és buit;
+        // #############################################################
+
+        if (m_pi->m_val == m_arrel)
+        {
+            if (c == phone::ENDPREF) // Básicament el més freqüent de tota l'estructura.
+            {
+                trobat = true;
+            }
+            else // Buscar prefix.
+            {
+                tmp = buscar_pref(m_arrel, c);
+
+                if (tmp != NULL)
+                {
+
+                    trobat = true;
+                    crea_node(tmp);
+                }
+            }
+        }
+        else // Som en un punt qualsevol de l'arbre, cal comprovar prefix en curs i trobar node.
+        {
+
+            // Baixar tants cops com lletres tingui el prefix
+            /*if (c != phone::ENDPREF and m_pref.size() > 0)
+            {
+                cout << "Estoy en " << tmp->m_c << ", quiero ir a " << c << ", prefijo: " << m_pref << endl;
+
+                for (nat i = 0; i < m_pref.size(); ++i)
                 {
                     tmp = tmp->m_fcen;
                 }
+            }*/
 
-        if (c == tmp->m_c or m_pref.size() == 0)
-        {
-            if (m_pref.size() > 0)
+            tmp = tmp->m_fcen;
+
+            if (tmp->m_c == c)
+            {
+                n_tornar = tmp;
                 tmp = tmp->m_fcen;
-            else
-                trobat = true;
 
-            if (c > tmp->m_c and tmp->m_fdret != NULL and not trobat)
+                if (tmp->m_fesq != NULL)
+                    tornar = true;
+
+                tmp = tmp->m_fdret;
+            }
+            else
+            {
+                tmp = buscar_pref(tmp, c);
+            }
+
+            if (tmp != NULL)
+            {
+                trobat = true;
+                crea_node(tmp);
+            }
+
+            /*if (c > tmp->m_c and tmp->m_fdret != NULL)
             {
                 if (tmp->m_fesq == NULL)
                 {
                     tmp = tmp->m_fdret;
 
-                    node *n = m_pi;
-
-                    m_pi->m_seg = new node;
-
-                    m_pi = m_pi->m_seg;
-
-                    m_pi->m_ant = n;
-
-                    m_pi->m_val = tmp;
+                    crea_node(tmp);
                 }
-
                 else
                 {
-                    node *n = m_pi;
-
-                    m_pi->m_seg = new node;
-
-                    m_pi = m_pi->m_seg;
-
-                    m_pi->m_ant = n;
-
-                    m_pi->m_val = tmp;
+                    crea_node(tmp);
 
                     tmp = tmp->m_fdret;
                 }
 
                 trobat = true;
             }
-            else if (c < tmp->m_c and tmp->m_fesq != NULL and not trobat)
+            else if (c < tmp->m_c and tmp->m_fesq != NULL)
             {
                 if (tmp->m_fdret == NULL)
                 {
                     tmp = tmp->m_fesq;
 
-                    node *n = m_pi;
-
-                    m_pi->m_seg = new node;
-
-                    m_pi = m_pi->m_seg;
-
-                    m_pi->m_ant = n;
-
-                    m_pi->m_val = tmp;
+                    crea_node(tmp);
                 }
                 else
                 {
 
-                    node *n = m_pi;
-
-                    m_pi->m_seg = new node;
-
-                    m_pi = m_pi->m_seg;
-
-                    m_pi->m_ant = n;
-
-                    m_pi->m_val = tmp;
+                    crea_node(tmp);
 
                     tmp = tmp->m_fesq;
                 }
 
                 trobat = true;
             }
-            else if (c == tmp->m_c and tmp->m_fcen != NULL and not trobat)
+            else if (c == tmp->m_c and tmp->m_fcen != NULL)
             {
-
                 tmp = tmp->m_fcen;
 
-                node *n = m_pi;
-
-                m_pi->m_seg = new node;
-
-                m_pi = m_pi->m_seg;
-
-                m_pi->m_ant = n;
-
-                m_pi->m_val = tmp;
+                crea_node(tmp);
 
                 trobat = true;
             }
+            */
         }
 
         if (trobat)
@@ -242,18 +247,13 @@ string easy_dial::seguent(char c) throw(error)
 
             if (c != phone::ENDPREF)
                 m_pref.push_back(c);
+
+            if (tornar)
+                m_pi->m_val = n_tornar;
         }
         else
         {
-            node *n = m_pi;
-
-            m_pi->m_seg = new node;
-
-            m_pi = m_pi->m_seg;
-
-            m_pi->m_ant = n;
-
-            m_pi->m_val = tmp;
+            crea_node(NULL);
 
             m_pref.push_back(c);
 
@@ -568,4 +568,42 @@ void easy_dial::test(const vector<phone> &v)
         cout << " \033[0;33m[" << i << "]\033[0m => \"\033[0;34m" << v[i].nom() << " (" << v[i].frequencia() << ")\033[0m\"";
 
     cout << " }" << endl;
+}
+
+typename easy_dial::node_tst *easy_dial::buscar_pref(node_tst *n, const char &c)
+{
+    node_tst *ret = NULL;
+    bool trobat = false;
+
+    while (n != NULL and not trobat)
+    {
+        if (c > n->m_c)
+        {
+            n = n->m_fdret;
+        }
+        else if (c < n->m_c)
+        {
+            n = n->m_fesq;
+        }
+        else
+        {
+            ret = n;
+            trobat = true;
+        }
+    }
+
+    return ret;
+}
+
+void easy_dial::crea_node(node_tst *a)
+{
+    node *n = m_pi;
+
+    m_pi->m_seg = new node;
+
+    m_pi = m_pi->m_seg;
+
+    m_pi->m_ant = n;
+
+    m_pi->m_val = a;
 }

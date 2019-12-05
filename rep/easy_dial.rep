@@ -46,3 +46,7 @@ void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
 void mergeSort(std::vector<phone> &arr, nat start, nat end);
 
 void test(const vector<phone> &v);
+
+node_tst *buscar_pref(node_tst *n, const char &c);
+
+void crea_node(node_tst *a);
