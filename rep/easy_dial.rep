@@ -41,16 +41,16 @@ node_tst *trobar_pref(node_tst *n, nat i, const string &k) const throw();
 
 void comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error);
 
+void comencen_aux(phone &result, const string &anterior, string str, node_tst *nt) const throw(error);
+
+void comencen2(const string &pref, bool complet) throw(error);
+
 void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
 
 void mergeSort(std::vector<phone> &arr, nat start, nat end);
 
 void test(const vector<phone> &v);
 
-node_tst *buscar_pref(node_tst *n, const char &c);
-
 void crea_node(node_tst *a);
 
-void comencen_aux(vector<phone> &result, string str, node_tst *nt) const throw(error);
-
-void comencen(vector<phone> &result, const string &pref) const throw(error);
+bool repetit(const string &str) const;

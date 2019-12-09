@@ -131,7 +131,8 @@ string easy_dial::inici() throw()
         }
         */
         m_pi = m_primer;
-        return m_primer->m_p.nom();
+
+        return m_pi->m_p.nom();
     }
     else
         return "";
@@ -140,27 +141,48 @@ string easy_dial::inici() throw()
 //0(1)
 string easy_dial::seguent(char c) throw(error)
 {
-    vector<phone> v;
+
+    if (m_indef)
+    {
+        throw error(ErrPrefixIndef);
+        return "";
+    }
+
+    if (m_pi->m_p.nom().size() == 0)
+    {
+        m_indef = true;
+        m_pref = "";
+        throw error(ErrPrefixIndef);
+    }
 
     string tmp;
+    bool complet = false;
 
     if (c == phone::ENDPREF)
     {
         if (m_pref.size() == 0) // ARREL
-            return m_primer->m_p.nom();
+        {
+            crea_node(NULL);
+            return "";
+        }
+        else
+        {
+            complet = true;
+        }
     }
 
     tmp.reserve(m_pref.size() + 1);
     tmp.append(m_pref);
     tmp.push_back(c);
 
-    comencen(v, tmp);
+    comencen2(tmp, complet);
 
-    if (m_pref.size() == 1 and v.size() > 0)
+    if (m_pi->m_val != NULL and m_pi->m_p.nom().size() > 0)
     {
-        return v[1].nom();
+        m_pref.push_back(c);
+
+        return m_pi->m_p.nom();
     }
-    
 
     return "";
 }
@@ -183,7 +205,8 @@ string easy_dial::anterior() throw(error)
 
     delete tmp;
 
-    m_pref.erase(m_pref.size() - 1);
+    if (m_pref.size() > 0)
+        m_pref.erase(m_pref.size() - 1);
 
     return m_pi->m_p.nom();
 }
@@ -195,10 +218,10 @@ nat easy_dial::num_telf() const throw(error)
     if (m_indef)
         throw error(ErrPrefixIndef);
 
-    if (m_pi->m_val == NULL)
+    if (m_pi->m_p.nom().size() == 0)
     {
         throw error(ErrNoExisteixTelefon);
-        return 0;
+        return ErrNoExisteixTelefon;
     }
 
     return m_pi->m_p.numero();
@@ -216,6 +239,23 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
         comencen_aux(result, str, nt->m_fesq);
         comencen_aux(result, str + nt->m_c, nt->m_fcen);
         comencen_aux(result, str, nt->m_fdret);
+    }
+}
+
+void easy_dial::comencen_aux(phone &result, const string &anterior, string str, node_tst *nt) const throw(error)
+{
+
+    if (nt != NULL)
+    {
+        if (nt->m_c == phone::ENDPREF)
+        {
+            if (not repetit(str) and nt->m_valor > result)
+                result = nt->m_valor;
+        }
+
+        comencen_aux(result, anterior, str + nt->m_c, nt->m_fcen);
+        comencen_aux(result, anterior, str, nt->m_fdret);
+        comencen_aux(result, anterior, str, nt->m_fesq);
     }
 }
 
@@ -238,10 +278,58 @@ typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const s
         }
         else if (n->m_c == k[i])
         {
-            res = trobar_pref(n->m_fcen, i + 1, k);
+            if (n->m_c == phone::ENDPREF)
+                res = trobar_pref(n, i + 1, k);
+            else
+                res = trobar_pref(n->m_fcen, i + 1, k);
         }
     }
     return res;
+}
+
+void easy_dial::comencen2(const string &pref, bool complet) throw(error)
+{
+    if (pref.size() > 0)
+    {
+        node_tst *n = trobar_pref(m_pi->m_val, pref.size() - 1, pref);
+
+        if (n != NULL)
+        {
+
+            phone p;
+
+            if (not complet)
+            {
+                crea_node(n);
+                comencen_aux(p, m_pi->m_ant->m_p.nom(), pref, n);
+                m_pi->m_p = p;
+            }
+            else
+            {
+
+                // Ha estat visitat?
+                if (m_pi->m_p.nom() == n->m_valor.nom() or repetit(n->m_valor.nom()))
+                {
+                    crea_node(NULL);
+                    m_pi->m_p = p;
+                }
+                else
+                {
+                    crea_node(n);
+                    m_pi->m_p = n->m_valor;
+                }
+            }
+        }
+        else
+        {
+            crea_node(NULL);
+        }
+    }
+    else
+    {
+        phone p;
+        comencen_aux(p, m_pi->m_p.nom(), "", m_arrel);
+    }
 }
 
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
@@ -249,7 +337,6 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
     if (pref.size() > 0)
     {
         node_tst *n = trobar_pref(m_arrel, 0, pref);
-        m_pi->m_val = n;
 
         if (n != NULL)
         {
@@ -462,31 +549,6 @@ void easy_dial::test(const vector<phone> &v)
     cout << " }" << endl;
 }
 
-typename easy_dial::node_tst *easy_dial::buscar_pref(node_tst *n, const char &c)
-{
-    node_tst *ret = NULL;
-    bool trobat = false;
-
-    while (n != NULL and not trobat)
-    {
-        if (c > n->m_c)
-        {
-            n = n->m_fdret;
-        }
-        else if (c < n->m_c)
-        {
-            n = n->m_fesq;
-        }
-        else
-        {
-            ret = n;
-            trobat = true;
-        }
-    }
-
-    return ret;
-}
-
 void easy_dial::crea_node(node_tst *a)
 {
     node *n = m_pi;
@@ -503,34 +565,20 @@ void easy_dial::crea_node(node_tst *a)
     m_pi->m_seg = NULL;
 }
 
-void easy_dial::comencen_aux(vector<phone> &result, string str, node_tst *nt) const throw(error)
+bool easy_dial::repetit(const string &str) const
 {
+    node *tmp = m_primer;
 
-    if (nt != NULL)
-    {
-        if (nt->m_c == phone::ENDPREF)
-        {
-            result.push_back(nt->m_valor);
-        }
-        comencen_aux(result, str, nt->m_fesq);
-        comencen_aux(result, str + nt->m_c, nt->m_fcen);
-        comencen_aux(result, str, nt->m_fdret);
-    }
-}
+    bool visitat = false;
 
-void easy_dial::comencen(vector<phone> &result, const string &pref) const throw(error)
-{
-    if (pref.size() > 0)
-    {
-        node_tst *n = trobar_pref(m_pi->m_val, pref.size() - 1, pref);
 
-        if (n != NULL)
-        {
-            comencen_aux(result, pref, n);
-        }
-    }
-    else
+    while (tmp != m_pi and not visitat)
     {
-        comencen_aux(result, "", m_arrel);
+        if (str == tmp->m_p.nom())
+            visitat = true;
+        else
+            tmp = tmp->m_seg;
     }
+
+    return visitat;
 }
