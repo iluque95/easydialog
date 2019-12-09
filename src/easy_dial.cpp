@@ -140,199 +140,29 @@ string easy_dial::inici() throw()
 //0(1)
 string easy_dial::seguent(char c) throw(error)
 {
+    vector<phone> v;
 
-    bool trobat = false;
+    string tmp;
 
-    node_tst *tmp = m_pi->m_val;
-
-    bool tornar = false;
-    node_tst *n_tornar = NULL;
-
-    if (m_indef)
+    if (c == phone::ENDPREF)
     {
-        throw error(ErrPrefixIndef);
-        return "";
+        if (m_pref.size() == 0) // ARREL
+            return m_primer->m_p.nom();
     }
 
-    if (tmp != NULL)
+    tmp.reserve(m_pref.size() + 1);
+    tmp.append(m_pref);
+    tmp.push_back(c);
+
+    comencen(v, tmp);
+
+    if (m_pref.size() == 1 and v.size() > 0)
     {
-
-        // Si som a l'arrel i el pref és buit;
-        // #############################################################
-
-        if (m_pi->m_val == m_arrel)
-        {
-            // FIXME: Cuando se le pasa "" debería agregar un nodo a la linked list
-            /*if (c == phone::ENDPREF) // Básicament el més freqüent de tota l'estructura.
-            {
-                trobat = true;
-            }
-            else // Buscar prefix.
-            {
-                tmp = buscar_pref(m_arrel, c);
-
-                if (tmp != NULL)
-                {
-
-                    trobat = true;
-                    crea_node(tmp);
-                }
-            }*/
-
-            if (tmp->m_c == c)
-            {
-                if (tmp->m_fdret == NULL and tmp->m_fesq == NULL)
-                    tmp = tmp->m_fcen;
-
-                if (tmp->m_fdret != NULL)
-                {
-                    tmp = tmp->m_fdret;
-                    crea_node(tmp);
-                    trobat = true;
-                }
-                else if (tmp->m_fesq != NULL)
-                {
-                    tmp = tmp->m_fesq;
-                    crea_node(tmp);
-                    trobat = true;
-                }
-                else
-                {
-                    tornar = true;
-                }
-
-                if (tornar or tmp->m_c == phone::ENDPREF)
-                {
-                    n_tornar = m_arrel;
-                    tornar = true;
-                }
-
-                
-            }
-            else
-            {
-                tmp = buscar_pref(m_arrel, c);
-
-                if (tmp != NULL)
-                {
-                    trobat = true;
-                    crea_node(tmp);
-                }
-            }
-        }
-        else // Som en un punt qualsevol de l'arbre, cal comprovar prefix en curs i trobar node.
-        {
-
-            // Baixar tants cops com lletres tingui el prefix
-            /*if (c != phone::ENDPREF and m_pref.size() > 0)
-            {
-                cout << "Estoy en " << tmp->m_c << ", quiero ir a " << c << ", prefijo: " << m_pref << endl;
-
-                for (nat i = 0; i < m_pref.size(); ++i)
-                {
-                    tmp = tmp->m_fcen;
-                }
-            }*/
-
-            tmp = tmp->m_fcen;
-
-            if (tmp->m_c == c)
-            {
-                n_tornar = tmp;
-                tmp = buscar_pref(tmp, c);
-
-                if (tmp->m_fesq != NULL)
-                    tornar = true;
-
-                tmp = tmp->m_fdret;
-            }
-            else
-            {
-                tmp = buscar_pref(tmp, c);
-            }
-
-            if (tmp != NULL)
-            {
-                trobat = true;
-                crea_node(tmp);
-            }
-
-            /*if (c > tmp->m_c and tmp->m_fdret != NULL)
-            {
-                if (tmp->m_fesq == NULL)
-                {
-                    tmp = tmp->m_fdret;
-
-                    crea_node(tmp);
-                }
-                else
-                {
-                    crea_node(tmp);
-
-                    tmp = tmp->m_fdret;
-                }
-
-                trobat = true;
-            }
-            else if (c < tmp->m_c and tmp->m_fesq != NULL)
-            {
-                if (tmp->m_fdret == NULL)
-                {
-                    tmp = tmp->m_fesq;
-
-                    crea_node(tmp);
-                }
-                else
-                {
-
-                    crea_node(tmp);
-
-                    tmp = tmp->m_fesq;
-                }
-
-                trobat = true;
-            }
-            else if (c == tmp->m_c and tmp->m_fcen != NULL)
-            {
-                tmp = tmp->m_fcen;
-
-                crea_node(tmp);
-
-                trobat = true;
-            }
-            */
-        }
-
-        if (trobat)
-        {
-            while (tmp->m_c != phone::ENDPREF)
-                tmp = tmp->m_fcen;
-
-            m_pi->m_p = tmp->m_valor;
-
-            if (c != phone::ENDPREF)
-                m_pref.push_back(c);
-
-            if (tornar)
-                m_pi->m_val = n_tornar;
-        }
-        else
-        {
-            crea_node(NULL);
-
-            m_pref.push_back(c);
-
-            return "";
-        }
+        return v[1].nom();
     }
-    else
-    {
-        m_indef = true;
-        m_pref = "";
-        throw error(ErrPrefixIndef);
-    }
+    
 
-    return m_pi->m_p.nom();
+    return "";
 }
 
 //0(1)
@@ -419,6 +249,7 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
     if (pref.size() > 0)
     {
         node_tst *n = trobar_pref(m_arrel, 0, pref);
+        m_pi->m_val = n;
 
         if (n != NULL)
         {
@@ -670,4 +501,36 @@ void easy_dial::crea_node(node_tst *a)
     m_pi->m_val = a;
 
     m_pi->m_seg = NULL;
+}
+
+void easy_dial::comencen_aux(vector<phone> &result, string str, node_tst *nt) const throw(error)
+{
+
+    if (nt != NULL)
+    {
+        if (nt->m_c == phone::ENDPREF)
+        {
+            result.push_back(nt->m_valor);
+        }
+        comencen_aux(result, str, nt->m_fesq);
+        comencen_aux(result, str + nt->m_c, nt->m_fcen);
+        comencen_aux(result, str, nt->m_fdret);
+    }
+}
+
+void easy_dial::comencen(vector<phone> &result, const string &pref) const throw(error)
+{
+    if (pref.size() > 0)
+    {
+        node_tst *n = trobar_pref(m_pi->m_val, pref.size() - 1, pref);
+
+        if (n != NULL)
+        {
+            comencen_aux(result, pref, n);
+        }
+    }
+    else
+    {
+        comencen_aux(result, "", m_arrel);
+    }
 }

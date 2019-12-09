@@ -50,3 +50,7 @@ void test(const vector<phone> &v);
 node_tst *buscar_pref(node_tst *n, const char &c);
 
 void crea_node(node_tst *a);
+
+void comencen_aux(vector<phone> &result, string str, node_tst *nt) const throw(error);
+
+void comencen(vector<phone> &result, const string &pref) const throw(error);
