@@ -17,18 +17,20 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     {
         mergeSort(v, 0, v.size() - 1);
         m_primer->m_p = v[0];
-        //m_indef = false; QUITAR ???
+
+        for (nat i = 0; i < v.size(); ++i)
+        {
+            insereix(v[i].nom() + phone::ENDPREF, v[i]);
+            m_freq += v[i].frequencia();
+        }
+
+        // Calculem la longitud mitjana un cop sabem la freqüència total.
+        m_freq = calcula_longitud(m_arrel) / m_freq;
+
+        m_primer->m_val = m_arrel;
+
+        m_pi = m_primer;
     }
-
-    for (nat i = 0; i < v.size(); ++i)
-    {
-        insereix(v[i].nom() + phone::ENDPREF, v[i]);
-        m_freq += v[i].frequencia();
-    }
-
-    m_primer->m_val = m_arrel;
-
-    m_pi = m_primer;
 }
 
 //0(n)
@@ -242,6 +244,7 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
     }
 }
 
+// FIXME: Delete anterior param.
 void easy_dial::comencen_aux(phone &result, const string &anterior, string str, node_tst *nt) const throw(error)
 {
 
@@ -354,7 +357,7 @@ double easy_dial::longitud_mitjana() const throw()
     //node_tst *n = m_arrel;
     //double freq = n->m_valor.frequencia() / m_freq;
 
-    return 0;
+    return m_freq;
 }
 
 void easy_dial::consulta(const string &k, bool &hi_es, phone &v) const throw()
@@ -571,7 +574,6 @@ bool easy_dial::repetit(const string &str) const
 
     bool visitat = false;
 
-
     while (tmp != m_pi and not visitat)
     {
         if (str == tmp->m_p.nom())
@@ -581,4 +583,64 @@ bool easy_dial::repetit(const string &str) const
     }
 
     return visitat;
+}
+
+typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
+{
+
+    node_tst *tmpA = fesq, *tmpB = fdret;
+
+    while (tmpA->m_c != phone::ENDPREF)
+    {
+        tmpA = tmpA->m_fcen;
+    }
+
+    while (tmpB->m_c != phone::ENDPREF)
+    {
+        tmpB = tmpB->m_fcen;
+    }
+
+    if (tmpA->m_valor > tmpB->m_valor)
+        return fesq;
+    else
+        return fdret;
+}
+
+nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
+{
+    nat total = 0;
+    if (nt != NULL)
+    {
+        if (nt->m_c == phone::ENDPREF)
+        {
+            total = nt->m_valor.frequencia() * freq;
+        }
+
+        if (nt->m_fesq != NULL and nt->m_fdret != NULL)
+        {
+            node_tst *mx = max(nt->m_fesq,nt->m_fdret);
+            node_tst *mn = ((mx == nt->m_fesq) ? nt->m_fdret : nt->m_fesq);
+
+            total += calcula_longitud(mx, freq + 1);
+
+            if (mn->m_c == phone::ENDPREF)
+                total += calcula_longitud(mn, freq + 2);
+            else
+                total += calcula_longitud(mn, freq + 1);
+        }
+        else
+        {
+            total += calcula_longitud(nt->m_fdret, freq + 1);
+            total += calcula_longitud(nt->m_fesq, freq + 1);
+        }
+
+        total += calcula_longitud(nt->m_fcen, freq);
+    }
+
+    return total;
+}
+
+nat easy_dial::calcula_longitud(node_tst *nt)
+{
+    return calcula_longitud(m_arrel, 0);
 }

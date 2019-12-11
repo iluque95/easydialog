@@ -54,3 +54,9 @@ void test(const vector<phone> &v);
 void crea_node(node_tst *a);
 
 bool repetit(const string &str) const;
+
+nat calcula_longitud(node_tst *nt);
+
+nat calcula_longitud(node_tst *nt, nat freq);
+
+node_tst *max(node_tst *fesq, node_tst *fdret);
