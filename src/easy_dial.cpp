@@ -1,6 +1,6 @@
 #include "../incl/easy_dial.hpp"
 
-//0(n * log(n))
+//0(2n * log(n))
 easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
                                                             m_primer(NULL),
                                                             m_pi(NULL),
@@ -109,6 +109,8 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 easy_dial::~easy_dial() throw()
 {
     borra_arbre(m_arrel);
+
+    borra_estructura_aux(m_primer);
 }
 
 //0(1)
@@ -119,19 +121,6 @@ string easy_dial::inici() throw()
 
     if (m_primer != NULL)
     {
-        /*
-        node *ant = m_pi, *tmp = m_pi->m_seg;
-
-        while (tmp != NULL)
-        {
-            ant->m_seg = NULL;
-            ant = tmp;
-
-            tmp = tmp->m_seg;
-
-            delete ant; 
-        }
-        */
         m_pi = m_primer;
 
         return m_pi->m_p.nom();
@@ -177,7 +166,7 @@ string easy_dial::seguent(char c) throw(error)
     tmp.append(m_pref);
     tmp.push_back(c);
 
-    comencen2(tmp, complet);
+    comencen_amb(tmp, complet);
 
     if (m_pi->m_val != NULL and m_pi->m_p.nom().size() > 0)
     {
@@ -229,6 +218,7 @@ nat easy_dial::num_telf() const throw(error)
     return m_pi->m_p.numero();
 }
 
+//0(n)
 void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error)
 {
 
@@ -244,8 +234,8 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
     }
 }
 
-// FIXME: Delete anterior param.
-void easy_dial::comencen_aux(phone &result, const string &anterior, string str, node_tst *nt) const throw(error)
+//0(1)
+void easy_dial::comencen_major(phone &result, string str, node_tst *nt) const throw(error)
 {
 
     if (nt != NULL)
@@ -256,12 +246,13 @@ void easy_dial::comencen_aux(phone &result, const string &anterior, string str, 
                 result = nt->m_valor;
         }
 
-        comencen_aux(result, anterior, str + nt->m_c, nt->m_fcen);
-        comencen_aux(result, anterior, str, nt->m_fdret);
-        comencen_aux(result, anterior, str, nt->m_fesq);
+        comencen_major(result, str + nt->m_c, nt->m_fcen);
+        comencen_major(result, str, nt->m_fdret);
+        comencen_major(result, str, nt->m_fesq);
     }
 }
 
+//0(1)
 typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const string &k) const throw()
 {
     node_tst *res = NULL;
@@ -290,7 +281,8 @@ typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const s
     return res;
 }
 
-void easy_dial::comencen2(const string &pref, bool complet) throw(error)
+//0(1)
+void easy_dial::comencen_amb(const string &pref, bool complet) throw(error)
 {
     if (pref.size() > 0)
     {
@@ -304,7 +296,7 @@ void easy_dial::comencen2(const string &pref, bool complet) throw(error)
             if (not complet)
             {
                 crea_node(n);
-                comencen_aux(p, m_pi->m_ant->m_p.nom(), pref, n);
+                comencen_major(p, pref, n);
                 m_pi->m_p = p;
             }
             else
@@ -331,10 +323,11 @@ void easy_dial::comencen2(const string &pref, bool complet) throw(error)
     else
     {
         phone p;
-        comencen_aux(p, m_pi->m_p.nom(), "", m_arrel);
+        comencen_major(p, "", m_arrel);
     }
 }
 
+//0(n)
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
 {
     if (pref.size() > 0)
@@ -352,58 +345,13 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
     }
 }
 
+//0(1)
 double easy_dial::longitud_mitjana() const throw()
 {
-    //node_tst *n = m_arrel;
-    //double freq = n->m_valor.frequencia() / m_freq;
-
     return m_freq;
 }
 
-void easy_dial::consulta(const string &k, bool &hi_es, phone &v) const throw()
-{
-    node_tst *n = rconsulta(m_arrel, 0, k);
-    if (n == NULL)
-    {
-        hi_es = false;
-    }
-    else
-    {
-        v = n->m_valor;
-        hi_es = true;
-    }
-}
-
-void easy_dial::insereix(const string &k, const phone &v) throw(error)
-{
-    m_arrel = rinsereix(m_arrel, 0, k, v);
-}
-
-typename easy_dial::node_tst *easy_dial::rconsulta(node_tst *n, nat i, const string &k) const throw()
-{
-    node_tst *res = NULL;
-    if (n != NULL)
-    {
-        if (i == k.length() and n->m_c == phone::ENDPREF)
-        {
-            res = n;
-        }
-        else if (n->m_c > k[i])
-        {
-            res = rconsulta(n->m_fesq, i, k);
-        }
-        else if (n->m_c < k[i])
-        {
-            res = rconsulta(n->m_fdret, i, k);
-        }
-        else if (n->m_c == k[i])
-        {
-            res = rconsulta(n->m_fcen, i + 1, k);
-        }
-    }
-    return res;
-}
-
+//0(log K.length)
 typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error)
 {
     if (n == NULL)
@@ -446,6 +394,7 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
     return n;
 }
 
+//0(n)
 easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 {
     node_tst *aux = NULL;
@@ -465,6 +414,7 @@ easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
     return aux;
 }
 
+//0(n)
 void easy_dial::borra_arbre(node_tst *n)
 {
 
@@ -478,7 +428,7 @@ void easy_dial::borra_arbre(node_tst *n)
     }
 }
 
-// merges two subarrays of array[].
+//0(log n)
 void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
 {
 
@@ -526,7 +476,7 @@ void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
         arr[currentIndex++] = rightArray[rightIndex++];
 }
 
-// main function that sorts array[start..end] using merge()
+//0(log n)
 void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
 {
     // base case
@@ -541,15 +491,6 @@ void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
         // merge the sorted halves
         merge(arr, start, middle, end);
     }
-}
-
-void easy_dial::test(const vector<phone> &v)
-{
-    cout << "{";
-    for (nat i = 0; i < v.size(); ++i)
-        cout << " \033[0;33m[" << i << "]\033[0m => \"\033[0;34m" << v[i].nom() << " (" << v[i].frequencia() << ")\033[0m\"";
-
-    cout << " }" << endl;
 }
 
 void easy_dial::crea_node(node_tst *a)
@@ -568,6 +509,7 @@ void easy_dial::crea_node(node_tst *a)
     m_pi->m_seg = NULL;
 }
 
+//0(1)
 bool easy_dial::repetit(const string &str) const
 {
     node *tmp = m_primer;
@@ -585,6 +527,7 @@ bool easy_dial::repetit(const string &str) const
     return visitat;
 }
 
+//0(1)
 typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
 {
 
@@ -606,6 +549,7 @@ typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
         return fdret;
 }
 
+//0(n)
 nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
 {
     nat total = 0;
@@ -618,7 +562,7 @@ nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
 
         if (nt->m_fesq != NULL and nt->m_fdret != NULL)
         {
-            node_tst *mx = max(nt->m_fesq,nt->m_fdret);
+            node_tst *mx = max(nt->m_fesq, nt->m_fdret);
             node_tst *mn = ((mx == nt->m_fesq) ? nt->m_fdret : nt->m_fesq);
 
             total += calcula_longitud(mx, freq + 1);
@@ -640,7 +584,18 @@ nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
     return total;
 }
 
+//0(n)
 nat easy_dial::calcula_longitud(node_tst *nt)
 {
     return calcula_longitud(m_arrel, 0);
+}
+
+//0(n)
+void easy_dial::borra_estructura_aux(node *n)
+{
+    if (n != NULL)
+    {
+        borra_estructura_aux(n->m_seg);
+        delete n;
+    }
 }
