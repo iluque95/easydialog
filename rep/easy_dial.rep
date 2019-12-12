@@ -28,35 +28,89 @@ bool m_indef;
 
 double m_freq;
 
-void consulta(const string &k, bool &hi_es, phone &v) const throw();
+/*
+    Insereix la paraula K en l'arbre TST.
+    El node representatiu de fi de paraula (phone::ENDPREF), conté el phone del nom.
+*/
 void insereix(const string &k, const phone &v) throw(error);
 
-node_tst *rconsulta(node_tst *n, nat i, const string &k) const throw();
+/*
+    Crida recursiva del mètode insereix, segueix les propietats del TST i retorna un
+    node de l'estructura. L'arrel en l'última crida de l'stack.
+*/
 node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
 
-void borra_arbre(node_tst *n);
+/*
+    Crea una copia exacta d'un arbre TST a partir de la seva arrel en el paràmetre implicit.
+*/
 node_tst *crea_arbre (node_tst *n);
 
+/*
+    Esborrar recursivament l'estructura del TST.
+*/
+void borra_arbre(node_tst *n);
+
+/*
+    A partir d'un punt de l'arbre donat com argument n cerca el prefix k.
+*/
 node_tst *trobar_pref(node_tst *n, nat i, const string &k) const throw();
 
+/*
+    Afegeix al vector result tots els nom que compleixen el prefix trobat en nt prèviament.
+    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix en
+    el vector.
+*/
 void comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error);
 
-void comencen_aux(phone &result, const string &anterior, string str, node_tst *nt) const throw(error);
+/*
+    Emmagatzema el màxim dels phones d'un conjunt que compleixen el prefix trobat en nt prèviament.
+    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix es comprova si és el max.
+*/
+void comencen_major(phone &result, string str, node_tst *nt) const throw(error);
 
-void comencen2(const string &pref, bool complet) throw(error);
+/*
+    A partir d'un prefix en curs busca el següent phone màxim.
+    Si el prefix és un nom complet, l'argument com a tal val true, false en qualsevol altre cas.
+*/
+void comencen_amb(const string &pref, bool complet) throw(error);
 
 void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
 
 void mergeSort(std::vector<phone> &arr, nat start, nat end);
 
-void test(const vector<phone> &v);
-
+/*
+    Afegeix un nou node al final de l'estructura auxiliar.
+*/
 void crea_node(node_tst *a);
 
+/*
+    Comprova si el nom trobat ja ha estat mostrat prèviament.
+*/
 bool repetit(const string &str) const;
 
+/*
+    A partir de l'arrel de l'arbre TST, recorre aquest per calcular la longitud mitjana.
+*/
 nat calcula_longitud(node_tst *nt);
 
+/*
+    Calcula de forma recursiva la longitud mitjana.
+    La freqüència s'incrementa cada cop que l'arbre ha de canviar a una nova paraula, és a dir, cada cop
+    que existeix un prefix a partir d'una paraula, per tant, representa la quantitat de crides següents que calen
+    per arribar a la paraula com a tal.
+    En cas de existir dos fills, és a dir, dos noms que deriven del mateix prefix, es comprova quin és màxim.
+    Si el prefix mínim és un phone::ENDPREF, la freqüència és dos cops més, ja que es necessita d'un caràcter
+    extra per indicar que és un nom complet.
+*/
 nat calcula_longitud(node_tst *nt, nat freq);
 
+/*
+    Donats dos nodes que representen l'inici de cada nom, arriba fins a les fulles de cadascún i retorna
+    quin telèfon és més gran, és a dir, més freqüent segons les propietats de la classe phone.
+*/
 node_tst *max(node_tst *fesq, node_tst *fdret);
+
+/*
+    Esborra l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST.
+*/
+void borra_estructura_aux(node *n);
