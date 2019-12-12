@@ -11,11 +11,14 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
     vector<phone> v;
     R.dump(v);
 
-    m_primer = new node;
-
     if (v.size() > 0)
     {
         mergeSort(v, 0, v.size() - 1);
+
+        m_primer = new node;
+
+        m_primer->m_seg = m_primer->m_ant = NULL;
+
         m_primer->m_p = v[0];
 
         for (nat i = 0; i < v.size(); ++i)
@@ -41,26 +44,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
     //Bucle para el arbol
     m_arrel = crea_arbre(D.m_arrel);
 
-    node *tmp = D.m_primer, *ant_tmp = NULL, *ant_aux = NULL;
-
-    while (tmp != NULL)
-    {
-        ant_tmp = tmp;
-
-        node *n = new node;
-
-        n->m_val = tmp->m_val;
-        n->m_p = tmp->m_p;
-        n->m_ant = ant_tmp;
-        n->m_seg = ant_aux;
-
-        ant_aux = n;
-
-        if (tmp == D.m_pi)
-            m_pi = n;
-
-        tmp = tmp->m_seg;
-    }
+    copia_estructura_aux(D.m_primer, D.m_pi);
 }
 
 //0(n)
@@ -139,7 +123,7 @@ string easy_dial::seguent(char c) throw(error)
         return "";
     }
 
-    if (m_pi->m_p.nom().size() == 0)
+    if (m_pi == NULL or m_pi->m_p.nom().size() == 0)
     {
         m_indef = true;
         m_pref = "";
@@ -209,7 +193,7 @@ nat easy_dial::num_telf() const throw(error)
     if (m_indef)
         throw error(ErrPrefixIndef);
 
-    if (m_pi->m_p.nom().size() == 0)
+    if (m_pi == NULL or m_pi->m_p.nom().size() == 0)
     {
         throw error(ErrNoExisteixTelefon);
         return ErrNoExisteixTelefon;
@@ -351,6 +335,11 @@ double easy_dial::longitud_mitjana() const throw()
     return m_freq;
 }
 
+void easy_dial::insereix(const string &k, const phone &v) throw(error)
+{
+    m_arrel = rinsereix(m_arrel, 0, k, v);
+}
+
 //0(log K.length)
 typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error)
 {
@@ -415,7 +404,7 @@ easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 }
 
 //0(n)
-void easy_dial::borra_arbre(node_tst *n)
+void easy_dial::borra_arbre(node_tst *&n)
 {
 
     if (n != NULL)
@@ -425,6 +414,7 @@ void easy_dial::borra_arbre(node_tst *n)
         borra_arbre(n->m_fcen);
 
         delete n;
+        n = NULL;
     }
 }
 
@@ -503,6 +493,8 @@ void easy_dial::crea_node(node_tst *a)
     m_pi = m_pi->m_seg;
 
     m_pi->m_ant = n;
+
+    n->m_seg = m_pi;
 
     m_pi->m_val = a;
 
@@ -591,11 +583,38 @@ nat easy_dial::calcula_longitud(node_tst *nt)
 }
 
 //0(n)
-void easy_dial::borra_estructura_aux(node *n)
+void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
+{
+    node *tmp = n, *ant_tmp = NULL;
+
+    while (tmp != NULL)
+    {
+        node *aux = new node;
+
+        if (ant_tmp != NULL)
+            ant_tmp->m_seg = aux;
+
+        aux->m_val = tmp->m_val;
+        aux->m_p = tmp->m_p;
+        aux->m_ant = ant_tmp;
+        aux->m_seg = NULL;
+
+        ant_tmp = tmp;
+
+        if (tmp == d_m_pi)
+            m_pi = n;
+
+        tmp = tmp->m_seg;
+    }
+}
+
+//0(n)
+void easy_dial::borra_estructura_aux(node *&n)
 {
     if (n != NULL)
     {
         borra_estructura_aux(n->m_seg);
         delete n;
+        n = NULL;
     }
 }

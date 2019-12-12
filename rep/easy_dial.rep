@@ -29,6 +29,27 @@ bool m_indef;
 double m_freq;
 
 /*
+    Crea una copia exacta d'un arbre TST a partir de la seva arrel en el paràmetre implicit.
+*/
+node_tst *crea_arbre (node_tst *n);
+
+/*
+    Esborrar recursivament l'estructura del TST.
+*/
+void borra_arbre(node_tst *&n);
+
+/*
+    Copia l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST a partir d'una existent
+    en un altre easy_dial.
+*/
+void copia_estructura_aux(node *n, node *d_m_pi);
+
+/*
+    Esborra l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST.
+*/
+void borra_estructura_aux(node *&n);
+
+/*
     Insereix la paraula K en l'arbre TST.
     El node representatiu de fi de paraula (phone::ENDPREF), conté el phone del nom.
 */
@@ -41,14 +62,14 @@ void insereix(const string &k, const phone &v) throw(error);
 node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
 
 /*
-    Crea una copia exacta d'un arbre TST a partir de la seva arrel en el paràmetre implicit.
+    Afegeix un nou node al final de l'estructura auxiliar.
 */
-node_tst *crea_arbre (node_tst *n);
+void crea_node(node_tst *a);
 
 /*
-    Esborrar recursivament l'estructura del TST.
+    Comprova si el nom trobat ja ha estat mostrat prèviament.
 */
-void borra_arbre(node_tst *n);
+bool repetit(const string &str) const;
 
 /*
     A partir d'un punt de l'arbre donat com argument n cerca el prefix k.
@@ -79,16 +100,6 @@ void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
 void mergeSort(std::vector<phone> &arr, nat start, nat end);
 
 /*
-    Afegeix un nou node al final de l'estructura auxiliar.
-*/
-void crea_node(node_tst *a);
-
-/*
-    Comprova si el nom trobat ja ha estat mostrat prèviament.
-*/
-bool repetit(const string &str) const;
-
-/*
     A partir de l'arrel de l'arbre TST, recorre aquest per calcular la longitud mitjana.
 */
 nat calcula_longitud(node_tst *nt);
@@ -109,8 +120,3 @@ nat calcula_longitud(node_tst *nt, nat freq);
     quin telèfon és més gran, és a dir, més freqüent segons les propietats de la classe phone.
 */
 node_tst *max(node_tst *fesq, node_tst *fdret);
-
-/*
-    Esborra l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST.
-*/
-void borra_estructura_aux(node *n);
