@@ -497,17 +497,18 @@ void easy_dial::crea_node(node_tst *a)
     node *n = m_pi;
 
     if (m_pi->m_seg == NULL)
+    {
         m_pi->m_seg = new node;
+
+        m_pi->m_seg->m_ant = n;
+        n->m_seg = m_pi->m_seg;
+
+        m_pi->m_seg->m_seg = NULL;
+    }
 
     m_pi = m_pi->m_seg;
 
-    m_pi->m_ant = n;
-
-    n->m_seg = m_pi;
-
     m_pi->m_val = a;
-
-    m_pi->m_seg = NULL;
 }
 
 //0(1)
