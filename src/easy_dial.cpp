@@ -504,17 +504,42 @@ void easy_dial::crea_node(node_tst *a)
 //0(1)
 bool easy_dial::repetit(const string &str) const
 {
-    node *tmp = m_primer;
+    node *tmp = m_pi->m_ant;
 
     bool visitat = false;
 
-    while (tmp != m_pi and not visitat)
+    while (tmp != NULL and not visitat)
     {
         if (str == tmp->m_p.nom())
             visitat = true;
         else
+            tmp = tmp->m_ant;
+    }
+
+/*
+    cout << "Memory pointers: {";
+
+    tmp = m_primer;
+
+    while (tmp != NULL)
+    {
+        cout << " " << ((tmp->m_p.nom().size() == 0) ? "\"\"" : tmp->m_p.nom());
             tmp = tmp->m_seg;
     }
+
+    cout << " } {";
+
+    tmp = m_pi;
+
+    while (tmp != NULL)
+    {
+        cout << " " << ((tmp->m_p.nom().size() == 0) ? "\"\"" : tmp->m_p.nom());
+        tmp = tmp->m_ant;
+    }
+
+    cout << " }" << endl;
+*/
+    
 
     return visitat;
 }
