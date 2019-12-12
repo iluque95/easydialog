@@ -6,6 +6,17 @@
 3. Inversa de la redispersión.
 4. Mejorar coste DUMP
 
+5. Probar constructor por copia easy_dial. Posiblemente call_registry también ?
+
+6. Probar operador de asignación. Probablemente también en call_registry ??
+
+
+
+IMPORTANT THINGS
+----------------
+
+1. Corregir memory leaks en easy_dial, todavía hay agujeros.
+
 
 
 
