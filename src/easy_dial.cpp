@@ -105,6 +105,15 @@ string easy_dial::inici() throw()
 
     if (m_primer != NULL)
     {
+        if (m_pi->m_p.nom().size()==0)
+        {
+            node *tmp = m_pi;
+
+            m_pi->m_ant->m_seg = NULL;
+
+            delete tmp;
+        }
+
         m_pi = m_primer;
 
         return m_pi->m_p.nom();
