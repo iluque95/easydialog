@@ -620,11 +620,23 @@ nat easy_dial::calcula_longitud(node_tst *nt)
 //0(n)
 void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
 {
-    node *tmp = n, *ant_tmp = NULL;
+    node *tmp = n, *ant_tmp = NULL, *aux = NULL;
+
+    bool primer = true;
 
     while (tmp != NULL)
     {
-        node *aux = new node;
+        if (primer)
+        {
+            m_primer = aux;
+            primer = not primer;
+            aux = new node;
+        }
+        else
+        {
+            aux->m_seg = new node;
+            aux = aux->m_seg;
+        }
 
         if (ant_tmp != NULL)
             ant_tmp->m_seg = aux;
