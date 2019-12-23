@@ -12,11 +12,17 @@ public:
     diccionari &operator=(const diccionari &d) throw(error);
     ~diccionari() throw();
 
+    /* Insereix un parell clau-valor a la taula */
     void insereix(const Clau &c, phone *&p);
+    /* Cerca a partir el parell clau-valor a partir de clau, si existeix p és el valor, cas contrari es NULL */
     bool cerca(const Clau &c, phone *&p) const;
+    /* Elimina parell clau-valor a partir de la clau */
     bool elimina(const Clau &c);
+    /* Modifica el valor del parell clau-valor a partir de la seva clau */
     void modifica(const Clau &c, phone *&p);
+    /* Guarda de forma eficient tots els phones no repetits en un vector resultant */
     bool guarda(vector<phone> &v) const;
+    /* Guarda de forma no eficient tots els phones no repetits en un vector resultant */
     bool save(vector<phone> &v) const;
 
     /* Quantitat d'elements que conté el diccionari */
@@ -67,7 +73,7 @@ diccionari<string> d_noms;
 // AVL
 
 /*
-    A priori hem analitzat que el diccionari amb les propietats de BST i AVL són les més idonies 
+    A priori es creia que el diccionari amb les propietats de BST i AVL eren les més idonies 
     a les necessitats requerides en els diversos punts que es mencionarán:
 
     1. No requereix coneixer previament la quantitat d'elements.
@@ -75,13 +81,25 @@ diccionari<string> d_noms;
     3. Ens permet el parell clau-valor on clau és el num de telèfon i clau un punter al objecte phone.
     4. Els costos del constructor per còpia i operador d'assignación són lineals.
 
+    Però, existeixen altres estructures com les taules de hash que ofereixen un cost temporal més baix a canvi
+    d'un cost espaial més gran.
+
+    Ha estat escollida la taula hash amb la tècnica opening hash perquè és la més fàcil de gestionar i
+    almenys en la inserció i cerca és la més ràpida, ja que en la inserció afegeix en la primera posició
+    de la llista encadenada i no ha de buscar un lloc lliure per tota la taula ni tampoc es necessari
+    preocupar-se'n per la zona d'excedents.
+
+    En quant a la cerca, un cop trobada la posició en la taula, és tan fàcil com recorrer tots els sinònims i trobar
+    la clau que s'està cercant amb un cost promig O(1).
+
     Altres estructures:
 
-    +-----------------------------------------------------------------------+
-    | Estructura   |  Cost constructor  |  Cost consultar  |  Cost eliminar |
-    +-----------------------------------------------------------------------+
-    |  HASH        |       O(n)         |       O(1)        |     O(1)      |
-    |  AVL         |       O(1)         |       O(log n)    |     O(log n)  |
-    |  Linked list |
-    +-----------------------------------------------------------------------+
+    +--------------------------------------------------------------------------------------------+
+    | Estructura   |  Cost constructor  |  Cost inserció    |   Cost consultar  |  Cost eliminar |
+    +--------------------------------------------------------------------------------------------+
+    |  HASH        |       O(n)         |       O(1)        |     O(1)          |      O(1)      |
+    |  AVL         |       O(1)         |       O(log n)    |     O(log n)      |      O(log n)  |
+    |  Linked list |       O(n)         |       O(n)        |     O(n)          |      O(n)      |
+    +--------------------------------------------------------------------------------------------+
+
 */
