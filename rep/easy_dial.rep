@@ -120,3 +120,33 @@ nat calcula_longitud(node_tst *nt, nat freq);
     quin telèfon és més gran, és a dir, més freqüent segons les propietats de la classe phone.
 */
 node_tst *max(node_tst *fesq, node_tst *fdret);
+
+
+/*
+
+    Per desenvolupar aquesta classe i cenyir-se als requeriments establerts en la guía del projecte,
+    ha estat necessari emprar una estructura arborea. Com aquesta part tracta especialment strings,
+    on uns quants comparteixen prefixos, l'estructura que encaixa a la perfecció són els tries.
+    Un requeriment de la pràctica és que el trie sigui eficient en cost espaial i alhora que permeti
+    costos eficients temporals.
+
+    Per aquests motius el guanyador ha estat el TST (Ternary Search Tree) el qual permet que a partir
+    d'un prefix comú, només cal emmagatzemar la part no comuna entre ambdós strings, a més, segueix
+    les propietats d'un BST (Binary Search Tree) però amb tres nodes, oferint molt bona eficiència.
+    Un trie no TST, o taules hash amb tot l'abecedari requereixen de molt espai o bé no són eficients
+    en cerques a partir de prefixos, però sí que són més eficients les hash en cas promig, ja que el cost
+    és O(1) i per tant, per a segons quin nom és més ràpid. De totes maneres, no compleixen amb els
+    requisits.
+
+    De forma auxiliar, també s'ha afegit una estructura que permeti moure's per l'arbre de forma
+    fàcil, eficient i ràpida. Una double linked list, on cada cop que s'introdueix un prefix i el
+    target és avançar o retrocedir per l'arbre TST, cal un apuntador a l'últim node visitat, a més,
+    es requereix d'un històric per saber quins nodes ja han estat visitats.
+    L'estructura auxiliar permet aquests fets, tant avançar com retrocir al següent punt sense haver de 
+    recorrer l'arbre sencer cada cop que es vol fer un nou moviment per aquest, com accedir directament
+    en el punt actual al valor prèviament trobat en el TST, en aquest cas, els valors són phones.
+
+    Per tant, l'estructura emmagatzema la quantitat de caràcters que té el prefix en curs i aquesta
+    serà les vegades que cal recorrer per comprovar de forma eficient si un phone ja ha estat mostrat.
+
+*/
