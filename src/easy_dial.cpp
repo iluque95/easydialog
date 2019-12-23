@@ -97,6 +97,112 @@ easy_dial::~easy_dial() throw()
     borra_estructura_aux(m_primer);
 }
 
+//0(n)
+easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
+{
+    node_tst *aux = NULL;
+    if (n != NULL)
+    {
+        aux = new node_tst;
+
+        aux->m_fesq = crea_arbre(n->m_fesq);
+        aux->m_fcen = crea_arbre(n->m_fcen);
+        aux->m_fdret = crea_arbre(n->m_fdret);
+        aux->m_c = n->m_c;
+        aux->m_valor = n->m_valor;
+
+        return aux;
+    }
+
+    return aux;
+}
+
+//0(n)
+void easy_dial::borra_arbre(node_tst *&n)
+{
+
+    if (n != NULL)
+    {
+        borra_arbre(n->m_fesq);
+        borra_arbre(n->m_fdret);
+        borra_arbre(n->m_fcen);
+
+        delete n;
+        n = NULL;
+    }
+}
+
+//0(n)
+void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
+{
+    node *tmp = n, *ant_tmp = NULL, *aux = NULL;
+
+    bool primer = true;
+
+    while (tmp != NULL)
+    {
+        if (primer)
+        {
+            m_primer = aux;
+            primer = not primer;
+            aux = new node;
+        }
+        else
+        {
+            aux->m_seg = new node;
+            aux = aux->m_seg;
+        }
+
+        if (ant_tmp != NULL)
+            ant_tmp->m_seg = aux;
+
+        aux->m_val = tmp->m_val;
+        aux->m_p = tmp->m_p;
+        aux->m_ant = ant_tmp;
+        aux->m_seg = NULL;
+
+        ant_tmp = tmp;
+
+        if (tmp == d_m_pi)
+            m_pi = n;
+
+        tmp = tmp->m_seg;
+    }
+}
+
+//0(n)
+void easy_dial::borra_estructura_aux(node *&n)
+{
+    if (n != NULL)
+    {
+        borra_estructura_aux(n->m_seg);
+        delete n;
+        n = NULL;
+    }
+}
+
+//0(1)
+void easy_dial::crea_node(node_tst *a)
+{
+    node *n = m_pi;
+
+    if (m_pi->m_seg == NULL)
+    {
+        m_pi->m_seg = new node;
+
+        m_pi->m_seg->m_ant = n;
+        n->m_seg = m_pi->m_seg;
+
+        m_pi->m_seg->m_seg = NULL;
+    }
+
+    m_pi = m_pi->m_seg;
+
+    m_pi->m_val = a;
+}
+
+// ######################################################################################### //
+
 //0(1)
 string easy_dial::inici() throw()
 {
@@ -392,40 +498,6 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
     return n;
 }
 
-//0(n)
-easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
-{
-    node_tst *aux = NULL;
-    if (n != NULL)
-    {
-        aux = new node_tst;
-
-        aux->m_fesq = crea_arbre(n->m_fesq);
-        aux->m_fcen = crea_arbre(n->m_fcen);
-        aux->m_fdret = crea_arbre(n->m_fdret);
-        aux->m_c = n->m_c;
-        aux->m_valor = n->m_valor;
-
-        return aux;
-    }
-
-    return aux;
-}
-
-//0(n)
-void easy_dial::borra_arbre(node_tst *&n)
-{
-
-    if (n != NULL)
-    {
-        borra_arbre(n->m_fesq);
-        borra_arbre(n->m_fdret);
-        borra_arbre(n->m_fcen);
-
-        delete n;
-        n = NULL;
-    }
-}
 
 //0(log n)
 void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
@@ -490,25 +562,6 @@ void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
         // merge the sorted halves
         merge(arr, start, middle, end);
     }
-}
-
-void easy_dial::crea_node(node_tst *a)
-{
-    node *n = m_pi;
-
-    if (m_pi->m_seg == NULL)
-    {
-        m_pi->m_seg = new node;
-
-        m_pi->m_seg->m_ant = n;
-        n->m_seg = m_pi->m_seg;
-
-        m_pi->m_seg->m_seg = NULL;
-    }
-
-    m_pi = m_pi->m_seg;
-
-    m_pi->m_val = a;
 }
 
 //0(1)
@@ -615,53 +668,4 @@ nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
 nat easy_dial::calcula_longitud(node_tst *nt)
 {
     return calcula_longitud(m_arrel, 0);
-}
-
-//0(n)
-void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
-{
-    node *tmp = n, *ant_tmp = NULL, *aux = NULL;
-
-    bool primer = true;
-
-    while (tmp != NULL)
-    {
-        if (primer)
-        {
-            m_primer = aux;
-            primer = not primer;
-            aux = new node;
-        }
-        else
-        {
-            aux->m_seg = new node;
-            aux = aux->m_seg;
-        }
-
-        if (ant_tmp != NULL)
-            ant_tmp->m_seg = aux;
-
-        aux->m_val = tmp->m_val;
-        aux->m_p = tmp->m_p;
-        aux->m_ant = ant_tmp;
-        aux->m_seg = NULL;
-
-        ant_tmp = tmp;
-
-        if (tmp == d_m_pi)
-            m_pi = n;
-
-        tmp = tmp->m_seg;
-    }
-}
-
-//0(n)
-void easy_dial::borra_estructura_aux(node *&n)
-{
-    if (n != NULL)
-    {
-        borra_estructura_aux(n->m_seg);
-        delete n;
-        n = NULL;
-    }
 }

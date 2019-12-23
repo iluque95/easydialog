@@ -50,6 +50,11 @@ void copia_estructura_aux(node *n, node *d_m_pi);
 void borra_estructura_aux(node *&n);
 
 /*
+    Afegeix un nou node al final de l'estructura auxiliar.
+*/
+void crea_node(node_tst *a);
+
+/*
     Insereix la paraula K en l'arbre TST.
     El node representatiu de fi de paraula (phone::ENDPREF), conté el phone del nom.
 */
@@ -61,10 +66,6 @@ void insereix(const string &k, const phone &v) throw(error);
 */
 node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
 
-/*
-    Afegeix un nou node al final de l'estructura auxiliar.
-*/
-void crea_node(node_tst *a);
 
 /*
     Comprova si el nom trobat ja ha estat mostrat prèviament.
