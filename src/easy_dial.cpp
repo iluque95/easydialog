@@ -37,7 +37,10 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
 }
 
 //0(n)
-easy_dial::easy_dial(const easy_dial &D) throw(error) : m_pref(D.m_pref),
+easy_dial::easy_dial(const easy_dial &D) throw(error) : m_arrel(NULL),
+                                                        m_primer(NULL),
+                                                        m_pi(NULL),
+                                                        m_pref(D.m_pref),
                                                         m_indef(D.m_indef),
                                                         m_freq(D.m_freq)
 {
