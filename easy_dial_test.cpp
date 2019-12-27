@@ -121,5 +121,11 @@ int main()
 
     search(ed2, "");
 
+    cout << "ed == ed2 ? " << (ed.es_igual(ed2) ? "Si" : "No") << endl;
+
+    easy_dial ed3(ed2);
+
+    cout << "ed3 == ed2 ? " << (ed3.es_igual(ed2) ? "Si" : "No") << endl;
+
     cout << "End of testing easy_dial..." << endl;
 }
