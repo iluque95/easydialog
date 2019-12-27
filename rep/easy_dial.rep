@@ -151,3 +151,17 @@ node_tst *max(node_tst *fesq, node_tst *fdret);
     serà les vegades que cal recorrer per comprovar de forma eficient si un phone ja ha estat mostrat.
 
 */
+
+
+// Verificacions de correctessa. No es fan servir en producció.
+
+/*
+    True si el tst del p.i i el de l'argument són iguals.
+*/
+bool tst_igual(node_tst *a, node_tst *b);
+
+/*
+    True si l'estructura auxiliar del p.i i la de l'argument són iguals.
+*/
+bool aux_igual(node *a, node *b);
+

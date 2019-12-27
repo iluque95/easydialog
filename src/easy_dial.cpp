@@ -669,3 +669,48 @@ nat easy_dial::calcula_longitud(node_tst *nt)
 {
     return calcula_longitud(m_arrel, 0);
 }
+
+//0(n)
+bool easy_dial::tst_igual(node_tst *a, node_tst *b)
+{
+
+    bool ret = true;
+
+    if (a != NULL and b != NULL)
+    {
+        if (a->m_c == b->m_c)
+        {
+            if (a->m_c == phone::ENDPREF)
+            {
+                if (a->m_valor != b->m_valor)
+                {
+                    ret = false;
+                }
+            }
+            else
+                ret = tst_igual(a->m_fesq, b->m_fesq) and tst_igual(a->m_fcen, b->m_fcen) and tst_igual(a->m_fdret, b->m_fdret);
+        }
+        else
+            ret = false;
+    }
+    else if((a != NULL and b == NULL) or (a == NULL and b != NULL))
+        ret = false;
+
+    return ret;
+}
+
+//0(n)
+bool easy_dial::aux_igual(node *a, node *b)
+{
+    if (a != NULL and b != NULL)
+        return aux_igual(a->m_seg, b->m_seg) and (a->m_val == b->m_val) and (a->m_p == b->m_p);
+    else if((a != NULL and b == NULL) or (a == NULL and b != NULL))
+        return false;
+    else
+        return true;
+}
+
+bool easy_dial::es_igual(const easy_dial &D)
+{
+    return m_pref == D.m_pref and m_indef == D.m_indef and m_freq == m_freq and tst_igual(m_arrel, D.m_arrel) and aux_igual(m_primer, D.m_primer);
+}
