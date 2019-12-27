@@ -15,7 +15,10 @@
 IMPORTANT THINGS
 ----------------
 
+ESCRIBIR PRE/POST DE LAS FUNCIONES !!
+
 1. Corregir memory leaks en easy_dial, todavía hay agujeros.
+2. Eliminar método público es_igual de easy_dial.hpp.
 
 
 
