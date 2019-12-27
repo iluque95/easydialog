@@ -143,7 +143,7 @@ void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
     {
         if (primer)
         {
-            m_primer = aux;
+            m_primer = tmp;
             primer = not primer;
             aux = new node;
         }
