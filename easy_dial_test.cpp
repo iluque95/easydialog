@@ -67,55 +67,31 @@ int main()
 
     cr2.assigna_nom(44555, "JOSEP");
 
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
-    cr2.registra_trucada(44555);
+    for (nat i = 0; i < 18; ++i)
+    {
+        cr2.registra_trucada(44555);
+    }
 
     cr2.assigna_nom(34534534, "MIQUEL");
 
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
-    cr2.registra_trucada(34534534);
+    for (nat i = 0; i < 7; ++i)
+    {
+        cr2.registra_trucada(34534534);
+    }
 
     cr2.assigna_nom(435345, "ELEGIR");
 
-    cr2.registra_trucada(435345);
-    cr2.registra_trucada(435345);
-    cr2.registra_trucada(435345);
-    cr2.registra_trucada(435345);
-    cr2.registra_trucada(435345);
-    cr2.registra_trucada(435345);
+    for (nat i = 0; i < 6; ++i)
+    {
+        cr2.registra_trucada(435345);
+    }
 
     cr2.assigna_nom(687678, "ITIEL");
 
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
-    cr2.registra_trucada(687678);
+    for (nat i = 0; i < 6; ++i)
+    {
+        cr2.registra_trucada(687678);
+    }
 
     easy_dial ed2(cr2);
 
@@ -131,9 +107,7 @@ int main()
 
     cout << "ed == ed2 ? " << (ed.es_igual(ed2) ? "Si" : "No") << endl;
 
-
     call_registry crz;
-
 
     easy_dial ed4(crz);
 
