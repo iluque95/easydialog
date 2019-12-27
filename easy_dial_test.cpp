@@ -127,5 +127,33 @@ int main()
 
     cout << "ed3 == ed2 ? " << (ed3.es_igual(ed2) ? "Si" : "No") << endl;
 
+    ed = ed2;
+
+    cout << "ed == ed2 ? " << (ed.es_igual(ed2) ? "Si" : "No") << endl;
+
+
+    call_registry crz;
+
+
+    easy_dial ed4(crz);
+
+    easy_dial ed5(ed4);
+
+    easy_dial ed6(crz);
+
+    ed6 = ed4;
+
+    cout << "ed5 == ed4 ? " << (ed5.es_igual(ed4) ? "Si" : "No") << endl;
+
+    cout << "ed6 == ed4 ? " << (ed6.es_igual(ed4) ? "Si" : "No") << endl;
+
+    ed6 = ed;
+
+    cout << "ed6 == ed ? " << (ed6.es_igual(ed) ? "Si" : "No") << endl;
+
+    ed6 = ed2;
+
+    cout << "ed6 == ed2 ? " << (ed6.es_igual(ed2) ? "Si" : "No") << endl;
+
     cout << "End of testing easy_dial..." << endl;
 }
