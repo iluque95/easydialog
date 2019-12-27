@@ -214,7 +214,7 @@ string easy_dial::inici() throw()
 
     if (m_primer != NULL)
     {
-        if (m_pi->m_p.nom().size()==0)
+        if (m_pi->m_p.nom().size() == 0)
         {
             node *tmp = m_pi;
 
@@ -501,7 +501,6 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
     return n;
 }
 
-
 //0(log n)
 void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
 {
@@ -582,7 +581,7 @@ bool easy_dial::repetit(const string &str) const
             tmp = tmp->m_ant;
     }
 
-/*
+    /*
     cout << "Memory pointers: {";
 
     tmp = m_primer;
@@ -605,7 +604,6 @@ bool easy_dial::repetit(const string &str) const
 
     cout << " }" << endl;
 */
-    
 
     return visitat;
 }
@@ -696,7 +694,7 @@ bool easy_dial::tst_igual(node_tst *a, node_tst *b)
         else
             ret = false;
     }
-    else if((a != NULL and b == NULL) or (a == NULL and b != NULL))
+    else if ((a != NULL and b == NULL) or (a == NULL and b != NULL))
         ret = false;
 
     return ret;
@@ -707,7 +705,7 @@ bool easy_dial::aux_igual(node *a, node *b)
 {
     if (a != NULL and b != NULL)
         return aux_igual(a->m_seg, b->m_seg) and (a->m_val == b->m_val) and (a->m_p == b->m_p);
-    else if((a != NULL and b == NULL) or (a == NULL and b != NULL))
+    else if ((a != NULL and b == NULL) or (a == NULL and b != NULL))
         return false;
     else
         return true;
