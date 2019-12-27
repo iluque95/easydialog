@@ -150,6 +150,19 @@ node_tst *max(node_tst *fesq, node_tst *fdret);
     Per tant, l'estructura emmagatzema la quantitat de caràcters que té el prefix en curs i aquesta
     serà les vegades que cal recorrer per comprovar de forma eficient si un phone ja ha estat mostrat.
 
+
+    Per poder portar a cau aquesta classe, en el constructor ha estat necessari ordenar les dades rebudes
+    de la classe call_registry seguint les indicacions de prioritat definides en la classe phone,
+    obtenint així, en primera posició del vector el phone amb més freqüència i així successivament.
+
+    Entre els diversos algoritmes d'ordenació possibles, després de fer recerca, alguns algoritmes
+    com el quicksort no eren òptims per la quantitat de dades que s'han d'ordenar i el cost podría
+    pujar a O(n), s'havia de tenir en compte que fos eficient a poques dades i per tant implementar
+    un algoritme eficient amb aquesta quantitat. Una variant d'aquest, el 3-way quicksort semblava ser 
+    molt bo, però era complex, a més el cost pujaba en alguns cassos a O(n*log^2 n), és a dir, el mateix 
+    cost que el mergesort sent aquest últim més fàcil i permetia de igual mode cenyir-se als requeriments
+    de la guía del projecte.
+
 */
 
 
@@ -165,3 +178,8 @@ bool tst_igual(node_tst *a, node_tst *b);
 */
 bool aux_igual(node *a, node *b);
 
+/*
+    Moguda del .hpp al .rep. Només fer servir en proves.
+    True si el p.i i D són exactament iguals.
+*/
+//bool es_igual(const easy_dial& D);
