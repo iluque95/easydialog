@@ -1,34 +1,36 @@
+PENDING TASKS
+-------------
+
 1. Sacar todos los archivos a la raíz y modificar los includes en conseqüencia
 2. De la clase driver, el ejecutable tiene que estar en la raíz.
-
-
-
-3. Inversa de la redispersión.
-4. Mejorar coste DUMP
-
-5. Probar constructor por copia easy_dial. Posiblemente call_registry también ?
-
-6. Probar operador de asignación. Probablemente también en call_registry ??
-
+3. Mejorar coste DUMP (PUEDE QUE NO VALGA LA PENA.)
 
 
 IMPORTANT THINGS
 ----------------
 
-ESCRIBIR PRE/POST DE LAS FUNCIONES !!
+(*) ESCRIBIR PRE/POST DE LAS FUNCIONES !!
 
 1. Corregir memory leaks en easy_dial, todavía hay agujeros.
 2. Eliminar método público es_igual de easy_dial.hpp.
+3. Probar constructor por copia call_registry.
+4. Probar operador asignación call_registry.
+5. Probar método shrink hash table en call_registry.
 
 
+DONE
+----
+
+1. Probar constructor por copia easy_dial. Working right.
+2. Probar operador de asignación easy_dial. Working fine.
+3. Inversa de la redispersión.
 
 
 VALGRIND
 --------
 
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-call_registry.out build/call_registry.e
-
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-easy_dial.out build/driver.e < games/jp_public.in
+(*) valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-call_registry.out build/call_registry.e
+(*) valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-easy_dial.out build/driver.e < games/jp_public.in
 
 
 DRIVER
