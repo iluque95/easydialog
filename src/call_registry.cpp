@@ -212,7 +212,9 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 
             hi_es = true;
 
-            if (((total / m_mida) < (1-factor_carrega)) and (m_mida >= mida_inicial))
+            float fc = (float)total / (float)m_mida;
+
+            if ((fc < (1-factor_carrega)) and (m_mida > mida_inicial))
             {
                 redispersio(false);
             }
@@ -430,7 +432,6 @@ nat call_registry::diccionari<string>::hash(string c) const
     }
 
     return n % m_mida;
-    ;
 }
 
 template <typename Clau>
