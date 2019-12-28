@@ -47,11 +47,21 @@ int main()
 
     easy_dial ed(cr);
 
-    cout << "Inici: " << ed.inici() << endl;
+    cout << "Inici: " << ed.inici();
+    
+    cout << " amb num telf " << ed.num_telf() << endl;
 
-    cout << "Seguent D (Pref: D): " << ed.seguent('D') << endl;
+    cout << "Seguent D (Pref: D): " << ed.seguent('D');
+    
+    cout << " amb num telf " << ed.num_telf() << endl;
 
-    cout << "Seguent E (Pref: De): " << ed.seguent('e') << endl;
+    cout << "Seguent E (Pref: De): " << ed.seguent('e');
+    
+    cout << " amb num telf " << ed.num_telf() << endl;
+
+    cout << "Anterior (Pref: D): " << ed.anterior();
+    
+    cout << " amb num telf " << ed.num_telf() << endl;
 
     cout << "Inici: " << ed.inici() << endl;
 
