@@ -80,7 +80,7 @@ void dump(call_registry &cr)
     }
     catch (error e)
     {
-         cout << "\033[1;31mERROR: \033[0m" << e.mensaje() << endl;
+        cout << "\033[1;31mERROR: \033[0m" << e.mensaje() << endl;
     }
     cout << "#####################################################################################" << endl
          << endl;
@@ -137,6 +137,8 @@ int main()
 
     remove("dump.log");
 
+    vector<nat> nums;
+
     for (nat i = 0; i < 1000; ++i)
     {
         string name;
@@ -147,6 +149,8 @@ int main()
         nat num = random_nat();
 
         cr.registra_trucada(num);
+
+        nums.push_back(num);
 
         log(name);
 
@@ -162,12 +166,57 @@ int main()
 
     call_registry aux(cr);
 
-    if (not aux.es_buit()){
-        cout << "\033[1;31mERROR: \033[0m" << "El call registry está buit" << endl;
+    if (not aux.es_buit())
+    {
+        cout << "\033[1;31mERROR: \033[0m"
+             << "El call registry está buit" << endl;
     }
 
     dump(cr);
-    
+
+    for (nat i = 0; i < nums.size() / 2; ++i)
+    {
+        try
+        {
+            cr.elimina(nums[i]);
+        }
+        catch (error e)
+        {
+            cout << "No existeix el número " << nums[i] << endl;
+        }
+    }
+
+    cout << "Testing a little call_registry deleting stuff..." << endl;
+
+    call_registry cr_little;
+
+    for (nat i = 1; i <= 2; ++i)
+    {
+        cr_little.registra_trucada(i);
+    }
+
+    for (nat i = 1; i <= 2; ++i)
+    {
+        string str;
+        str.reserve(1);
+
+        str.push_back('a' + i);
+
+        cr_little.assigna_nom(i, str);
+    }
+
+    dump(cr_little);
+
+    cout << "Deleting..." << endl;
+
+    cr_little.elimina(1);
+
+    dump(cr_little);
+
+    cr_little.elimina(2);
+
+    if (not cr_little.es_buit())
+        dump(cr_little);
 
     cout << "End of testing call_registry..." << endl;
 }
