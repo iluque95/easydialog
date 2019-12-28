@@ -190,12 +190,12 @@ int main()
 
     call_registry cr_little;
 
-    for (nat i = 1; i <= 2; ++i)
+    for (nat i = 1; i <= 3; ++i)
     {
         cr_little.registra_trucada(i);
     }
 
-    for (nat i = 1; i <= 2; ++i)
+    for (nat i = 1; i <= 3; ++i)
     {
         string str;
         str.reserve(1);
@@ -209,7 +209,7 @@ int main()
 
     cout << "Deleting..." << endl;
 
-    cr_little.elimina(1);
+    cr_little.elimina(3);
 
     dump(cr_little);
 
