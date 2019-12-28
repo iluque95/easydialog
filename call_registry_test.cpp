@@ -160,7 +160,14 @@ int main()
         }
     }
 
+    call_registry aux(cr);
+
+    if (not aux.es_buit()){
+        cout << "\033[1;31mERROR: \033[0m" << "El call registry está buit" << endl;
+    }
+
     dump(cr);
+    
 
     cout << "End of testing call_registry..." << endl;
 }
