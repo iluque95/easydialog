@@ -67,6 +67,7 @@ private:
 
     // Constants
     static float const factor_carrega = 0.75;
+    static nat const mida_inicial = 200;
 };
 
 diccionari<nat> d_nums;

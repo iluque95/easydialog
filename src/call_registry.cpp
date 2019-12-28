@@ -3,7 +3,7 @@
 
 // θ(n)
 template <typename Clau>
-call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
+call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(mida_inicial),
                                                              m_quants(0),
                                                              colisions(0),
                                                              redispersions(0),
@@ -212,7 +212,7 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 
             hi_es = true;
 
-            if (((total / m_mida) < (100-factor_carrega)) and (m_mida >= 4))
+            if (((total / m_mida) < (1-factor_carrega)) and (m_mida >= mida_inicial))
             {
                 redispersio(false);
             }
