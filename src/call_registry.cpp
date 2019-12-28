@@ -7,6 +7,7 @@ call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
                                                              m_quants(0),
                                                              colisions(0),
                                                              redispersions(0),
+                                                             shrinks(0),
                                                              total(0)
 {
 
@@ -22,6 +23,9 @@ call_registry::diccionari<Clau>::diccionari() throw(error) : m_mida(200),
 template <typename Clau>
 call_registry::diccionari<Clau>::diccionari(const diccionari &d) throw(error) : m_mida(d.m_mida),
                                                                                 m_quants(d.m_quants),
+                                                                                colisions(d.colisions),
+                                                                                redispersions(d.redispersions),
+                                                                                shrinks(d.shrinks),
                                                                                 total(d.total)
 {
 
@@ -145,7 +149,7 @@ void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 
     if ((total / m_mida) >= factor_carrega)
     {
-        redispersio();
+        redispersio(true);
     }
 }
 
@@ -207,6 +211,11 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
             n = NULL;
 
             hi_es = true;
+
+            if (((total / m_mida) < (100-factor_carrega)) and (m_mida >= 4))
+            {
+                redispersio(false);
+            }
         }
         else
         {
@@ -312,12 +321,15 @@ bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n
 
 // θ(2n)
 template <typename Clau>
-void call_registry::diccionari<Clau>::redispersio()
+void call_registry::diccionari<Clau>::redispersio(bool duplica)
 {
 
     nat mida_ant = m_mida;
 
-    m_mida *= 2;
+    if (duplica)
+        m_mida *= 2;
+    else
+        m_mida /= 2;
 
     node_hash **t = new node_hash *[m_mida];
 
@@ -389,7 +401,10 @@ void call_registry::diccionari<Clau>::redispersio()
     m_taula = t;
     t = tmp;
 
-    ++redispersions;
+    if (duplica)
+        ++redispersions;
+    else
+        ++shrinks;
 }
 
 // θ(1)
@@ -426,6 +441,7 @@ void call_registry::diccionari<Clau>::estadistiques()
     cout << "-------------" << endl;
     cout << "Size: " << m_mida << endl;
     cout << "Rehashes: " << redispersions << endl;
+    cout << "Shrinks: " << shrinks << endl;
     cout << "Elements: " << m_quants << endl;
     cout << "Collitions: " << colisions << endl;
     cout << "Total elements: " << total << endl;

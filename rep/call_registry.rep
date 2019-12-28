@@ -38,7 +38,6 @@ private:
         Clau m_clau;
         phone *m_valor;
         node_hash *m_seg;
-
     };
 
     node_hash **m_taula;
@@ -55,12 +54,15 @@ private:
     */
     bool obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr);
 
-    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega.
-    void redispersio();
+    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega o
+    // redueix a la meitat l'espai de la taula quan s'elimini un valor d'aquesta i el seu llindar
+    // sigui inferior a la resta del factor de càrrega: 100-factor de carrega.
+    void redispersio(bool duplica);
 
     // Estadístiques
     nat colisions;
     nat redispersions;
+    nat shrinks;
     nat total;
 
     // Constants
