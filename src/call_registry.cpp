@@ -147,7 +147,9 @@ void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 
     m_taula[i] = n;
 
-    if ((total / m_mida) >= factor_carrega)
+    float fc = (float)total / (float)m_mida;
+
+    if (fc >= factor_carrega)
     {
         redispersio(true);
     }
@@ -214,7 +216,7 @@ bool call_registry::diccionari<Clau>::elimina(const Clau &c)
 
             float fc = (float)total / (float)m_mida;
 
-            if ((fc < (1-factor_carrega)) and (m_mida > mida_inicial))
+            if ((fc < (1 - factor_carrega)) and (m_mida > mida_inicial))
             {
                 redispersio(false);
             }
@@ -337,7 +339,6 @@ void call_registry::diccionari<Clau>::redispersio(bool duplica)
 
     colisions = 0;
     m_quants = 0;
-    total = 0;
 
     for (nat i = 0; i < m_mida; ++i)
     {
@@ -347,61 +348,25 @@ void call_registry::diccionari<Clau>::redispersio(bool duplica)
     for (nat i = 0; i < mida_ant; ++i)
     {
 
-        if (m_taula[i] != NULL)
+        node_hash *n = m_taula[i];
+
+        while (n != NULL)
         {
-            nat new_pos = hash(m_taula[i]->m_clau);
+            node_hash *ant = n;
 
-            if (t[new_pos] == NULL)
-                ++m_quants;
-            else
-                ++colisions;
+            n = n->m_seg;
 
-            ++total;
+            node_hash *&tmp = t[hash(ant->m_clau)];
 
-            node_hash *tmp = new node_hash;
+            ant->m_seg = tmp;
 
-            tmp->m_clau = m_taula[i]->m_clau;
-            tmp->m_valor = new phone(*m_taula[i]->m_valor);
-            tmp->m_seg = t[new_pos];
-            t[new_pos] = tmp;
-
-            node_hash *n = m_taula[i]->m_seg;
-
-            delete m_taula[i];
-
-            while (n != NULL)
-            {
-                node_hash *ant = n;
-
-                if (t[new_pos] == NULL)
-                    ++m_quants;
-                else
-                    ++colisions;
-
-                ++total;
-
-                node_hash *tmp = new node_hash;
-
-                new_pos = hash(tmp->m_clau);
-
-                tmp->m_clau = n->m_clau;
-                tmp->m_valor = new phone(*n->m_valor);
-                tmp->m_seg = t[new_pos];
-                t[new_pos] = tmp;
-
-                n = n->m_seg;
-
-                delete ant;
-            }
-
-            m_taula[i] = NULL;
+            tmp = ant;
         }
     }
 
-    node_hash **tmp = m_taula;
-
+    delete[] m_taula;
+    
     m_taula = t;
-    t = tmp;
 
     if (duplica)
         ++redispersions;
