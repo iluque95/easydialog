@@ -174,7 +174,7 @@ int main()
 
     dump(cr);
 
-    for (nat i = 0; i < nums.size() / 2; ++i)
+    for (nat i = 0; i < 10; ++i) //nums.size() / 2
     {
         try
         {
