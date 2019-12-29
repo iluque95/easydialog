@@ -147,7 +147,9 @@ void call_registry::diccionari<Clau>::insereix(const Clau &c, phone *&p)
 
     m_taula[i] = n;
 
-    if ((total / m_mida) >= factor_carrega)
+    float fc = (float) total / (float) m_mida;
+
+    if (fc >= factor_carrega)
     {
         redispersio(true);
     }
