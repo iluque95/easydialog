@@ -166,6 +166,7 @@ int main()
 
     call_registry aux(cr);
 
+
     if (not aux.es_buit())
     {
         cout << "\033[1;31mERROR: \033[0m"
@@ -215,8 +216,47 @@ int main()
 
     cr_little.elimina(2);
 
-    if (not cr_little.es_buit())
+    if (not cr_little.es_buit() )
+    {
         dump(cr_little);
+    }
+
+
+    cout << "___________________" << endl;
+
+    call_registry cr_comp1;
+
+    call_registry cr_comp2(cr_comp1);
+
+    cout << "Són Iguals: " << cr_comp1.compare(cr_comp2) << endl;
+
+    cout << "___________________" << endl;
+
+
+    for (nat i = 1; i <= 3; ++i)
+    {
+        cr_little.registra_trucada(i);
+    }
+
+    call_registry auxiliar(cr);
+
+    cout << "___________________" << endl;
+
+    cout << "Són Iguals per copia: " << cr.compare(auxiliar) << endl;
+
+    call_registry asig = cr;
+
+    cout << "Són Iguals per assignació: " << cr.compare(asig) << endl;
+
+    cout << "___________________" << endl;
+
+    if (aux.es_buit())
+    {
+        cout << "\033[1;31mERROR: \033[0m"
+             << "El call registry está buit" << endl;
+    }
+
+
 
     cout << "End of testing call_registry..." << endl;
 }
