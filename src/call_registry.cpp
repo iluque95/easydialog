@@ -356,11 +356,11 @@ void call_registry::diccionari<Clau>::redispersio(bool duplica)
 
             n = n->m_seg;
 
-            node_hash *&tmp = t[hash(ant->m_clau)];
+            nat new_pos = hash(ant->m_clau);
 
-            ant->m_seg = tmp;
+            ant->m_seg = t[new_pos];
 
-            tmp = ant;
+            t[new_pos] = ant;
         }
     }
 
