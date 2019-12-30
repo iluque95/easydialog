@@ -109,8 +109,27 @@ diccionari<string> d_noms;
     +--------------------------------------------------------------------------------------------+
     |  HASH        |       O(n)         |       O(1)        |     O(1)          |      O(1)      |
     |  AVL         |       O(1)         |       O(log n)    |     O(log n)      |      O(log n)  |
+    |  BST         |       O(1)         |       O(log n)    |     O(log n)      |      O(log n)  |
+    |  Minheap     |       O(1)         |       O(log n)    |     O(1)          |      O(log n)  |
     |  Linked list |       O(n)         |       O(n)        |     O(n)          |      O(n)      |
     +--------------------------------------------------------------------------------------------+
+
+    D'una altre banda, aprofitant el potencial de les taules hash, la primera inteció era fer el mètode dump l'ho
+    més eficient possible fent servir aquesta estructura, per això es va arribar a encapsular la hash table com
+    una classe diccionari dintre de la pròpia classe call_registry separant les responsabilitats de cadascuna,
+    per així tenir dos diccionaris, un amb claus naturals i un amb claus d'strings on compartíen un punter al phone,
+    sent ambdós claus referència al mateix "contacte" de l'agenda telefònica. D'aquesta forma, especialitzar la funció
+    hash era molt més fàcil per a cada tipus de clau, i, a més, evitaba tenir de repetits i amb accessos molt més
+    ràpids. El principal inconvenient és que per aconseguir-ho cal que no hi hagi col·lisions entre sinònims,
+    això comporta que s'ha de tenir molta cura amb la capacitat de la taula i amb els elements com a tal.
+    La funció hash ja assegura que mai hi hagi de repetits gràcies a la ponderació afegida a cada posició de cada caràcter,
+    el problema s'esdevé en el moment de fer el mòdul per obtenir la posició en la taula, si no és prou capacitativa,
+    no es dispersen correctament tot i ser la funció hash molt bona provocant bastants sinònims, per això caldría,
+    redispersionar cada cop que es produís un sinònim tot i així no guaranteix que al redispersionar no torni a haver
+    sinònims.
+
+    Funcionant a mitges, es va decidir deixar-ho i prioritzar l'acabament de la pràctica i el funcionament de
+    tots els mètodes quedant així el primer disseny pensat. 
 
 */
 
