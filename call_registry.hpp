@@ -66,15 +66,12 @@ public:
   es produeix un error en cas contrari. */
   void dump(vector<phone>& V) const throw(error);
 
-  //DELETE
-  bool compare(call_registry &aux);
-
   /* Gestió d'errors. */
   static const int  ErrNumeroInexistent = 21;
   static const int  ErrNomRepetit       = 22;
 
 
 private:
-  #include "../rep/call_registry.rep"
+  #include "call_registry.rep"
 };
 #endif

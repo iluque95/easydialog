@@ -8,7 +8,7 @@ CPPFLAGS=-Wall -ansi -lesin -g
 
 PROGRAM=main
 
-SRCS=$(PROGRAM).cpp src/phone.cpp
+SRCS=$(PROGRAM).cpp phone.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 DIRS=build
@@ -17,10 +17,10 @@ $(shell mkdir -p $(DIRS))
 
 all:
 	@echo Compiling $@ ...
-	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
-	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
-	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
-	$(CXX) -c src/dialog.cpp -o build/dialog.o $(CPPFLAGS)
+	$(CXX) -c phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c dialog.cpp -o build/dialog.o $(CPPFLAGS)
 	$(CXX) -c driver_easydial.cpp -o build/driver_easydial.o $(CPPFLAGS)
 	$(CXX) -o build/driver.e build/driver_easydial.o build/dialog.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
 	$(RM) build/*.o
@@ -34,7 +34,7 @@ $(PROGRAM).o:
 
 phone:
 	@echo Compiling $@ ... 
-	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS)
+	$(CXX) -c phone.cpp -o build/phone.o $(CPPFLAGS)
 	$(CXX) -c phone_test.cpp -o build/phone_main.o $(CPPFLAGS)
 	$(CXX) -o build/phone.e build/phone_main.o build/phone.o $(CPPFLAGS)
 	$(RM) build/*.o
@@ -42,8 +42,8 @@ phone:
 
 call_registry:
 	@echo Compiling $@ ...
-	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
-	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
 	$(CXX) -c call_registry_test.cpp -o build/call_registry_main.o $(CPPFLAGS)
 	$(CXX) -o build/call_registry.e build/call_registry_main.o build/call_registry.o build/phone.o $(CPPFLAGS)
 	$(RM) build/*.o
@@ -51,9 +51,9 @@ call_registry:
 
 easy_dial:
 	@echo Compiling $@ ...
-	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
-	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
-	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
 	$(CXX) -c easy_dial_test.cpp -o build/easy_dial_main.o $(CPPFLAGS)
 	$(CXX) -o build/easy_dial.e build/easy_dial_main.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
 	$(RM) build/*.o
@@ -61,10 +61,10 @@ easy_dial:
 
 dialog:
 	@echo Compiling $@ ...
-	$(CXX) -c src/phone.cpp -o build/phone.o $(CPPFLAGS) 
-	$(CXX) -c src/call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
-	$(CXX) -c src/easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
-	$(CXX) -c src/dialog.cpp -o build/dialog.o $(CPPFLAGS)
+	$(CXX) -c phone.cpp -o build/phone.o $(CPPFLAGS) 
+	$(CXX) -c call_registry.cpp -o build/call_registry.o $(CPPFLAGS)
+	$(CXX) -c easy_dial.cpp -o build/easy_dial.o $(CPPFLAGS)
+	$(CXX) -c dialog.cpp -o build/dialog.o $(CPPFLAGS)
 	$(CXX) -c dialog_test.cpp -o build/dialog_main.o $(CPPFLAGS)
 	$(CXX) -o build/dialog.e build/dialog_main.o build/dialog.o build/easy_dial.o build/call_registry.o build/phone.o $(CPPFLAGS)
 	$(RM) build/*.o

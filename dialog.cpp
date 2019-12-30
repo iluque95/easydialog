@@ -1,4 +1,4 @@
-#include "../incl/dialog.hpp"
+#include "dialog.hpp"
 
 // θ(input.lenght)
 void dialog::dialog(easy_dial &easy, const string &input,

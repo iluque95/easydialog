@@ -182,4 +182,4 @@ bool aux_igual(node *a, node *b);
     Moguda del .hpp al .rep. Només fer servir en proves.
     True si el p.i i D són exactament iguals.
 */
-//bool es_igual(const easy_dial& D);
+bool es_igual(const easy_dial& D);

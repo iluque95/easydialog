@@ -132,3 +132,9 @@ diccionari<nat> d_nums;
 
 // Verificacions de correctessa. No es fan servir en producció.
 bool aux_compare(diccionari<nat> &aux);
+
+/*
+    Moguda del .hpp al .rep. Només fer servir en proves.
+    True si el p.i i D són exactament iguals.
+*/
+bool compare(call_registry &aux);

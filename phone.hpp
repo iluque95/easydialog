@@ -61,6 +61,6 @@ public:
   static const int  ErrNomIncorrecte = 11;
   
 private:
-  #include "../rep/phone.rep"
+  #include "phone.rep"
 };
 #endif

@@ -1,4 +1,4 @@
-#include "../incl/call_registry.hpp"
+#include "call_registry.hpp"
 #include <bits/stdc++.h>
 
 // θ(n)

@@ -1,4 +1,4 @@
-#include "../incl/easy_dial.hpp"
+#include "easy_dial.hpp"
 
 //0(2n * log(n))
 easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
