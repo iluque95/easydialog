@@ -8,6 +8,8 @@ easy_dial::easy_dial(const call_registry &R) throw(error) : m_arrel(NULL),
                                                             m_indef(true),
                                                             m_freq(0)
 {
+    //PRE: TRUE
+    //POST: Crea un easy_dial
     vector<phone> v;
     R.dump(v);
 
@@ -44,6 +46,8 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_arrel(NULL),
                                                         m_indef(D.m_indef),
                                                         m_freq(D.m_freq)
 {
+    //PRE: TRUE
+    //POST: El p.i. és un easy_dial idéntic a D
     //Bucle para el arbol
     m_arrel = crea_arbre(D.m_arrel);
 
@@ -53,7 +57,8 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_arrel(NULL),
 //0(n)
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 {
-
+    //PRE: TRUE
+    //POST: S'assignen al p.i. els valors de D
     if (this != &D)
     {
         easy_dial ed(D);
@@ -95,6 +100,8 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 //0(n)
 easy_dial::~easy_dial() throw()
 {
+    //PRE: TRUE
+    //POST: Elimina de memoria el easy_dial del p.i.
     borra_arbre(m_arrel);
 
     borra_estructura_aux(m_primer);
@@ -103,6 +110,8 @@ easy_dial::~easy_dial() throw()
 //0(n)
 easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 {
+    //PRE: TRUE
+    //POST: Retorna un node_tst apuntant a l'arrel de l'abre creat.
     node_tst *aux = NULL;
     if (n != NULL)
     {
@@ -123,7 +132,8 @@ easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 //0(n)
 void easy_dial::borra_arbre(node_tst *&n)
 {
-
+    //PRE: TRUE
+    //POST: Elimina de memoria tots els elements del arbre amb arrel n
     if (n != NULL)
     {
         borra_arbre(n->m_fesq);
@@ -138,6 +148,8 @@ void easy_dial::borra_arbre(node_tst *&n)
 //0(n)
 void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
 {
+    //PRE: TRUE
+    //POST: Realitza una replica d'un node i el consecuent arbre en un altre node
     node *tmp = n, *ant_tmp = NULL, *aux = NULL;
 
     bool primer = true;
@@ -176,6 +188,8 @@ void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
 //0(n)
 void easy_dial::borra_estructura_aux(node *&n)
 {
+    //PRE: TRUE
+    //POST: Elimina de memoria tots els elements del arbre amb arrel n
     if (n != NULL)
     {
         borra_estructura_aux(n->m_seg);
@@ -187,6 +201,8 @@ void easy_dial::borra_estructura_aux(node *&n)
 //0(1)
 void easy_dial::crea_node(node_tst *a)
 {
+    //PRE: TRUE
+    //POST: Crea un node amb valor a
     node *n = m_pi;
 
     if (m_pi->m_seg == NULL)
@@ -209,6 +225,8 @@ void easy_dial::crea_node(node_tst *a)
 //0(1)
 string easy_dial::inici() throw()
 {
+    //PRE: TRUE
+    //POST: Inicialitza el prefix a '' i retorna el nom corresponent si existeix, si no, retorna un string buit.
     m_pref = "";
     m_indef = false;
 
@@ -237,7 +255,8 @@ string easy_dial::inici() throw()
 //0(1)
 string easy_dial::seguent(char c) throw(error)
 {
-
+    //PRE: TRUE
+    //POST: Si el prefix inical está indefinit, retorna error. Si no, afegeix al prefix el carácter c i retorna el nom corresponent. Si no hi ha cap nom, retorna un string buit.
     if (m_indef)
     {
         throw error(ErrPrefixIndef);
@@ -286,6 +305,8 @@ string easy_dial::seguent(char c) throw(error)
 //0(1)
 string easy_dial::anterior() throw(error)
 {
+    //PRE: TRUE
+    //POST: Si el prefix está buit o indifenit retorna error, si no, elimina l'últim carácter del prefix. Si aquesta supressió genera un prefix indefinit, també genera error.
     if (m_indef)
         throw error(ErrPrefixIndef);
     else if (m_pi == m_primer)
@@ -310,7 +331,8 @@ string easy_dial::anterior() throw(error)
 //0(1)
 nat easy_dial::num_telf() const throw(error)
 {
-
+    //PRE: TRUE
+    //POST: Retorna el número de teléfon corresponent al F(s, p) sent p el prefix en curs. Si no existeix F(s, p) o el prefix está indefinit, retorna error.
     if (m_indef)
         throw error(ErrPrefixIndef);
 
@@ -326,7 +348,8 @@ nat easy_dial::num_telf() const throw(error)
 //0(n)
 void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error)
 {
-
+    //PRE: TRUE
+    //POST: Inserta al vector tots el noms de contactes que comencin amb el prefix pref, en ordre lexicográfic creixent.
     if (nt != NULL)
     {
         if (nt->m_c == phone::ENDPREF)
@@ -342,7 +365,8 @@ void easy_dial::comencen_aux(vector<string> &result, string str, node_tst *nt) c
 //0(1)
 void easy_dial::comencen_major(phone &result, string str, node_tst *nt) const throw(error)
 {
-
+    //PRE: TRUE
+    //POST: Emmagatzema el màxim dels phones d'un conjunt que compleixen el prefix trobat en nt prèviament.
     if (nt != NULL)
     {
         if (nt->m_c == phone::ENDPREF)
@@ -360,6 +384,8 @@ void easy_dial::comencen_major(phone &result, string str, node_tst *nt) const th
 //0(1)
 typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const string &k) const throw()
 {
+    //PRE: TRUE
+    //POST: A partir d'un punt de l'arbre donat com argument n cerca el prefix k.
     node_tst *res = NULL;
     if (n != NULL)
     {
@@ -389,6 +415,8 @@ typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const s
 //0(1)
 void easy_dial::comencen_amb(const string &pref, bool complet) throw(error)
 {
+    //PRE: TRUE
+    //POST: A partir d'un prefix en curs busca el següent phone màxim.
     if (pref.size() > 0)
     {
         node_tst *n = trobar_pref(m_pi->m_val, pref.size() - 1, pref);
@@ -435,6 +463,8 @@ void easy_dial::comencen_amb(const string &pref, bool complet) throw(error)
 //0(n)
 void easy_dial::comencen(const string &pref, vector<string> &result) const throw(error)
 {
+    //PRE: TRUE.
+    //POST: Inserta al vector tots el noms de contactes que comencin amb el prefix pref, en ordre lexicográfic creixent.
     if (pref.size() > 0)
     {
         node_tst *n = trobar_pref(m_arrel, 0, pref);
@@ -453,17 +483,23 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
 //0(1)
 double easy_dial::longitud_mitjana() const throw()
 {
+    //PRE: TRUE
+    //POST: Retorna un double amb el número mitja de pulsacions necessaries per obtenir un teléfon.
     return m_freq;
 }
 
 void easy_dial::insereix(const string &k, const phone &v) throw(error)
 {
+    //PRE: TRUE
+    //POST: Insereix la paraula K en l'arbre TST.
     m_arrel = rinsereix(m_arrel, 0, k, v);
 }
 
 //0(log K.length)
 typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error)
 {
+    //PRE: TRUE
+    //POST: Retorna l'arrel de l'abre tst on es fá l'inserció.
     if (n == NULL)
     {
         n = new node_tst;
@@ -572,6 +608,8 @@ void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
 //0(1)
 bool easy_dial::repetit(const string &str) const
 {
+    //PRE: TRUE
+    //POST: Retorna un bolea indicant si el nom s'ha mostrat previament.
     node *tmp = m_pi->m_ant;
 
     bool visitat = false;
@@ -614,7 +652,8 @@ bool easy_dial::repetit(const string &str) const
 //0(1)
 typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
 {
-
+    //PRE: TRUE
+    //POST: Dels dos nodes fills, retorna el que tingui el telefon més gran (Comparació > de la classe phone).
     node_tst *tmpA = fesq, *tmpB = fdret;
 
     while (tmpA->m_c != phone::ENDPREF)
@@ -636,6 +675,8 @@ typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
 //0(n)
 nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
 {
+    //PRE: TRUE
+    //POST: Retorna la longitud mitjana de l'arbre tst.
     nat total = 0;
     if (nt != NULL)
     {
@@ -671,13 +712,16 @@ nat easy_dial::calcula_longitud(node_tst *nt, nat freq)
 //0(n)
 nat easy_dial::calcula_longitud(node_tst *nt)
 {
+    //PRE: TRUE
+    //POST: Retorna la longitud mitjana de l'arbre tst.
     return calcula_longitud(m_arrel, 0);
 }
 
 //0(n)
 bool easy_dial::tst_igual(node_tst *a, node_tst *b)
 {
-
+    //PRE: TRUE
+    //POST: Retorna un boolea indicant si el tst del p.i i el de l'argument són iguals.
     bool ret = true;
 
     if (a != NULL and b != NULL)
@@ -706,6 +750,9 @@ bool easy_dial::tst_igual(node_tst *a, node_tst *b)
 //0(n)
 bool easy_dial::aux_igual(node *a, node *b)
 {
+
+    //PRE: TRUE
+    //POST: Retorna un boolea indicant si l'estructura auxiliar del p.i i la de l'argument són iguals.
     if (a != NULL and b != NULL)
         return aux_igual(a->m_seg, b->m_seg) and (a->m_val == b->m_val) and (a->m_p == b->m_p);
     else if ((a != NULL and b == NULL) or (a == NULL and b != NULL))
@@ -713,8 +760,10 @@ bool easy_dial::aux_igual(node *a, node *b)
     else
         return true;
 }
-
+//0(n)
 bool easy_dial::es_igual(const easy_dial &D)
 {
+    //PRE: TRUE
+    //POST: Retorna un boolea indicant si el easy_dial del p.i i el de l'argument són iguals.
     return m_pref == D.m_pref and m_indef == D.m_indef and m_freq == m_freq and tst_igual(m_arrel, D.m_arrel) and aux_igual(m_primer, D.m_primer);
 }

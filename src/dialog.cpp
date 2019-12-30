@@ -1,9 +1,11 @@
 #include "../incl/dialog.hpp"
 
+// θ(input.lenght)
 void dialog::dialog(easy_dial &easy, const string &input,
                     vector<string> &answers, nat &numtelf) throw()
 {
-
+    //PRE: TRUE
+    //POST: Insereix en el vector answers els números resultats després de marcar el input i al número de teléfon el resultat amb més frecuencia. Si es produgués un error, es registra a answers l'error i assigna 0 al número de teléfon.
     answers.push_back(easy.inici());
 
     nat i=0;

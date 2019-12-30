@@ -2,28 +2,37 @@
 
 #include "phone.hpp"
 
+// θ(name.lenght)
 phone::phone(nat num, const string &name, nat compt) throw(error) :
 
                                                                     m_nom(name),
                                                                     m_num(num),
                                                                     m_cops(compt)
 {
+    //PRE: El string nom no pot contenir cap dels carácters especials.
+    //POST: Crea un phone.
     for (nat i = 0U; i < name.size(); ++i)
     {
         if (name[i] == DELETECHAR or name[i] == ENDCHAR or name[i] == ENDPREF)
-            throw error(ErrNomIncorrecte, "phone", "Nom incorrecte.");
+            throw error(ErrNomIncorrecte);
     }
 }
 
+// θ(1)
 phone::phone(const phone &T) throw(error)
 {
+    //PRE: TRUE
+    //POST: p.i. és una copia exacte de T
     m_nom = T.m_nom;
     m_num = T.m_num;
     m_cops = T.m_cops;
 }
 
+// θ(1)
 phone &phone::operator=(const phone &T) throw(error)
 {
+    //PRE: TRUE
+    //POST: Asigna al p.i. els valors de T
     if (this != &T)
     {
         m_nom = T.m_nom;
@@ -34,10 +43,14 @@ phone &phone::operator=(const phone &T) throw(error)
     return *this;
 }
 
+// θ(1)
 phone::~phone() throw()
 {
+    //PRE: TRUE
+    //POST: p.i. eliminat de memoria.
 }
 
+// θ(1)
 nat phone::numero() const throw()
 {
     //PRE: True
@@ -45,6 +58,7 @@ nat phone::numero() const throw()
     return m_num;
 }
 
+// θ(1)
 string phone::nom() const throw()
 {
     //PRE: True
@@ -59,6 +73,7 @@ nat phone::frequencia() const throw()
     return m_cops;
 }
 
+// θ(1)
 phone &phone::operator++() throw()
 {
     //PRE: True
@@ -67,6 +82,7 @@ phone &phone::operator++() throw()
     return *this;
 }
 
+// θ(1)
 phone phone::operator++(int) throw()
 {
     //PRE: True
@@ -76,6 +92,7 @@ phone phone::operator++(int) throw()
     return aux;
 }
 
+// θ(name.lenght)
 bool phone::operator==(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
@@ -90,6 +107,7 @@ bool phone::operator==(const phone &T) const throw()
     }
 }
 
+// θ(name.lenght)
 bool phone::operator!=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
@@ -97,6 +115,7 @@ bool phone::operator!=(const phone &T) const throw()
     return not(*this == T);
 }
 
+// θ(name.lenght)
 bool phone::operator<(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
@@ -111,6 +130,7 @@ bool phone::operator<(const phone &T) const throw()
     }
 }
 
+// θ(name.lenght)
 bool phone::operator>(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
@@ -125,6 +145,7 @@ bool phone::operator>(const phone &T) const throw()
     }
 }
 
+// θ(name.lenght)
 bool phone::operator<=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
@@ -139,6 +160,7 @@ bool phone::operator<=(const phone &T) const throw()
     }
 }
 
+// θ(name.lenght)
 bool phone::operator>=(const phone &T) const throw()
 {
     //PRE: El paràmetre és un phone
