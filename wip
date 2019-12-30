@@ -16,6 +16,7 @@ IMPORTANT THINGS
 3. Probar constructor por copia call_registry.
 4. Probar operador asignación call_registry.
 5. Probar método shrink hash table en call_registry.
+6. Delete function compare.
 
 
 DONE

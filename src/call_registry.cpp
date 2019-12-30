@@ -623,3 +623,46 @@ void call_registry::dump(vector<phone> &V) const throw(error)
     if (!d_nums.save(V))
         throw error(ErrNomRepetit);
 }
+template <typename Clau>
+bool call_registry::diccionari<Clau>::aux_aux_compare(diccionari<Clau> &aux){
+
+    if ((m_mida == aux.m_mida) and (total == aux.total)){
+        if (m_mida > 0 and aux.m_mida > 0)
+        {
+            for (nat i=0; i < m_mida; ++i)
+            {
+                node_hash* n_cr = m_taula[i];
+                node_hash* n_aux = aux.m_taula[i];
+                while (n_cr != NULL and n_aux != NULL)
+                {
+                    if (n_cr->m_clau != n_aux->m_clau)
+                    {
+                        return false;                    
+                    }
+                    n_cr = n_cr->m_seg;
+                    n_aux = n_aux->m_seg;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return true;
+        }   
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool call_registry::aux_compare(diccionari<nat> &aux)
+{
+    return d_nums.aux_aux_compare(aux);
+}
+
+
+bool call_registry::compare(call_registry &aux)
+{
+    return aux_compare(aux.d_nums);       
+}
