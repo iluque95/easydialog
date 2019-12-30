@@ -31,6 +31,7 @@ public:
     /* Mostra pel canal de sortida informació sobre la hash table */
     void estadistiques();
 
+    /* Cert si la taula hash del p.i és exactament igual a la taula passada com a paràmetre */
     bool aux_aux_compare(diccionari<Clau> &aux);
 
 private:
@@ -50,9 +51,10 @@ private:
     // Calcula la posició en la taula per al número donat.
     nat hash(Clau c) const;
 
-    /* 
-    Busca en l'estructura l'element amb clau num i assigna els paràmetres hi_es si l'ha trobat
-    i un punter al primer node trobat en la llista de nodes i un altre al predecessor (si n'hi ha).
+    /*
+    Comprova si la clau existeix en la hash table a més assigna el node trobat als paràmetres.
+    Busca en l'estructura l'element amb clau num, si la clau hi és al diccionari llavors assigna
+    un punter al node trobat (amb clau C) en la llista de nodes i un altre al predecessor (si n'hi ha).
     */
     bool obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr);
 
