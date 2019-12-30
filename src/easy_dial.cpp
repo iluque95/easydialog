@@ -225,6 +225,9 @@ string easy_dial::inici() throw()
 
         m_pi = m_primer;
 
+        // O(1) cost mitj. Tantes iteracions com caràcters té el prefix en curs.
+        borra_estructura_aux(m_primer->m_seg);
+
         return m_pi->m_p.nom();
     }
     else

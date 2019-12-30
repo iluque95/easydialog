@@ -39,3 +39,4 @@ DRIVER
 1. make
 2. build/driver.e < games/jp_public_phone.in > games/phones.out
 3. diff games/jp_public_phone.out games/phones.out
+4. diff games/jp_public.res games/propi.out
