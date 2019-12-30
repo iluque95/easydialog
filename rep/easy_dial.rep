@@ -86,7 +86,7 @@ void comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(
 
 /*
     Emmagatzema el màxim dels phones d'un conjunt que compleixen el prefix trobat en nt prèviament.
-    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix es comprova si és el max.
+    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix i es comprova si és el max.
 */
 void comencen_major(phone &result, string str, node_tst *nt) const throw(error);
 
