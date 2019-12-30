@@ -1,0 +1,20 @@
+init rc call_registry
+assigna_nom 1001 MARIA
+assigna_nom 1002 JOSEP
+registra 1001
+registra 1001
+registra 1002
+
+init d easy_dial rc
+
+inici
+
+#MARIA
+seguent Z
+
+num_telf
+
+#Error::easy_dial:32:No hi ha telefons amb el prefix en curs.
+seguent Z
+
+##Error::easy_dial:31:Prefix en curs indefinit.

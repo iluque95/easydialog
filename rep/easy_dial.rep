@@ -1,0 +1,185 @@
+
+struct node_tst
+{
+    char m_c;
+    phone m_valor;
+    node_tst *m_fesq;
+    node_tst *m_fdret;
+    node_tst *m_fcen;
+};
+
+node_tst *m_arrel;
+
+
+struct node
+{
+    node_tst *m_val;
+    phone m_p;
+    node *m_ant;
+    node *m_seg;
+};
+
+node *m_primer;
+node *m_pi; // Punt d'interès.
+
+string m_pref;
+
+bool m_indef;
+
+double m_freq;
+
+/*
+    Crea una copia exacta d'un arbre TST a partir de la seva arrel en el paràmetre implicit.
+*/
+node_tst *crea_arbre (node_tst *n);
+
+/*
+    Esborrar recursivament l'estructura del TST.
+*/
+void borra_arbre(node_tst *&n);
+
+/*
+    Copia l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST a partir d'una existent
+    en un altre easy_dial.
+*/
+void copia_estructura_aux(node *n, node *d_m_pi);
+
+/*
+    Esborra l'estructura auxiliar (double linked-list) emprada per moure'ns per el TST.
+*/
+void borra_estructura_aux(node *&n);
+
+/*
+    Afegeix un nou node al final de l'estructura auxiliar.
+*/
+void crea_node(node_tst *a);
+
+/*
+    Insereix la paraula K en l'arbre TST.
+    El node representatiu de fi de paraula (phone::ENDPREF), conté el phone del nom.
+*/
+void insereix(const string &k, const phone &v) throw(error);
+
+/*
+    Crida recursiva del mètode insereix, segueix les propietats del TST i retorna un
+    node de l'estructura. L'arrel en l'última crida de l'stack.
+*/
+node_tst *rinsereix(node_tst *n, nat i, const string &k, const phone &v) throw(error);
+
+
+/*
+    Comprova si el nom trobat ja ha estat mostrat prèviament.
+*/
+bool repetit(const string &str) const;
+
+/*
+    A partir d'un punt de l'arbre donat com argument n cerca el prefix k.
+*/
+node_tst *trobar_pref(node_tst *n, nat i, const string &k) const throw();
+
+/*
+    Afegeix al vector result tots els nom que compleixen el prefix trobat en nt prèviament.
+    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix en
+    el vector.
+*/
+void comencen_aux(vector<string> &result, string str, node_tst *nt) const throw(error);
+
+/*
+    Emmagatzema el màxim dels phones d'un conjunt que compleixen el prefix trobat en nt prèviament.
+    La paraula en curs és el paràmetre str, quan arriba a la fulla l'afegeix i es comprova si és el max.
+*/
+void comencen_major(phone &result, string str, node_tst *nt) const throw(error);
+
+/*
+    A partir d'un prefix en curs busca el següent phone màxim.
+    Si el prefix és un nom complet, l'argument com a tal val true, false en qualsevol altre cas.
+*/
+void comencen_amb(const string &pref, bool complet) throw(error);
+
+void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
+
+void mergeSort(std::vector<phone> &arr, nat start, nat end);
+
+/*
+    A partir de l'arrel de l'arbre TST, recorre aquest per calcular la longitud mitjana.
+*/
+nat calcula_longitud(node_tst *nt);
+
+/*
+    Calcula de forma recursiva la longitud mitjana.
+    La freqüència s'incrementa cada cop que l'arbre ha de canviar a una nova paraula, és a dir, cada cop
+    que existeix un prefix a partir d'una paraula, per tant, representa la quantitat de crides següents que calen
+    per arribar a la paraula com a tal.
+    En cas de existir dos fills, és a dir, dos noms que deriven del mateix prefix, es comprova quin és màxim.
+    Si el prefix mínim és un phone::ENDPREF, la freqüència és dos cops més, ja que es necessita d'un caràcter
+    extra per indicar que és un nom complet.
+*/
+nat calcula_longitud(node_tst *nt, nat freq);
+
+/*
+    Donats dos nodes que representen l'inici de cada nom, arriba fins a les fulles de cadascún i retorna
+    quin telèfon és més gran, és a dir, més freqüent segons les propietats de la classe phone.
+*/
+node_tst *max(node_tst *fesq, node_tst *fdret);
+
+
+/*
+
+    Per desenvolupar aquesta classe i cenyir-se als requeriments establerts en la guía del projecte,
+    ha estat necessari emprar una estructura arborea. Com aquesta part tracta especialment strings,
+    on uns quants comparteixen prefixos, l'estructura que encaixa a la perfecció són els tries.
+    Un requeriment de la pràctica és que el trie sigui eficient en cost espaial i alhora que permeti
+    costos eficients temporals.
+
+    Per aquests motius el guanyador ha estat el TST (Ternary Search Tree) el qual permet que a partir
+    d'un prefix comú, només cal emmagatzemar la part no comuna entre ambdós strings, a més, segueix
+    les propietats d'un BST (Binary Search Tree) però amb tres nodes, oferint molt bona eficiència.
+    Un trie no TST, o taules hash amb tot l'abecedari requereixen de molt espai o bé no són eficients
+    en cerques a partir de prefixos, però sí que són més eficients les hash en cas promig, ja que el cost
+    és O(1) i per tant, per a segons quin nom és més ràpid. De totes maneres, no compleixen amb els
+    requisits.
+
+    De forma auxiliar, també s'ha afegit una estructura que permeti moure's per l'arbre de forma
+    fàcil, eficient i ràpida. Una double linked list, on cada cop que s'introdueix un prefix i el
+    target és avançar o retrocedir per l'arbre TST, cal un apuntador a l'últim node visitat, a més,
+    es requereix d'un històric per saber quins nodes ja han estat visitats.
+    L'estructura auxiliar permet aquests fets, tant avançar com retrocir al següent punt sense haver de 
+    recorrer l'arbre sencer cada cop que es vol fer un nou moviment per aquest, com accedir directament
+    en el punt actual al valor prèviament trobat en el TST, en aquest cas, els valors són phones.
+
+    Per tant, l'estructura emmagatzema la quantitat de caràcters que té el prefix en curs i aquesta
+    serà les vegades que cal recorrer per comprovar de forma eficient si un phone ja ha estat mostrat.
+
+
+    Per poder portar a cau aquesta classe, en el constructor ha estat necessari ordenar les dades rebudes
+    de la classe call_registry seguint les indicacions de prioritat definides en la classe phone,
+    obtenint així, en primera posició del vector el phone amb més freqüència i així successivament.
+
+    Entre els diversos algoritmes d'ordenació possibles, després de fer recerca, alguns algoritmes
+    com el quicksort no eren òptims per la quantitat de dades que s'han d'ordenar i el cost podría
+    pujar a O(n), s'havia de tenir en compte que fos eficient a poques dades i per tant implementar
+    un algoritme eficient amb aquesta quantitat. Una variant d'aquest, el 3-way quicksort semblava ser 
+    molt bo, però era complex, a més el cost pujaba en alguns cassos a O(n*log^2 n), és a dir, el mateix 
+    cost que el mergesort sent aquest últim més fàcil i permetia de igual mode cenyir-se als requeriments
+    de la guía del projecte.
+
+*/
+
+
+// Verificacions de correctessa. No es fan servir en producció.
+
+/*
+    True si el tst del p.i i el de l'argument són iguals.
+*/
+bool tst_igual(node_tst *a, node_tst *b);
+
+/*
+    True si l'estructura auxiliar del p.i i la de l'argument són iguals.
+*/
+bool aux_igual(node *a, node *b);
+
+/*
+    Moguda del .hpp al .rep. Només fer servir en proves.
+    True si el p.i i D són exactament iguals.
+*/
+//bool es_igual(const easy_dial& D);

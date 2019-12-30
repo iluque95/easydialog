@@ -71,7 +71,11 @@ public:
   static const int  ErrNoExisteixTelefon  = 32;
   static const int  ErrNoHiHaAnterior     = 33;
 
+
+  // FIXME: BORRAR
+  bool es_igual(const easy_dial& D);
+
 private:
-  #include "easy_dial.rep"
+  #include "../rep/easy_dial.rep"
 };
 #endif

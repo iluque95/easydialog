@@ -1,0 +1,37 @@
+init rc call_registry
+assigna_nom 1001 MARIA
+assigna_nom 1002 JOSEP
+assigna_nom 1003 MAR
+assigna_nom 1004 MIQUEL
+assigna_nom 1005 MARTA
+assigna_nom 1006 ZOE
+registra 1001
+registra 1001
+registra 1001
+registra 1002
+registra 1002
+registra 1002
+registra 1002
+registra 1002
+registra 1003
+registra 1004
+registra 1004
+registra 1004
+registra 1004
+registra 1005
+registra 1005
+init d easy_dial rc
+inici
+seguent ""
+seguent Z
+anterior
+seguent M
+seguent A
+anterior
+anterior
+seguent M
+seguent A
+anterior
+seguent A
+seguent R
+seguent ""

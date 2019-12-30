@@ -1,0 +1,21 @@
+init rc call_registry
+assigna_nom 1000 ALEX
+assigna_nom 1001 K
+assigna_nom 1002 K2
+registra 1000
+registra 1000
+registra 1000
+registra 1001
+registra 1001
+registra 1002
+init d easy_dial rc
+rc destroy
+inici
+seguent K
+num_telf
+seguent ""
+anterior
+comencen K
+anterior
+anterior
+seguent A

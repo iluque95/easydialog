@@ -1,0 +1,134 @@
+// HASH TABLE amb tècnica open hashing.
+
+template <typename Clau>
+class diccionari
+{
+public:
+    /* Construeix un diccionari buit. */
+    diccionari() throw(error);
+
+    /* Constructor per còpia, operador d'assignació i destructor. */
+    diccionari(const diccionari &d) throw(error);
+    diccionari &operator=(const diccionari &d) throw(error);
+    ~diccionari() throw();
+
+    /* Insereix un parell clau-valor a la taula */
+    void insereix(const Clau &c, phone *&p);
+    /* Cerca a partir el parell clau-valor a partir de clau, si existeix p és el valor, cas contrari es NULL */
+    bool cerca(const Clau &c, phone *&p) const;
+    /* Elimina parell clau-valor a partir de la clau */
+    bool elimina(const Clau &c);
+    /* Modifica el valor del parell clau-valor a partir de la seva clau */
+    void modifica(const Clau &c, phone *&p);
+    /* Guarda de forma eficient tots els phones no repetits en un vector resultant */
+    bool guarda(vector<phone> &v) const;
+    /* Guarda de forma no eficient tots els phones no repetits en un vector resultant */
+    bool save(vector<phone> &v) const;
+
+    /* Quantitat d'elements que conté el diccionari */
+    nat elements() const;
+
+    /* Mostra pel canal de sortida informació sobre la hash table */
+    void estadistiques();
+
+    /* Cert si la taula hash del p.i és exactament igual a la taula passada com a paràmetre */
+    bool aux_aux_compare(diccionari<Clau> &aux);
+
+private:
+    static long const MULT = 31415926;
+    struct node_hash
+    {
+        Clau m_clau;
+        phone *m_valor;
+        node_hash *m_seg;
+    };
+
+    node_hash **m_taula;
+
+    nat m_mida;
+    nat m_quants;
+
+    // Calcula la posició en la taula per al número donat.
+    nat hash(Clau c) const;
+
+    /*
+    Comprova si la clau existeix en la hash table a més assigna el node trobat als paràmetres.
+    Busca en l'estructura l'element amb clau num, si la clau hi és al diccionari llavors assigna
+    un punter al node trobat (amb clau C) en la llista de nodes i un altre al predecessor (si n'hi ha).
+    */
+    bool obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr);
+
+    // Duplica l'espai de la taula quan s'arriba al llindar de factor de carrega o
+    // redueix a la meitat l'espai de la taula quan s'elimini un valor d'aquesta i el seu llindar
+    // sigui inferior a la resta del factor de càrrega: 100-factor de carrega.
+    void redispersio(bool duplica);
+
+    // Estadístiques
+    nat colisions;
+    nat redispersions;
+    nat shrinks;
+    nat total;
+
+    // Constants
+    static float const factor_carrega = 0.75;
+    static nat const mida_inicial = 200;
+};
+
+diccionari<nat> d_nums;
+//diccionari<string> d_noms;
+
+// AVL
+
+/*
+    A priori es creia que el diccionari amb les propietats de BST i AVL eren les més idonies 
+    a les necessitats requerides en els diversos punts que es mencionarán:
+
+    1. No requereix coneixer previament la quantitat d'elements.
+    2. Els costos són logaritmics en el cas mitjà.
+    3. Ens permet el parell clau-valor on clau és el num de telèfon i clau un punter al objecte phone.
+    4. Els costos del constructor per còpia i operador d'assignación són lineals.
+
+    Però, existeixen altres estructures com les taules de hash que ofereixen un cost temporal més baix a canvi
+    d'un cost espaial més gran.
+
+    Ha estat escollida la taula hash amb la tècnica opening hash perquè és la més fàcil de gestionar i
+    almenys en la inserció i cerca és la més ràpida, ja que en la inserció afegeix en la primera posició
+    de la llista encadenada i no ha de buscar un lloc lliure per tota la taula ni tampoc es necessari
+    preocupar-se'n per la zona d'excedents.
+
+    En quant a la cerca, un cop trobada la posició en la taula, és tan fàcil com recorrer tots els sinònims i trobar
+    la clau que s'està cercant amb un cost promig O(1).
+
+    Altres estructures:
+
+    +--------------------------------------------------------------------------------------------+
+    | Estructura   |  Cost constructor  |  Cost inserció    |   Cost consultar  |  Cost eliminar |
+    +--------------------------------------------------------------------------------------------+
+    |  HASH        |       O(n)         |       O(1)        |     O(1)          |      O(1)      |
+    |  AVL         |       O(1)         |       O(log n)    |     O(log n)      |      O(log n)  |
+    |  BST         |       O(1)         |       O(log n)    |     O(log n)      |      O(log n)  |
+    |  Minheap     |       O(1)         |       O(log n)    |     O(1)          |      O(log n)  |
+    |  Linked list |       O(n)         |       O(n)        |     O(n)          |      O(n)      |
+    +--------------------------------------------------------------------------------------------+
+
+    D'una altre banda, aprofitant el potencial de les taules hash, la primera inteció era fer el mètode dump l'ho
+    més eficient possible fent servir aquesta estructura, per això es va arribar a encapsular la hash table com
+    una classe diccionari dintre de la pròpia classe call_registry separant les responsabilitats de cadascuna,
+    per així tenir dos diccionaris, un amb claus naturals i un amb claus d'strings on compartíen un punter al phone,
+    sent ambdós claus referència al mateix "contacte" de l'agenda telefònica. D'aquesta forma, especialitzar la funció
+    hash era molt més fàcil per a cada tipus de clau, i, a més, evitaba tenir de repetits i amb accessos molt més
+    ràpids. El principal inconvenient és que per aconseguir-ho cal que no hi hagi col·lisions entre sinònims,
+    això comporta que s'ha de tenir molta cura amb la capacitat de la taula i amb els elements com a tal.
+    La funció hash ja assegura que mai hi hagi de repetits gràcies a la ponderació afegida a cada posició de cada caràcter,
+    el problema s'esdevé en el moment de fer el mòdul per obtenir la posició en la taula, si no és prou capacitativa,
+    no es dispersen correctament tot i ser la funció hash molt bona provocant bastants sinònims, per això caldría,
+    redispersionar cada cop que es produís un sinònim tot i així no guaranteix que al redispersionar no torni a haver
+    sinònims.
+
+    Funcionant a mitges, es va decidir deixar-ho i prioritzar l'acabament de la pràctica i el funcionament de
+    tots els mètodes quedant així el primer disseny pensat. 
+
+*/
+
+// Verificacions de correctessa. No es fan servir en producció.
+bool aux_compare(diccionari<nat> &aux);

@@ -1,0 +1,22 @@
+init rc call_registry
+assigna_nom 1001 JOAN
+assigna_nom 1002 MIQUEL
+assigna_nom 1003 RAMON
+registra 1001
+registra 1001
+registra 1001
+registra 1002
+registra 1002
+registra 1002
+registra 1002
+registra 1002
+registra 1003
+init d easy_dial rc
+inici
+seguent ""
+seguent Z
+anterior
+seguent "R"
+anterior
+seguent "M"
+seguent "R"

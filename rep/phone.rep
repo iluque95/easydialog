@@ -1,0 +1,3 @@
+string m_nom;
+nat m_num;
+nat m_cops;

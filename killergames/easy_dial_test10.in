@@ -1,0 +1,18 @@
+###!-------------------------
+###1 easy_dial AMB UN TELEFON
+###!-------------------------
+###!
+init rc call_registry
+assigna_nom 1001 MARIA
+registra 1001
+###!
+###!--------------------------------------------------
+###1.1         recorreguts sense fer previament inici
+###!--------------------------------------------------
+###!
+init d easy_dial rc
+inici
+#MARIA
+inici
+#MARIA
+d destroy

@@ -1,0 +1,13 @@
+init rc call_registry
+assigna_nom 1001 M
+assigna_nom 1002 MARIA
+registra 1001
+registra 1002
+registra 1002
+
+
+init d easy_dial rc
+
+inici
+seguent M
+longitud_mitj
