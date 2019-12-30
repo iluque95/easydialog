@@ -61,8 +61,6 @@ private:
     // sigui inferior a la resta del factor de càrrega: 100-factor de carrega.
     void redispersio(bool duplica);
 
-    
-
     // Estadístiques
     nat colisions;
     nat redispersions;
@@ -72,13 +70,10 @@ private:
     // Constants
     static float const factor_carrega = 0.75;
     static nat const mida_inicial = 200;
-
-
-
 };
 
 diccionari<nat> d_nums;
-diccionari<string> d_noms;
+//diccionari<string> d_noms;
 
 // AVL
 
@@ -133,6 +128,5 @@ diccionari<string> d_noms;
 
 */
 
-
 // Verificacions de correctessa. No es fan servir en producció.
-    bool aux_compare(diccionari<nat> &aux);
+bool aux_compare(diccionari<nat> &aux);
