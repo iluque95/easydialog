@@ -9,9 +9,8 @@ PENDING TASKS
 IMPORTANT THINGS
 ----------------
 
-1. Corregir memory leaks en easy_dial, todavía hay agujeros.
-2. Eliminar método público es_igual de easy_dial.hpp.
-3. Delete function compare.
+1. Eliminar método público es_igual de easy_dial.hpp.
+2. Delete function compare.
 
 
 DONE
@@ -24,6 +23,7 @@ DONE
 5. Probar constructor por copia call_registry.
 6. Probar operador asignación call_registry.
 7. Probar método shrink hash table en call_registry.
+8. Corregir memory leaks en easy_dial, todavía hay agujeros.
 
 
 VALGRIND
