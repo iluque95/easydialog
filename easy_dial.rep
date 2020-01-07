@@ -34,7 +34,7 @@ double m_freq;
 node_tst *crea_arbre (node_tst *n);
 
 /*
-    Esborrar recursivament l'estructura del TST.
+    Esborra recursivament l'estructura TST alliberant memòria dinàmica.
 */
 void borra_arbre(node_tst *&n);
 
@@ -96,8 +96,14 @@ void comencen_major(phone &result, string str, node_tst *nt) const throw(error);
 */
 void comencen_amb(const string &pref, bool complet) throw(error);
 
+/*
+   Fusiona els dos arrays.
+*/
 void merge(std::vector<phone> &arr, nat start, nat middle, nat end);
 
+/*
+   Ordena l'array.
+*/
 void mergeSort(std::vector<phone> &arr, nat start, nat end);
 
 /*
@@ -112,7 +118,7 @@ nat calcula_longitud(node_tst *nt);
     per arribar a la paraula com a tal.
     En cas de existir dos fills, és a dir, dos noms que deriven del mateix prefix, es comprova quin és màxim.
     Si el prefix mínim és un phone::ENDPREF, la freqüència és dos cops més, ja que es necessita d'un caràcter
-    extra per indicar que és un nom complet.
+    extra per indicar que és un nom complet, és a dir, una polsació adicional.
 */
 nat calcula_longitud(node_tst *nt, nat freq);
 
@@ -137,18 +143,23 @@ node_tst *max(node_tst *fesq, node_tst *fdret);
     Un trie no TST, o taules hash amb tot l'abecedari requereixen de molt espai o bé no són eficients
     en cerques a partir de prefixos, però sí que són més eficients les hash en cas promig, ja que el cost
     és O(1) i per tant, per a segons quin nom és més ràpid. De totes maneres, no compleixen amb els
-    requisits.
+    requisits, ja que requeriría de moltissim espai adicional i potser cercar entre prefixos arribaría
+    a ser caotic.
 
     De forma auxiliar, també s'ha afegit una estructura que permeti moure's per l'arbre de forma
-    fàcil, eficient i ràpida. Una double linked list, on cada cop que s'introdueix un prefix i el
-    target és avançar o retrocedir per l'arbre TST, cal un apuntador a l'últim node visitat, a més,
-    es requereix d'un històric per saber quins nodes ja han estat visitats.
+    fàcil, eficient i ràpida. Una double linked list, a mode d'iteradors, la qual gestiona el prefix
+    en curs, i, el target és avançar o retrocedir per l'arbre TST, cal un apuntador a l'últim node visitat, 
+    a més, es requereix d'un històric per saber quins nodes ja han estat visitats.
     L'estructura auxiliar permet aquests fets, tant avançar com retrocir al següent punt sense haver de 
     recorrer l'arbre sencer cada cop que es vol fer un nou moviment per aquest, com accedir directament
     en el punt actual al valor prèviament trobat en el TST, en aquest cas, els valors són phones.
 
     Per tant, l'estructura emmagatzema la quantitat de caràcters que té el prefix en curs i aquesta
     serà les vegades que cal recorrer per comprovar de forma eficient si un phone ja ha estat mostrat.
+
+    A més, tal i com passa amb els iteradors, que, es busca que sigui així, tenim un punt d'interés sobre 
+    aquesta estructura de forma que ofereix tota la llibertat de moure'l cap endavant i endarrere en tot
+    moment.
 
 
     Per poder portar a cau aquesta classe, en el constructor ha estat necessari ordenar les dades rebudes
@@ -157,11 +168,25 @@ node_tst *max(node_tst *fesq, node_tst *fdret);
 
     Entre els diversos algoritmes d'ordenació possibles, després de fer recerca, alguns algoritmes
     com el quicksort no eren òptims per la quantitat de dades que s'han d'ordenar i el cost podría
-    pujar a O(n), s'havia de tenir en compte que fos eficient a poques dades i per tant implementar
-    un algoritme eficient amb aquesta quantitat. Una variant d'aquest, el 3-way quicksort semblava ser 
-    molt bo, però era complex, a més el cost pujaba en alguns cassos a O(n*log^2 n), és a dir, el mateix 
-    cost que el mergesort sent aquest últim més fàcil i permetia de igual mode cenyir-se als requeriments
-    de la guía del projecte.
+    pujar a O(n) o inclús en el pitjor dels cassos a O(n^2), s'havia de tenir en compte que fos eficient 
+    amb poques dades i per tant implementar un algoritme eficient cenyint-se a aquesta quantitat. 
+    Una variant d'aquest, és el 3-way quicksort que semblava ser molt bo, però era complex, a més el cost pujaba 
+    en alguns cassos a O(n*log^2 n), és a dir, el mateix cost que el mergesort sent aquest últim més fàcil
+    i permetia de igual mode adaptar-se als requeriments de la guía del projecte.
+
+    Quicksort i Mergesort són dos dels algoritmes d'ordenació més utilitzats en el món de la programació, són dos 
+    algoritmes que es basen en la tècnica "divideix i venceras", tant un com l'altre són extremadament
+    bons, per tant, de vegades, amb petits criteris com són els esmentants previaments, donen lloc
+    a tenir dificultats a l'hora d'escollir, però, l'ho que està clar és que s'agafi el que s'agafi,
+    és un bon acert en la majoría de cassos i sempre existirà la eterna discussió de quin és millor que quin
+    en què i perquè.
+    Per exemple, Mergesort pot ser paral·lelitzat i a més, en comptes de divir en dos troços, fer la divisió
+    en quatre, i per tant, designar una tasca a un thread diferent millorant així encara més l'eficiència.
+
+
+    Aquesta classe contempla un cost espaial O(k * log(n) ) + O(k), on k és la longitud de caràcters dels noms
+    i n la quantitat de noms totals en l'estructura TST. Pel que fa, O(k) és la quantitat de caràcters del
+    prefix en curs.
 
 */
 

@@ -69,7 +69,7 @@ template <typename Clau>
 call_registry::diccionari<Clau> &call_registry::diccionari<Clau>::operator=(const diccionari &d) throw(error)
 {
     //PRE: TRUE
-    //POST: Al p.i. se li assignen tots els valors de d
+    //POST: p.i és una còpia de d.
     if (this != &d)
     {
         diccionari<Clau> dicc(d);
@@ -103,7 +103,7 @@ template <typename Clau>
 call_registry::diccionari<Clau>::~diccionari() throw()
 {
     //PRE: TRUE
-    //POST: S'elimina de memoría el diccionari del p.i.
+    //POST: S'allibera la memòria dinàmica.
     for (nat i = 0; i < m_mida; ++i)
     {
         node_hash *prev = NULL;
@@ -277,7 +277,7 @@ void call_registry::diccionari<Clau>::modifica(const Clau &c, phone *&p)
     }
 }
 
-// θ(1)
+// θ(n)
 template <typename Clau>
 bool call_registry::diccionari<Clau>::guarda(vector<phone> &v) const
 {
@@ -318,7 +318,7 @@ template <typename Clau>
 bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n, node_hash *&nr)
 {
     //PRE: TRUE
-    //POST: Returna un bolea indicant si apareix al diccionari un node amb Clau c o no. Si apareix, assigna n al node que cumpleix la condició i nr al seu antedecessor. 
+    //POST: Cert si existeix al diccionari el node amb Clau c, fals cas contrari. Si apareix, assigna n al node que cumpleix la condició i nr al seu antedecessor. 
     nat i = hash(c);
 
     nr = n = m_taula[i];
@@ -343,8 +343,9 @@ bool call_registry::diccionari<Clau>::obtenir_phone(const Clau &c, node_hash *&n
 template <typename Clau>
 void call_registry::diccionari<Clau>::redispersio(bool duplica)
 {
-    //PRE: TRUE
-    //POST: Reasigna els elements del diccionari segons la modificació de la taula. Aquesta modificació será de duplicar la mida de la taula si es supera el 75% de cárrega, i de divisió si es baixa del 25% de cárrega.
+    //PRE: TRUE mida *2. FALSE mida / 2.
+    //POST: Reasigna els elements del diccionari segons la modificació de la taula. Aquesta modificació será de duplicar la 
+    //      mida de la taula si es supera el 75% de cárrega, i de divisió si es baixa del 25% de cárrega.
     nat mida_ant = m_mida;
 
     if (duplica)
@@ -401,7 +402,7 @@ template <>
 nat call_registry::diccionari<nat>::hash(nat c) const
 {
     //PRE: TRUE
-    //POST: Retorna la posició de la taula on anirá c
+    //POST: Retorna la posició en la taula on anirá c
     c ^= (c << 13);
     c ^= (c >> 17);
     c ^= (c << 5);
@@ -414,7 +415,7 @@ template <>
 nat call_registry::diccionari<string>::hash(string c) const
 {
     //PRE: TRUE
-    //POST: Retorna la posició de la taula on anirá c
+    //POST: Retorna la posició en la taula on anirá c
     nat n = 0;
 
     for (nat i = 0; i < c.length(); ++i)
@@ -500,14 +501,14 @@ call_registry::call_registry(const call_registry &R) throw(error) : d_nums(R.d_n
                                                                                      //d_noms(R.d_noms)
 {
     //PRE: TRUE
-    //POST: El p.i. es idéntic a R
+    //POST: El p.i. es una còpia de R
 }
 
 // θ(n)
 call_registry &call_registry::operator=(const call_registry &R) throw(error)
 {
     //PRE: TRUE
-    //POST: Asigna al p.i. els valors de R
+    //POST: El p.i. es una còpia de R
     d_nums = R.d_nums;
     //d_noms = R.d_noms;
 
@@ -518,7 +519,7 @@ call_registry &call_registry::operator=(const call_registry &R) throw(error)
 call_registry::~call_registry() throw()
 {
     //PRE: TRUE
-    //POST: Elimina el p.i. de memória
+    //POST: Elimina el p.i. de memòria
     //d_nums.estadistiques();
     //d_noms.estadistiques();
 }
@@ -673,7 +674,7 @@ nat call_registry::num_entrades() const throw()
 void call_registry::dump(vector<phone> &V) const throw(error)
 {
     //PRE: TRUE
-    //POST: Inserta en aquest vector tots el teléfons que tenen un nom assignat dins del call_registry.
+    //POST: Inserta en aquest vector tots el telèfons que tenen un nom assignat dins del call_registry.
     //if (d_noms.guarda(V))
     if (!d_nums.save(V))
         throw error(ErrNomRepetit);

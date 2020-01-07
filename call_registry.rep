@@ -14,7 +14,7 @@ public:
 
     /* Insereix un parell clau-valor a la taula */
     void insereix(const Clau &c, phone *&p);
-    /* Cerca a partir el parell clau-valor a partir de clau, si existeix p és el valor, cas contrari es NULL */
+    /* Cerca el parell clau-valor a partir de la clau, si existeix p és el valor, cas contrari es NULL */
     bool cerca(const Clau &c, phone *&p) const;
     /* Elimina parell clau-valor a partir de la clau */
     bool elimina(const Clau &c);
@@ -92,12 +92,13 @@ diccionari<nat> d_nums;
     d'un cost espaial més gran.
 
     Ha estat escollida la taula hash amb la tècnica opening hash perquè és la més fàcil de gestionar i
-    almenys en la inserció i cerca és la més ràpida, ja que en la inserció afegeix en la primera posició
+    almenys en la inserció és la més ràpida, ja que en la inserció afegeix en la primera posició
     de la llista encadenada i no ha de buscar un lloc lliure per tota la taula ni tampoc es necessari
     preocupar-se'n per la zona d'excedents.
 
     En quant a la cerca, un cop trobada la posició en la taula, és tan fàcil com recorrer tots els sinònims i trobar
-    la clau que s'està cercant amb un cost promig O(1).
+    la clau que s'està cercant amb un cost promig O(1), tot i ser O(n), en promig tenint en compte tots els factors
+    adients, és constant.
 
     Altres estructures:
 
@@ -111,22 +112,28 @@ diccionari<nat> d_nums;
     |  Linked list |       O(n)         |       O(n)        |     O(n)          |      O(n)      |
     +--------------------------------------------------------------------------------------------+
 
-    D'una altre banda, aprofitant el potencial de les taules hash, la primera inteció era fer el mètode dump l'ho
-    més eficient possible fent servir aquesta estructura, per això es va arribar a encapsular la hash table com
-    una classe diccionari dintre de la pròpia classe call_registry separant les responsabilitats de cadascuna,
+    D'una altre banda, aprofitant el potencial de les taules hash, la primera intenció era fer el mètode dump l'ho
+    més eficient possible fent servir aquesta estructura, per aquest motiu es va arribar a encapsular la hash table com
+    una classe diccionari dintre de la pròpia classe call_registry, separant les responsabilitats de cadascuna,
     per així tenir dos diccionaris, un amb claus naturals i un amb claus d'strings on compartíen un punter al phone,
     sent ambdós claus referència al mateix "contacte" de l'agenda telefònica. D'aquesta forma, especialitzar la funció
-    hash era molt més fàcil per a cada tipus de clau, i, a més, evitaba tenir de repetits i amb accessos molt més
+    hash era molt més fàcil per a cada tipus de clau, i, a més, evitava tenir de repetits i amb accessos molt més
     ràpids. El principal inconvenient és que per aconseguir-ho cal que no hi hagi col·lisions entre sinònims,
     això comporta que s'ha de tenir molta cura amb la capacitat de la taula i amb els elements com a tal.
     La funció hash ja assegura que mai hi hagi de repetits gràcies a la ponderació afegida a cada posició de cada caràcter,
-    el problema s'esdevé en el moment de fer el mòdul per obtenir la posició en la taula, si no és prou capacitativa,
-    no es dispersen correctament tot i ser la funció hash molt bona provocant bastants sinònims, per això caldría,
+    el problema s'esdevé en el moment de fer la operació mòdul per obtenir la posició en la taula, si no és prou capacitativa,
+    no es dispersen correctament tot i ser la funció hash molt bona, provocant bastants sinònims, per això caldría,
     redispersionar cada cop que es produís un sinònim tot i així no guaranteix que al redispersionar no torni a haver
     sinònims.
 
+    Probablement, per a aquest cas en específic, hagués estat millor desenvolupar un altre tipus de hash table com és la
+    tècnica d'open hashing, però en comptes de fer servir encadenaments indirectes fer servir de directes.
+
     Funcionant a mitges, es va decidir deixar-ho i prioritzar l'acabament de la pràctica i el funcionament de
-    tots els mètodes quedant així el primer disseny pensat. 
+    tots els mètodes quedant així el primer disseny pensat.
+
+    En quant al cost espaial, es pot definir com un cost O(n), on n és l'espai reservat i/o redispersionat.
+    Del conjunt d'n tenim x parells claus-valors on cada valor és un punter a un phone.
 
 */
 

@@ -48,7 +48,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_arrel(NULL),
 {
     //PRE: TRUE
     //POST: El p.i. és un easy_dial idéntic a D
-    //Bucle para el arbol
+
     m_arrel = crea_arbre(D.m_arrel);
 
     copia_estructura_aux(D.m_primer, D.m_pi);
@@ -58,7 +58,7 @@ easy_dial::easy_dial(const easy_dial &D) throw(error) : m_arrel(NULL),
 easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 {
     //PRE: TRUE
-    //POST: S'assignen al p.i. els valors de D
+    //POST: El p.i. és un easy_dial idéntic a D
     if (this != &D)
     {
         easy_dial ed(D);
@@ -101,7 +101,7 @@ easy_dial &easy_dial::operator=(const easy_dial &D) throw(error)
 easy_dial::~easy_dial() throw()
 {
     //PRE: TRUE
-    //POST: Elimina de memoria el easy_dial del p.i.
+    //POST: Memòria dinàmica alliberada.
     borra_arbre(m_arrel);
 
     borra_estructura_aux(m_primer);
@@ -111,7 +111,7 @@ easy_dial::~easy_dial() throw()
 easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 {
     //PRE: TRUE
-    //POST: Retorna un node_tst apuntant a l'arrel de l'abre creat.
+    //POST: Nou node en el TST.
     node_tst *aux = NULL;
     if (n != NULL)
     {
@@ -133,7 +133,7 @@ easy_dial::node_tst *easy_dial::crea_arbre(node_tst *n)
 void easy_dial::borra_arbre(node_tst *&n)
 {
     //PRE: TRUE
-    //POST: Elimina de memoria tots els elements del arbre amb arrel n
+    //POST: Memòria dinàmica alliberada.
     if (n != NULL)
     {
         borra_arbre(n->m_fesq);
@@ -148,8 +148,8 @@ void easy_dial::borra_arbre(node_tst *&n)
 //0(n)
 void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
 {
-    //PRE: TRUE
-    //POST: Realitza una replica d'un node i el consecuent arbre en un altre node
+    //PRE: n és el primer node de l'estructura a copiar. d_m_pi és el punt d'interés de l'estructura auxiliar.
+    //POST: Còpia exacta en p.i de l'estructura auxiliar de n.
     node *tmp = n, *ant_tmp = NULL, *aux = NULL;
 
     bool primer = true;
@@ -189,7 +189,7 @@ void easy_dial::copia_estructura_aux(node *n, node *d_m_pi)
 void easy_dial::borra_estructura_aux(node *&n)
 {
     //PRE: TRUE
-    //POST: Elimina de memoria tots els elements del arbre amb arrel n
+    //POST: Memòria dinàmica alliberada.
     if (n != NULL)
     {
         borra_estructura_aux(n->m_seg);
@@ -202,7 +202,7 @@ void easy_dial::borra_estructura_aux(node *&n)
 void easy_dial::crea_node(node_tst *a)
 {
     //PRE: TRUE
-    //POST: Crea un node amb valor a
+    //POST: Crea o modifica un node en l'estructura auxiliar amb valor a. m_pi apunta a aquest node.
     node *n = m_pi;
 
     if (m_pi->m_seg == NULL)
@@ -381,7 +381,7 @@ void easy_dial::comencen_major(phone &result, string str, node_tst *nt) const th
     }
 }
 
-//0(1)
+//0(log K.length) --> 0(1)
 typename easy_dial::node_tst *easy_dial::trobar_pref(node_tst *n, nat i, const string &k) const throw()
 {
     //PRE: TRUE
@@ -484,10 +484,11 @@ void easy_dial::comencen(const string &pref, vector<string> &result) const throw
 double easy_dial::longitud_mitjana() const throw()
 {
     //PRE: TRUE
-    //POST: Retorna un double amb el número mitja de pulsacions necessaries per obtenir un teléfon.
+    //POST: Retorna el número mitjà de pulsacions necessaries per obtenir un telèfon.
     return m_freq;
 }
 
+//0(log K.length)
 void easy_dial::insereix(const string &k, const phone &v) throw(error)
 {
     //PRE: TRUE
@@ -540,30 +541,30 @@ typename easy_dial::node_tst *easy_dial::rinsereix(node_tst *n, nat i, const str
     return n;
 }
 
-//0(log n)
+//0(n)
 void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
 {
 
     std::vector<phone> leftArray(middle - start + 1);
     std::vector<phone> rightArray(end - middle);
 
-    // fill in left array
+    // Fill in left array
     for (nat i = 0; i < leftArray.size(); ++i)
         leftArray[i] = arr[start + i];
 
-    // fill in right array
+    // Fill in right array
     for (nat i = 0; i < rightArray.size(); ++i)
         rightArray[i] = arr[middle + 1 + i];
 
     /* Merge the temp arrays */
 
-    // initial indexes of first and second subarrays
+    // Initial indexes of first and second subarrays
     nat leftIndex = 0, rightIndex = 0;
 
-    // the index we will start at when adding the subarrays back into the main array
+    // The index we will start at when adding the subarrays back into the main array
     nat currentIndex = start;
 
-    // compare each index of the subarrays adding the lowest value to the currentIndex
+    // Compare each index of the subarrays adding the UPPEST value to the currentIndex
     while (leftIndex < leftArray.size() && rightIndex < rightArray.size())
     {
         if (leftArray[leftIndex] >= rightArray[rightIndex])
@@ -579,28 +580,27 @@ void easy_dial::merge(std::vector<phone> &arr, nat start, nat middle, nat end)
         currentIndex++;
     }
 
-    // copy remaining elements of leftArray[] if any
+    // Copy remaining elements of leftArray[] if any
     while (leftIndex < leftArray.size())
         arr[currentIndex++] = leftArray[leftIndex++];
 
-    // copy remaining elements of rightArray[] if any
+    // Copy remaining elements of rightArray[] if any
     while (rightIndex < rightArray.size())
         arr[currentIndex++] = rightArray[rightIndex++];
 }
 
-//0(log n)
+//0(n*log n)
 void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
 {
-    // base case
     if (start < end)
     {
-        // find the middle point
+        // Find the middle point
         nat middle = (start + end) / 2;
 
-        mergeSort(arr, start, middle);   // sort first half
-        mergeSort(arr, middle + 1, end); // sort second half
+        mergeSort(arr, start, middle);   // Sort first half
+        mergeSort(arr, middle + 1, end); // Sort second half
 
-        // merge the sorted halves
+        // Merge the sorted halves
         merge(arr, start, middle, end);
     }
 }
@@ -609,7 +609,7 @@ void easy_dial::mergeSort(std::vector<phone> &arr, nat start, nat end)
 bool easy_dial::repetit(const string &str) const
 {
     //PRE: TRUE
-    //POST: Retorna un bolea indicant si el nom s'ha mostrat previament.
+    //POST: Cert si el nom s'ha mostrat previament, fals cas contrari.
     node *tmp = m_pi->m_ant;
 
     bool visitat = false;
@@ -622,34 +622,10 @@ bool easy_dial::repetit(const string &str) const
             tmp = tmp->m_ant;
     }
 
-    /*
-    cout << "Memory pointers: {";
-
-    tmp = m_primer;
-
-    while (tmp != NULL)
-    {
-        cout << " " << ((tmp->m_p.nom().size() == 0) ? "\"\"" : tmp->m_p.nom());
-            tmp = tmp->m_seg;
-    }
-
-    cout << " } {";
-
-    tmp = m_pi;
-
-    while (tmp != NULL)
-    {
-        cout << " " << ((tmp->m_p.nom().size() == 0) ? "\"\"" : tmp->m_p.nom());
-        tmp = tmp->m_ant;
-    }
-
-    cout << " }" << endl;
-*/
-
     return visitat;
 }
 
-//0(1)
+//0(2n) n és la quantitat de caràcters de cada nom, per tant --> 0(1)
 typename easy_dial::node_tst *easy_dial::max(node_tst *fesq, node_tst *fdret)
 {
     //PRE: TRUE
@@ -760,6 +736,7 @@ bool easy_dial::aux_igual(node *a, node *b)
     else
         return true;
 }
+
 //0(n)
 bool easy_dial::es_igual(const easy_dial &D)
 {
