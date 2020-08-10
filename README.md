@@ -1,6 +1,10 @@
-# Projecte de ESIN
+# Projecte d'ESIN
 
 Llegir en [*format PDF*](ESIN_projecte_1920q1_easydial.pdf).
+
+- **CA**: Es recomana veure-ho en la branca de desenvolupament.
+- **ES**: Se recomienda ver el proyecto en la rama de desarrollo.
+- **EN**: Is recomendable see the project on develop branch.
 
 # Normativa i Enunciat
 
